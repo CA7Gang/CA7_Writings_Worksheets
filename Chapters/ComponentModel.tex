@@ -1,4 +1,4 @@
-\subsection{Component model}
+
 All components (eg. pipes, valves and pumps) can be described by two variables, namely the flow through the component and the differential pressure across the component:
 \begin{equation}
 \begin{bmatrix} \Delta{p_{k}} \\ q_{k} \end{bmatrix} = 
@@ -7,7 +7,7 @@ All components (eg. pipes, valves and pumps) can be described by two variables, 
 
 The following section will examine these two variables for pipes, valves and pumps.
 
-\subsubsection{Pipe model}
+\subsection{Pipe model}\label{subsec:PipeModel}
 The differential pressure across a pipe can be modelled as follows:
 \begin{equation}
     \mathrm{\Delta{p_{k}}} = J_{k}\cdot\dot{q_{k}}+\mathrm{\lambda_{k}}(q_{k})-\mathrm{\Delta{z_{k}}}
@@ -110,8 +110,52 @@ Inserting and reducing into \cref{eq:Delta_p_pipe}
 The absolute value of one of the flow component in $q^{2}$ is taken to preserve the flow direction.
 
 
-\subsubsection{Valve model}
-Something about the valve model
+\subsection{Valve model}\label{subsec:ValveModel}
 
-\subsubsection{Pump model}
-Something about the pump model
+While the head loss of a valve \textit{can} be explained in terms of its form resistance, as we have done previously in \cref{subsec:PipeModel}, it is generally impractical to determine the form loss coefficient $k_f$ for valves. Instead, an expression for the head loss can be derived - typically by the manufacturer - via a conductivity function $K_{valve}(OD)$.
+
+\smallskip
+
+Recalling that the pressure drop across a valve is proportional to its squared flow, we may express that:
+
+\begin{equation}\label{eq:HydrodynamicRatio}
+	\frac{\Delta p_1}{q_1^2} = \frac{\Delta p_2}{q_2^2} \Leftrightarrow 
+	\frac{\Delta p_1}{\Delta p_2} = \frac{q_1^2}{q_2^2}
+	\Leftrightarrow
+	q_1 = q_2\cdot\sqrt{\frac{\Delta p_1}{\Delta p_2}}
+\end{equation}
+
+We then express the conductivity function $K_{valve}(OD)$ as, by convention, as corresponding to the flow $q_n$ at a given opening degree that produces exactly a pressure differential of 1 bar, i.e.:
+
+\begin{equation}\label{eq:Kvalve}
+	q = q_n(OD)\cdot\sqrt{\frac{\Delta p_1}{1}} = K_{valve}(OD)\cdot\sqrt{\Delta p_1}
+\end{equation}
+
+We can then express the pressure differential across the valve for a given flow as:
+
+\begin{equation}\label{eq:ValvePressure}
+	 q = K_{valve}(OD)\cdot\sqrt{\Delta p_1}
+	 \Leftrightarrow
+	 \Delta p_1 = \frac{1}{K_{valve}(OD)^2} \cdot |q|\cdot q
+\end{equation}
+
+where $q^2 \equiv |q|\cdot q$ is introduced to preserve the directionality of flow. Note that \cref{eq:ValvePressure} implies the pressure differential across the pipe varies with both flow rate \textit{and} opening degree.
+
+\smallskip
+
+$K_{valve}(OD)$ may take a variety of forms, but is typically either linear, equal-percentage, or quick-opening.
+
+\subsection{Pump model}\label{subsec:PumpModel}
+
+The pressure differential across a centrifugal pump, such as the pumps used in this project, is a multivariable function that can generally be approximated by a polynomial expression of the form:
+
+\begin{equation}\label{eq:PumpPressure}
+	\Delta p =   a_0\cdot \omega^2 +  a_1\cdot \omega \cdot q -a_2\cdot |q|\cdot q
+\end{equation}
+
+where $[a_0,a_1,a_2]$ is a tuple of coefficients that describe the pump's characteristic curve, $q$ is the flow rate through the pump, and $\omega$ is the rotational velocity of the pump. In practice neglecting the cross term $q\omega \cdot q$ generally remains a good approximation of the pump curve, giving:
+
+\begin{equation}\label{eq:PumpPressureSimple}
+	\Delta p =   a_0\cdot \omega^2  -a_2\cdot |q|\cdot q
+\end{equation}
+
