@@ -1,0 +1,117 @@
+\subsection{Component model}
+All components (eg. pipes, valves and pumps) can be described by two variables, namely the flow through the component and the differential pressure across the component:
+\begin{equation}
+\begin{bmatrix} \Delta{p_{k}} \\ q_{k} \end{bmatrix} = 
+\begin{bmatrix} p_{i} - p_{j} \\ q_{k} \end{bmatrix}    
+\end{equation}
+
+The following section will examine these two variables for pipes, valves and pumps.
+
+\subsubsection{Pipe model}
+The differential pressure across a pipe can be modelled as follows:
+\begin{equation}
+    \mathrm{\Delta{p_{k}}} = J_{k}\cdot\dot{q_{k}}+\mathrm{\lambda_{k}}(q_{k})-\mathrm{\Delta{z_{k}}}
+    \label{eq:Delta_p_pipe}
+\end{equation}
+
+
+	\begin{center}
+		\begin{tabular}{l p{8cm} l}
+			
+			$\Delta{p_{k}}$ & The differential pressure across the $k^{th}$ component & [\si{Pa}]\\ 
+		  	${J_{k}}$ & Is the mass inertia of the water in the $k^{th}$ pipe & [\si{kg}/\si{m^{4}}] \\
+		  	$q_{k}$ & is the flow of water trough the $k_{th}$ pipe & [{\si{\meter\cubed}/\si{s}}] \\
+		  	$\mathrm{\lambda_{k}}(q_{k})$ & is the drop in pressure due to friction in the $k^{th}$ pipe & [\si{Pa}] \\
+		  	$\mathrm{\Delta{z_{k}}}$ & is the drop in pressure due to geodesic level & [\si{Pa}]\\
+			\end{tabular}
+	\end{center}
+
+The mass inertia of water can be describes as follows:
+\begin{equation}
+	J= \frac{L\cdot \rho}{A}
+\end{equation}
+
+	\begin{center}
+		\begin{tabular}{l p{8cm} l}
+			$L$ & is the length of the pipe & [\si{m}]\\
+			$\rho$ & is the density of water & [\si{kg}/\si{m\cubed}]\\  
+			$A$ & is the cross sectional area of water & [\si{m\squared}]\\ 
+		\end{tabular}
+	\end{center}
+The cross-sectional area of the pipe is assumed to be constant along the pipe.
+
+The causes of flow friction $\mathrm{\lambda_{k}}(q_{k})$ are surface resistance $h_{f}$ and form resistance $h_{m}$. The surface resistance can be describes with the Darcy-Weisbach equation:
+
+\begin{equation}
+	h_{f} = f \cdot \frac{8\cdot L\cdot q^{2}}{\pi^{2}\cdot g \cdot D^{5}}
+\end{equation} 
+
+\begin{center}
+	\begin{tabular}{l p{8cm} l}
+		$h_{f}$ & is the head loss from surface resistance & [\si{m}]\\
+		$f$ & is the pipe friction factor & [$\cdot$]\\
+		$D$ & is the pipe diameter & [\si{m}]\\
+		$g$ & is the gravitational constant & [\si{m}/\si{s\squared}]\\
+	\end{tabular}
+\end{center}
+Under the assumption of turbulent flow $f$ can be is given by:
+\begin{equation}
+	f=1.325\cdot \Bigg(ln\Big(\frac{\epsilon}{3.7 \cdot D}+\frac{5.74}{R^{0.9}}\Big)\Bigg)^{-2}
+\end{equation}
+
+\begin{center}
+	\begin{tabular}{l p{8cm} l}
+		$\epsilon$ & average height of roughness projection in the pipe & [\si{m}]\\
+		$R$ &  is Reynolds number - for turbulent ﬂow $R \geq 4000$ & [$\cdot$]\\
+	\end{tabular}
+\end{center}
+
+The form resistance can be given by the following:
+\begin{equation}
+	h_{m}=k_{f}\cdot \frac{8\cdot q^{2}}{\pi^{2}\cdot g \cdot D^{4}}
+\end{equation}
+
+\begin{center}
+	\begin{tabular}{l p{8cm} l}
+		$h_{m}$ & is the head loss from form resistances & [\si{m}]\\
+		$k_{f}$ &  is coefficient form loss & [$\cdot$]\\
+	\end{tabular}
+\end{center}
+
+The drop in pressure due to geodesic level difference:
+\begin{equation}
+	\Delta{z_{k}} = \rho \cdot g \cdot \Delta{h_{k}}
+\end{equation}
+
+\begin{center}
+	\begin{tabular}{l p{8cm} l}
+		$\Delta{h_{k}}$ &  is the level difference across the terminals of the $k^{th}$ pipe & [\si{m}]\\
+	\end{tabular}
+\end{center}
+
+Having explained all the components of \eqref{eq:Delta_p_pipe} a complete expression can now be formulated; we take advantage of the fact that resistance losses are expressed in terms of head, and can be expressed in terms of pressure by multiplying by $\rho$ and g. \begin{equation}
+	p = \rho \cdot g \cdot h  
+\end{equation}
+
+Meaning that the head losses can be expresses in terms of pressure by the following:
+
+\begin{equation}
+\mathrm{\lambda_{k}}(q_{k})  =	\Big(f \cdot \frac{8\cdot L\cdot q^{2}}{\pi^{2}\cdot g \cdot D^{5}} + k_{f}\cdot \frac{8\cdot q^{2}}{\pi^{2}\cdot g \cdot D^{4}}\Big)\cdot g \cdot \rho
+\end{equation}
+
+Inserting and reducing into \cref{eq:Delta_p_pipe}
+
+\begin{equation}
+	\Delta{p_{k}} = \frac{L\cdot \rho}{A}\cdot \dot{q_{k}}
+	+\Big(f \cdot \frac{8\cdot L\cdot \rho}{\pi^{2} \cdot D^{5}} + k_{f}\cdot \frac{8\cdot \rho}{\pi^{2} \cdot D^{4}}\Big)\cdot |q_{k}|\cdot q_{k} 
+	- \rho \cdot g \cdot \Delta{h_{k}}
+\end{equation}
+
+The absolute value of one of the flow component in $q^{2}$ is taken to preserve the flow direction.
+
+
+\subsubsection{Valve model}
+Something about the valve model
+
+\subsubsection{Pump model}
+Something about the pump model
