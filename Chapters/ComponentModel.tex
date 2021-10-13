@@ -15,7 +15,7 @@ The differential pressure across a pipe can be modelled as follows:
 
 
 	\begin{center}
-		\begin{tabular}{l p{8cm} l}
+		\begin{tabular}{l p{10cm} l}
 			
 			$\Delta{p_{k}}$ & The differential pressure across the $k^{th}$ component & [\si{Pa}]\\ 
 		  	${J_{k}}$ & Is the mass inertia of the water in the $k^{th}$ pipe & [\si{kg}/\si{m^{4}}] \\
@@ -31,7 +31,7 @@ The mass inertia of water can be describes as follows:
 \end{equation}
 
 	\begin{center}
-		\begin{tabular}{l p{8cm} l}
+		\begin{tabular}{l p{10cm} l}
 			$L$ & is the length of the pipe & [\si{m}]\\
 			$\rho$ & is the density of water & [\si{kg}/\si{m\cubed}]\\  
 			$A$ & is the cross sectional area of water & [\si{m\squared}]\\ 
@@ -46,7 +46,7 @@ The causes of flow friction $\mathrm{\lambda_{k}}(q_{k})$ are surface resistance
 \end{equation} 
 
 \begin{center}
-	\begin{tabular}{l p{8cm} l}
+	\begin{tabular}{l p{10cm} l}
 		$h_{f}$ & is the head loss from surface resistance & [\si{m}]\\
 		$f$ & is the pipe friction factor & [$\cdot$]\\
 		$D$ & is the pipe diameter & [\si{m}]\\
@@ -158,3 +158,49 @@ where $[a_0,a_1,a_2]$ is a tuple of coefficients that describe the pump's charac
 	\Delta p =   a_0\cdot \omega^2  -a_2\cdot |q|\cdot q = \alpha(q)
 \end{equation}
 
+\subsection{Elevated water reservoir model}
+
+In this section we will develop a hydraulic model of an elevated fluid reservoir, also known as a tank.
+Under assumption that the cross-sectional area of the tank is constant along its height axis, the pressure at the bottom of the tank is proportional to the fluid level in the tank:
+
+\begin{equation} \label{eq:p prop zeta}
+	p_\tau \propto \zeta
+\end{equation}
+
+The volumetric rate of change is equal to the flow in and out of the tank:
+
+\begin{equation} \label{eq:vdot = dt}
+	\dot{V} = d_\tau
+\end{equation}
+
+Logically, the rate of fluid level change is proportional to the volumetric rate of change:  
+ 
+ \begin{equation} \label{eq:zeta prop dt}
+	\dot{\zeta} \propto \dot{V} \Leftrightarrow \dot{\zeta} \propto d_\tau
+\end{equation} 
+
+From above it can be concluded that the rate of change of pressure is proportional to flow in and out of the tank:
+
+\begin{equation} \label{eq:dotp prop dt}
+	\dot{p}_{\tau} \propto d_\tau 
+\end{equation}
+
+Defining the proportionality constant $\tau$ and taking flow out of the tank as positive:
+
+\begin{equation} \label{eq:dpTank}
+	\dot{p}_{\tau}=-\tau \cdot d_{\tau} 
+\end{equation} 
+
+\begin{center}
+	\begin{tabular}{l p{10cm} l}
+		$p_\tau$ & is the pressure at the node connected to the bottom of the tank & [\si{Pa}]\\
+		$\tau$ & is the tank parameter which depends on the cross sectional area of the tank & [\si{Pa}/\si{m\cubed}]\\
+		$d_\tau$ & is the water flow in and out of the tank. If $q > 0$ water is flowing out of the tank, if $q < 0$ water is flowing into the tank. & [\si{m\cubed}/\si{s}] 
+		\end{tabular}
+\end{center}
+
+The tank parameter is given by:
+\begin{equation}\label{eq:TankParameter}
+\tau = \rho \cdot g \frac{1}{A}
+\end{equation}
+ 
