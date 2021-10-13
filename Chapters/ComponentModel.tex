@@ -1,4 +1,3 @@
-
 All components (eg. pipes, valves and pumps) can be described by two variables, namely the flow through the component and the differential pressure across the component:
 \begin{equation}
 \begin{bmatrix} \Delta{p_{k}} \\ q_{k} \end{bmatrix} = 
@@ -96,7 +95,7 @@ Having explained all the components of \eqref{eq:Delta_p_pipe} a complete expres
 Meaning that the head losses can be expresses in terms of pressure by the following:
 
 \begin{equation}
-\mathrm{\lambda_{k}}(q_{k})  =	\Big(f \cdot \frac{8\cdot L\cdot q^{2}}{\pi^{2}\cdot g \cdot D^{5}} + k_{f}\cdot \frac{8\cdot q^{2}}{\pi^{2}\cdot g \cdot D^{4}}\Big)\cdot g \cdot \rho
+\lambda_{k}(q_{k})  =	\Big(f \cdot \frac{8\cdot L\cdot q^{2}}{\pi^{2}\cdot g \cdot D^{5}} + k_{f}\cdot \frac{8\cdot q^{2}}{\pi^{2}\cdot g \cdot D^{4}}\Big)\cdot g \cdot \rho
 \end{equation}
 
 Inserting and reducing into \cref{eq:Delta_p_pipe}
@@ -104,7 +103,7 @@ Inserting and reducing into \cref{eq:Delta_p_pipe}
 \begin{equation}
 	\Delta{p_{k}} = \frac{L\cdot \rho}{A}\cdot \dot{q_{k}}
 	+\Big(f \cdot \frac{8\cdot L\cdot \rho}{\pi^{2} \cdot D^{5}} + k_{f}\cdot \frac{8\cdot \rho}{\pi^{2} \cdot D^{4}}\Big)\cdot |q_{k}|\cdot q_{k} 
-	- \rho \cdot g \cdot \Delta{h_{k}}
+	- \rho \cdot g \cdot \Delta{h_{k}} = \mathcal{J}\dot{q} + \lambda(q) + \Delta z
 \end{equation}
 
 The absolute value of one of the flow component in $q^{2}$ is taken to preserve the flow direction.
@@ -136,7 +135,7 @@ We can then express the pressure differential across the valve for a given flow 
 \begin{equation}\label{eq:ValvePressure}
 	 q = K_{valve}(OD)\cdot\sqrt{\Delta p_1}
 	 \Leftrightarrow
-	 \Delta p_1 = \frac{1}{K_{valve}(OD)^2} \cdot |q|\cdot q
+	 \Delta p_1 = \frac{1}{K_{valve}(OD)^2} \cdot |q|\cdot q = \mu(q,OD)
 \end{equation}
 
 where $q^2 \equiv |q|\cdot q$ is introduced to preserve the directionality of flow. Note that \cref{eq:ValvePressure} implies the pressure differential across the pipe varies with both flow rate \textit{and} opening degree.
@@ -156,6 +155,6 @@ The pressure differential across a centrifugal pump, such as the pumps used in t
 where $[a_0,a_1,a_2]$ is a tuple of coefficients that describe the pump's characteristic curve, $q$ is the flow rate through the pump, and $\omega$ is the rotational velocity of the pump. In practice neglecting the cross term $q\omega \cdot q$ generally remains a good approximation of the pump curve, giving:
 
 \begin{equation}\label{eq:PumpPressureSimple}
-	\Delta p =   a_0\cdot \omega^2  -a_2\cdot |q|\cdot q
+	\Delta p =   a_0\cdot \omega^2  -a_2\cdot |q|\cdot q = \alpha(q)
 \end{equation}
 

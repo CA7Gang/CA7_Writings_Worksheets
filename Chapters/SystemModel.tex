@@ -1,0 +1,246 @@
+In this section we will develop the model of the water distribution network, based on the graph theory presented in \cref{sec:GraphTheory}.
+
+\subsection{Assumptions and Lemmas}\label{subsec:AsssumAndLemmas}
+
+In modelling the dynamics of an open hydraulic network, we will make a few basic physical assumptions. Assuming a network with topology described by the incidence matrix $H$ and fundamental loop matrix $B$, subject to the vector of \textit{nodal} flows $d \in \mathbb{R}^n$, and containing the \textit{edge} flows $q \in \mathbb{R}^m$. We will assume that this system is obeys Kirchoff's Nodal Law (KNL), i.e. that:
+
+\begin{equation}\label{eq:KirchNodeLaw}
+	H\cdot q = d
+\end{equation} 
+
+We also assume that the system obeys Kirchoff's Mesh Law (KML), i.e.:
+
+\begin{equation}\label{eq:KirchMeshLaw}
+	B\Delta p = B H^T p = 0 \wedge B\Delta h = B H^T h = 0
+\end{equation}
+
+Furthermore, we assume that the system is conservative with respect to mass, which implies that there can at most be $n-1$ independent nodal demands, i.e.:
+
+\begin{equation}\label{eq:MassConservation}
+	d_n = -\sum_{i=1}^{n-1}d_i
+\end{equation}
+
+We will also define a set of graph-theoretical lemmas for convenience, referring to \cite{Jensen} for proof of both:
+
+\begin{lemma}\label{lem:TreePartitionLemma}
+	Let $H_T$ be the incidence matrix partition corresponding to the spanning tree of the graph described by $H$, and let $\bar{H}_T$ be its equivalent with respect to the reduced incidence matrix $\bar{H}$. $\bar{H}_T$ is invertible since a tree is a connected graph with $n-1$ edges \cite{Deo}, and the following holds
+	
+	\begin{equation}\label{eq:TreePartitionLemma}
+		H_T\cdot\bar{H}_T^{-1} = \begin{bmatrix} I_{n-1} \\ \mathbf{1}^T	\end{bmatrix}
+	\end{equation}
+
+where $\mathbf{1}$ is a vector of ones and $I_{n-1} \in \mathbb{R}^{n-1 \times n-1}$ is an identity matrix.
+\end{lemma}
+
+\begin{lemma}\label{lem:EdgeFlowDecomposition}
+	Let $q \in \mathbb{R}^m$ be the edge flows of a graph with reduced incidence matrix $\bar{H}$ and $n$ nodes. Denote its spanning tree by $T$, let $q_c \in \mathbb{R}^c, \ c = m-n+1$ be the graph's chordal flows, and denote the tree partition of the reduced incidence matrix $\bar{H}_T$. Finally, let $B$ be the graph's fundamental loop matrix, and define $\bar{d} \in \mathbb{R}^{n-1}$ as the vector of non-reference nodal flows. Then the following is true:
+	
+	\begin{equation}\label{eq:EdgeFlowDecomposition}
+		q = B^T\cdot q_c +
+		\begin{bmatrix}
+			0_{c \times n-1} \\ \bar{H}_T^{-1} 
+		\end{bmatrix}
+		\cdot \bar{d}
+	\end{equation}
+\end{lemma}
+
+We are now ready to start modelling the system.
+
+\subsection{Modelling an Open Hydraulic Network with an Elevated Reservoir}\label{subsec:ModelWithTank}
+
+We assume a network topology with $n$ nodes and $m$ edges, of which $e$ nodes are open to the atmosphere. By definition, water can only flow in and out of the network at nodes which are open to the atmosphere, implying that the nodal demand at the $d-e$ non-open nodes is zero at all times. Assuming now that an open node has been chosen as the reference node, the vector of all independent flows $\bar{d}$ can be obtained from the non-zero flows $d_f \in \mathbb{R}^{e-1}$ by:
+
+\begin{equation}\label{eq:IndependentFlows}
+	\bar{d} = F\cdot d_f, \ F = \begin{bmatrix}
+		I_{e-1} \\ 0
+	\end{bmatrix}
+\end{equation}
+
+with the remaining nodal demand at the reference node comprising the dependent flow. The edge flows can then be expressed, using \cref{lem:EdgeFlowDecomposition} to re-write KNL \cref{eq:KirchNodeLaw}, as:
+
+\begin{equation}\label{eq:EdgeFlows}
+	q = B^T\cdot q_C +
+	\begin{bmatrix} 0 \\ \bar{H}_T^{-1} \end{bmatrix} \cdot F \cdot d_f
+\end{equation}
+
+We can modify this to account for tanks by introducing an additional vector of non-zero demand nodes that is \textit{not} open to the atmosphere, denoting it $d_{\tau} \in \mathbb{R}^{\tau}$. We can then restate \cref{eq:IndependentFlows} as:
+
+\begin{equation}\label{eq:IndependentFlowsWithTank}
+	\bar{d} = F\cdot d_f + G \cdot d_{\tau}, 
+	\ F = \begin{bmatrix}
+		I_{e-1} \\ 0
+	\end{bmatrix} 
+	\wedge 
+	G = \begin{bmatrix}
+	0 \\ I_{\tau}
+	\end{bmatrix}
+\end{equation}
+
+subsequently allowing \cref{eq:EdgeFlows} to be restated as:
+
+\begin{equation}\label{eq:EdgeFlowsWithTank}
+	q = B^T\cdot q_C +
+	\begin{bmatrix} 0 \\ \bar{H}_T^{-1} \end{bmatrix} (F \cdot d_f + G \cdot d_{\tau})
+\end{equation}
+
+We can now state the pressure drop across each edge in the network as:
+
+\begin{equation}\label{eq:PressureFunction}
+	\Delta p = \mathcal{J}\dot{q} + \lambda(q) + \mu(q) + \alpha(q) -\Delta h
+\end{equation}
+
+where $\mathcal{J}, \lambda, \mu, \alpha$ are as defined in \cref{sec:ComponentModels}\footnote{Note that we have omitted the secondary variables $OD,\omega$ for convenience.} and $q$ is the vector of edge flows. We now invoke KML as per \cref{eq:KirchMeshLaw} on \cref{eq:PressureFunction}, obtaining:
+
+\begin{equation}\label{eq:PressureFunctionKirch}
+	\begin{split}
+			0 &= B\mathcal{J}\dot{q} + B(\lambda(q) + \mu(q) + \alpha(q)) -B\Delta h \\
+			&= B\mathcal{J}\dot{q} + B(\lambda(q) + \mu(q) + \alpha(q)) \\
+			&\Rightarrow \\
+			B\mathcal{J}\dot{q} &= -B(\lambda(q) + \mu(q) + \alpha(q))
+	\end{split}
+\end{equation}
+
+We can then invoke KNL on the left-hand side of \cref{eq:PressureFunctionKirch}, resulting in:
+
+\begin{equation}\label{eq:PressureFunctionKirchKNL}
+	B\mathcal{J}B^T\dot{q_C} + B \mathcal{J} 
+	\begin{bmatrix} 0 \\ \bar{H}_T^{-1} \end{bmatrix} \cdot (F \cdot \dot{d_f} + G \cdot \dot{d_{\tau}})
+	= -B(\lambda(q) + \mu(q) + \alpha(q))
+\end{equation}
+
+We now develop this expression further via the definition of $B$ in \cref{eq:LoopMatrix} and via a chord/tree-partition of $\mathcal{J}$ such that:
+
+\begin{equation}\label{eq:PressureFunctionKirchJPartitions}
+	B\mathcal{J}B^T\dot{q_C} + 
+	\begin{bmatrix}		I_C & -\bar{H}_C^T\bar{H}_T^{-T}	\end{bmatrix} 
+	\begin{bmatrix}		\mathcal{J}_C & 0 \\ 0 & \mathcal{J}_T	\end{bmatrix} 
+	\begin{bmatrix} 0 \\ \bar{H}_T^{-1} \end{bmatrix} \cdot (F \cdot \dot{d_f} + G \cdot \dot{d_{\tau}})
+	= -B(\lambda(q) + \mu(q) + \alpha(q))
+\end{equation}
+
+This simplifies to:
+
+\begin{equation}\label{eq:PressureFunctionKirchJPartitionsSimp} % KEKW
+	B\mathcal{J}B^T\dot{q_C} 
+	-\bar{H}_C^T\bar{H}_T^{-T}\mathcal{J}_T\bar{H}_T^{-1} F \dot{d_f} 
+	-\bar{H}_C^T\bar{H}_T^{-T}\mathcal{J}_T\bar{H}_T^{-1} G \dot{d_{\tau}}
+	= -B(\lambda(q) + \mu(q) + \alpha(q))
+\end{equation}
+
+We now recall that we have chosen a reference node that is open to atmosphere at $p_{ref} = p_0$, and that $\Delta p$ can be rewritten as: 
+
+\begin{equation}\label{eq:DeltaPPartition}
+	\Delta p =
+	\begin{bmatrix}		\Delta p_C \\ \Delta p_T	\end{bmatrix} = 
+	\begin{bmatrix}		H_C^T \\ H_T^T	\end{bmatrix} p
+\end{equation}
+
+It is then, given that an arbitrary node can be reached by pathing solely through the spanning tree, axiomatically true per KML that:
+
+\begin{equation}\label{eq:RelativePressureKML}
+	H_T^T p = 
+	\bar{H}_T^T \begin{bmatrix} \bar{p} \\ p_0	\end{bmatrix} =
+	\mathcal{J}_T\dot{q}_T + (\lambda_T(q_T)+\mu_T(q_T) + \alpha_T(q_T)) - 
+	\bar{H}_T^T \begin{bmatrix} \bar{h} \\ h_0	\end{bmatrix}
+\end{equation}
+
+We now exploit that:
+
+\begin{equation}\label{eq:TreeLemmaRewrite}
+	H_T\cdot\bar{H}_T^{-1} = \bar{H}_T^{-T}H_T^T 
+\end{equation}
+
+which allows us to rewrite \cref{eq:RelativePressureKML} by left-multiplying every term with $\bar{H}_T^{-T}$ and exploiting \cref{lem:TreePartitionLemma}:
+
+\begin{equation}\label{eq:RelativePressureKMLWithLemma}
+	\bar{p} - \mathbf{1}p_0 =
+	\bar{H}_T^{-T}\mathcal{J}_T\dot{q}_T + \bar{H}_T^{-T}(\lambda_T(q_T)+\mu_T(q_T) + \alpha_T(q_T)) - 
+	(\bar{h} - \mathbf{1}h_0)
+\end{equation}
+
+Recalling that $F$ extracts the open nodes from the non-reference nodes, we can then express the following:
+
+\begin{equation}\label{eq:RelativePressureLemmaAtmospheric}
+	0 = F^T(\bar{p} - \mathbf{1}p_0) =
+	F^T\Big(\bar{H}_T^{-T}\mathcal{J}_T\dot{q}_T + \bar{H}_T^{-T}(\lambda_T(q_T)+\mu_T(q_T) + \alpha_T(q_T))\Big) - 
+	F^T(\bar{h} - \mathbf{1}h_0)
+\end{equation}
+
+which implies that: 
+
+\begin{equation}\label{eq:RelativePressureLemmaDiffEqForm}
+	F^T\bar{H}_T^{-T}\mathcal{J}_T\dot{q}_T = - F^T\Big(\bar{H}_T^{-T}(\lambda_T(q_T)+\mu_T(q_T) + \alpha_T(q_T))\Big) + 
+	F^T(\bar{h} - \mathbf{1}h_0)
+\end{equation}
+
+and finally by restating \cref{eq:KirchNodeLaw} as:
+
+\begin{equation}\label{eq:MassConservationPartitioned}
+	\begin{split}
+	H q &= d \Rightarrow \\  
+	\bar{H}q &= \bar{d} \Rightarrow \\
+	\bar{H}_C q_C + \bar{H}_T q_T &= \bar{d} \Rightarrow \\
+	\bar{H}_T q_T &= -\bar{H}_C q_C + \bar{d} \Rightarrow	\\
+	q_T &= \bar{H}_T^{-1}(-\bar{H}_C q_C + \bar{d})
+	\end{split}
+\end{equation}
+
+and applying \cref{eq:EdgeFlowDecomposition} we can rewrite \cref{eq:RelativePressureLemmaDiffEqForm} as:
+
+\begin{equation}\label{eq:RelativePressureDiffEqFinal}
+	\begin{split}
+	F^T\bar{H}_T^{-T}\mathcal{J}_T\dot{q}_T &= 
+	-F^T\bar{H}_T^{-T}\mathcal{J}_T\bar{H}_T^{-1}\bar{H}_C\dot{q}_C + F^T\bar{H}_T^{-T}\mathcal{J}_T\bar{H}_T^{-1}F\dot{d}_f + F^T\bar{H}_T^{-T}\mathcal{J}_T\bar{H}_T^{-1}G\dot{d}_{\tau} \\
+	&= -F^T\bar{H}_T^{-T}(\lambda_T(q_T)+\mu_T(q_T) + \alpha_T(q_T)) + 
+	F^T(\bar{h} - \mathbf{1}h_0) \\	
+	\end{split}
+\end{equation}
+
+By a completely analogous procedure we can extract the tank-connected non-reference nodes as in \cref{eq:RelativePressureLemmaDiffEqForm} via $G$:
+
+\begin{equation}\label{eq:RelativePressureLemmaDiffEqFormG}
+	G^T\bar{H}_T^{-T}\mathcal{J}_T\dot{q}_T = - 	G^T\bar{H}_T^{-T}(\lambda_T(q_T)+\mu_T(q_T) + \alpha_T(q_T)) + 
+	G^T(\bar{h} - \mathbf{1}h_0)
+\end{equation}
+
+which analogously to \cref{eq:RelativePressureDiffEqFinal} becomes:
+
+\begin{equation}\label{eq:RelativePressureDiffEqFinalG}
+	\begin{split}
+		G^T\bar{H}_T^{-T}\mathcal{J}_T\dot{q}_T &= 
+		-G^T\bar{H}_T^{-T}\mathcal{J}_T\bar{H}_T^{-1}\bar{H}_C\dot{q}_C + G^T\bar{H}_T^{-T}\mathcal{J}_T\bar{H}_T^{-1}F\dot{d}_f + G^T\bar{H}_T^{-T}\mathcal{J}_T\bar{H}_T^{-1}G\dot{d}_{\tau} \\
+		&= -G^T\bar{H}_T^{-T}(\lambda_T(q_T)+\mu_T(q_T) + \alpha_T(q_T)) + 
+		G^T(\bar{h} - \mathbf{1}h_0) \\	
+	\end{split}
+\end{equation}
+
+Now, defining the state vector $q = \begin{bmatrix}q_C^T & d_f^T & d_{\tau}^T \end{bmatrix}^T$ we can finally collect the full dynamics of the network according to \cref{eq:PressureFunctionKirchJPartitionsSimp,eq:RelativePressureLemmaDiffEqForm,eq:RelativePressureLemmaDiffEqFormG} as a nonlinear differential equation:
+
+\begin{equation}\label{eq:NonLinearModelWithTank}
+	\Phi\mathcal{J}\Phi^T \dot{q} = -\Phi\Big(\lambda(q_C,d_f,d_{\tau})+\mu(q_C,d_f,d_{\tau})+\alpha(q_C,d_f,d_{\tau})\Big) + \Psi(\bar{h}-\mathbf{1}h_0) + \mathcal{I}(p_{\tau}-\mathbf{1}p_0)
+\end{equation}
+
+where $p_{\tau}$ evolves according to:
+
+\begin{equation}\label{eq:TankDynamics}
+	\dot{p}_{\tau} = - \mathcal{T} \dot{d}_{\tau}, \ \mathcal{T} = diag(\tau_i)
+\end{equation}
+
+and the matrices $\Phi, \Psi, \mathcal{I}$ are defined as:
+
+\begin{equation}\label{eq:NonLinearModelMatrices}
+	\Phi \triangleq 
+	\begin{bmatrix} 
+		I & -\bar{H}_C^T\bar{H}_T^{-T} \\ 0 & F^T\bar{H}_T^{-T} \\ 0  & G^T\bar{H}_T^{-T} \\ 
+	\end{bmatrix}
+	, \qquad
+	\Psi \triangleq
+	\begin{bmatrix}
+		0 \\ F^T \\ G^T
+	\end{bmatrix}
+	, \qquad
+	\mathcal{I} \triangleq
+	\begin{bmatrix}
+		0 \\ 0 \\ I
+	\end{bmatrix}
+\end{equation}
