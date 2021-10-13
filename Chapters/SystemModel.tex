@@ -38,7 +38,7 @@ where $\mathbf{1}$ is a vector of ones and $I_{n-1} \in \mathbb{R}^{n-1 \times n
 	\begin{equation}\label{eq:EdgeFlowDecomposition}
 		q = B^T\cdot q_c +
 		\begin{bmatrix}
-			0_{c \times n-1} \\ \bar{H}_T^{-1} 
+			0_{C \times n-1} \\ \bar{H}_T^{-1} 
 		\end{bmatrix}
 		\cdot \bar{d}
 	\end{equation}
@@ -48,39 +48,33 @@ We are now ready to start modelling the system.
 
 \subsection{Modelling an Open Hydraulic Network with an Elevated Reservoir}\label{subsec:ModelWithTank}
 
-We assume a network topology with $n$ nodes and $m$ edges, of which $e$ nodes are open to the atmosphere. By definition, water can only flow in and out of the network at nodes which are open to the atmosphere, implying that the nodal demand at the $d-e$ non-open nodes is zero at all times. Assuming now that an open node has been chosen as the reference node, the vector of all independent flows $\bar{d}$ can be obtained from the non-zero flows $d_f \in \mathbb{R}^{e-1}$ by:
+We assume a network topology with $n$ nodes and $m$ edges, of which $e$ nodes are open to the atmosphere. By definition, water can only flow in and out of the network at nodes which are open to the atmosphere, implying that demand at all other nodes is zero. The flows at these open nodes $d_f$ can then be mapped into the vector of total flows $\bar{d}$ by:
 
 \begin{equation}\label{eq:IndependentFlows}
-	\bar{d} = F\cdot d_f, \ F = \begin{bmatrix}
-		I_{e-1} \\ 0
-	\end{bmatrix}
+	\bar{d} = \bar{F}\cdot d_f, \ \bar{F} \in \mathbb{R}^{e \times n-1}
 \end{equation}
 
 with the remaining nodal demand at the reference node comprising the dependent flow. The edge flows can then be expressed, using \cref{lem:EdgeFlowDecomposition} to re-write KNL \cref{eq:KirchNodeLaw}, as:
 
 \begin{equation}\label{eq:EdgeFlows}
 	q = B^T\cdot q_C +
-	\begin{bmatrix} 0 \\ \bar{H}_T^{-1} \end{bmatrix} \cdot F \cdot d_f
+	\begin{bmatrix} 0 \\ \bar{H}_T^{-1} \end{bmatrix} \cdot \bar{\bar{F}} \cdot d_f
 \end{equation}
 
-We can modify this to account for tanks by introducing an additional vector of non-zero demand nodes that is \textit{not} open to the atmosphere, denoting it $d_{\tau} \in \mathbb{R}^{\tau}$. We can then restate \cref{eq:IndependentFlows} as:
+We can modify this to account for tanks by introducing an additional vector of non-zero demand that is \textit{not} open to the atmosphere, denoting it $d_{\tau} \in \mathbb{R}^{\tau}$. We can then restate \cref{eq:IndependentFlows} as:
 
 \begin{equation}\label{eq:IndependentFlowsWithTank}
-	\bar{d} = F\cdot d_f + G \cdot d_{\tau}, 
-	\ F = \begin{bmatrix}
-		I_{e-1} \\ 0
-	\end{bmatrix} 
+	\bar{d} = \bar{F}\cdot d_f + \bar{G} \cdot d_{\tau}, 
+	\ \bar{F} \in \mathbb{R}^{e \times n-1}
 	\wedge 
-	G = \begin{bmatrix}
-	0 \\ I_{\tau}
-	\end{bmatrix}
+	\bar{G} \in \mathbb{R}^{\tau \times n-1}
 \end{equation}
 
 subsequently allowing \cref{eq:EdgeFlows} to be restated as:
 
 \begin{equation}\label{eq:EdgeFlowsWithTank}
 	q = B^T\cdot q_C +
-	\begin{bmatrix} 0 \\ \bar{H}_T^{-1} \end{bmatrix} (F \cdot d_f + G \cdot d_{\tau})
+	\begin{bmatrix} 0 \\ \bar{H}_T^{-1} \end{bmatrix} (\bar{F} \cdot d_f + \bar{G} \cdot d_{\tau})
 \end{equation}
 
 We can now state the pressure drop across each edge in the network as:
@@ -104,7 +98,7 @@ We can then invoke KNL on the left-hand side of \cref{eq:PressureFunctionKirch},
 
 \begin{equation}\label{eq:PressureFunctionKirchKNL}
 	B\mathcal{J}B^T\dot{q_C} + B \mathcal{J} 
-	\begin{bmatrix} 0 \\ \bar{H}_T^{-1} \end{bmatrix} \cdot (F \cdot \dot{d_f} + G \cdot \dot{d_{\tau}})
+	\begin{bmatrix} 0 \\ \bar{H}_T^{-1} \end{bmatrix} \cdot (\bar{F} \cdot \dot{d_f} + \bar{G} \cdot \dot{d_{\tau}})
 	= -B(\lambda(q) + \mu(q) + \alpha(q))
 \end{equation}
 
@@ -114,7 +108,7 @@ We now develop this expression further via the definition of $B$ in \cref{eq:Loo
 	B\mathcal{J}B^T\dot{q_C} + 
 	\begin{bmatrix}		I_C & -\bar{H}_C^T\bar{H}_T^{-T}	\end{bmatrix} 
 	\begin{bmatrix}		\mathcal{J}_C & 0 \\ 0 & \mathcal{J}_T	\end{bmatrix} 
-	\begin{bmatrix} 0 \\ \bar{H}_T^{-1} \end{bmatrix} \cdot (F \cdot \dot{d_f} + G \cdot \dot{d_{\tau}})
+	\begin{bmatrix} 0 \\ \bar{H}_T^{-1} \end{bmatrix} \cdot (\bar{F} \cdot \dot{d_f} + \bar{G} \cdot \dot{d_{\tau}})
 	= -B(\lambda(q) + \mu(q) + \alpha(q))
 \end{equation}
 
@@ -122,8 +116,8 @@ This simplifies to:
 
 \begin{equation}\label{eq:PressureFunctionKirchJPartitionsSimp} % KEKW
 	B\mathcal{J}B^T\dot{q_C} 
-	-\bar{H}_C^T\bar{H}_T^{-T}\mathcal{J}_T\bar{H}_T^{-1} F \dot{d_f} 
-	-\bar{H}_C^T\bar{H}_T^{-T}\mathcal{J}_T\bar{H}_T^{-1} G \dot{d_{\tau}}
+	-\bar{H}_C^T\bar{H}_T^{-T}\mathcal{J}_T\bar{H}_T^{-1} \bar{F} \dot{d_f} 
+	-\bar{H}_C^T\bar{H}_T^{-T}\mathcal{J}_T\bar{H}_T^{-1} \bar{G} \dot{d_{\tau}}
 	= -B(\lambda(q) + \mu(q) + \alpha(q))
 \end{equation}
 
@@ -158,19 +152,19 @@ which allows us to rewrite \cref{eq:RelativePressureKML} by left-multiplying eve
 	(\bar{h} - \mathbf{1}h_0)
 \end{equation}
 
-Recalling that $F$ extracts the open nodes from the non-reference nodes, we can then express the following:
+Recalling that $\bar{F}$ maps the open node demands into the total demand, we can then express the following:
 
 \begin{equation}\label{eq:RelativePressureLemmaAtmospheric}
-	0 = F^T(\bar{p} - \mathbf{1}p_0) =
-	F^T\Big(\bar{H}_T^{-T}\mathcal{J}_T\dot{q}_T + \bar{H}_T^{-T}(\lambda_T(q_T)+\mu_T(q_T) + \alpha_T(q_T))\Big) - 
-	F^T(\bar{h} - \mathbf{1}h_0)
+	0 = \bar{F}^T(\bar{p} - \mathbf{1}p_0) =
+	\bar{F}^T\Big(\bar{H}_T^{-T}\mathcal{J}_T\dot{q}_T + \bar{H}_T^{-T}(\lambda_T(q_T)+\mu_T(q_T) + \alpha_T(q_T))\Big) - 
+	\bar{F}^T(\bar{h} - \mathbf{1}h_0)
 \end{equation}
 
 which implies that: 
 
 \begin{equation}\label{eq:RelativePressureLemmaDiffEqForm}
-	F^T\bar{H}_T^{-T}\mathcal{J}_T\dot{q}_T = - F^T\Big(\bar{H}_T^{-T}(\lambda_T(q_T)+\mu_T(q_T) + \alpha_T(q_T))\Big) + 
-	F^T(\bar{h} - \mathbf{1}h_0)
+	\bar{F}^T\bar{H}_T^{-T}\mathcal{J}_T\dot{q}_T = - \bar{F}^T\Big(\bar{H}_T^{-T}(\lambda_T(q_T)+\mu_T(q_T) + \alpha_T(q_T))\Big) + 
+	\bar{F}^T(\bar{h} - \mathbf{1}h_0)
 \end{equation}
 
 and finally by restating \cref{eq:KirchNodeLaw} as:
@@ -189,28 +183,30 @@ and applying \cref{eq:EdgeFlowDecomposition} we can rewrite \cref{eq:RelativePre
 
 \begin{equation}\label{eq:RelativePressureDiffEqFinal}
 	\begin{split}
-	F^T\bar{H}_T^{-T}\mathcal{J}_T\dot{q}_T &= 
-	-F^T\bar{H}_T^{-T}\mathcal{J}_T\bar{H}_T^{-1}\bar{H}_C\dot{q}_C + F^T\bar{H}_T^{-T}\mathcal{J}_T\bar{H}_T^{-1}F\dot{d}_f + F^T\bar{H}_T^{-T}\mathcal{J}_T\bar{H}_T^{-1}G\dot{d}_{\tau} \\
-	&= -F^T\bar{H}_T^{-T}(\lambda_T(q_T)+\mu_T(q_T) + \alpha_T(q_T)) + 
-	F^T(\bar{h} - \mathbf{1}h_0) \\	
+	\bar{F}^T\bar{H}_T^{-T}\mathcal{J}_T\dot{q}_T &= 
+	-\bar{F}^T\bar{H}_T^{-T}\mathcal{J}_T\bar{H}_T^{-1}\bar{H}_C\dot{q}_C + \bar{F}^T\bar{H}_T^{-T}\mathcal{J}_T\bar{H}_T^{-1}\bar{F}\dot{d}_f + \bar{F}^T\bar{H}_T^{-T}\mathcal{J}_T\bar{H}_T^{-1}\bar{G}\dot{d}_{\tau} \\
+	&= -\bar{F}^T\bar{H}_T^{-T}(\lambda_T(q_T)+\mu_T(q_T) + \alpha_T(q_T)) + 
+	\bar{F}^T(\bar{h} - \mathbf{1}h_0) \\	
 	\end{split}
 \end{equation}
 
-By a completely analogous procedure we can extract the tank-connected non-reference nodes as in \cref{eq:RelativePressureLemmaDiffEqForm} via $G$:
+By a completely analogous procedure we can extract the tank-connected non-reference nodes as in \cref{eq:RelativePressureLemmaDiffEqForm} via $\bar{G}$, except the left-hand side is now $p_{\tau}-\mathbf{1}p_0$:
 
 \begin{equation}\label{eq:RelativePressureLemmaDiffEqFormG}
-	G^T\bar{H}_T^{-T}\mathcal{J}_T\dot{q}_T = - 	G^T\bar{H}_T^{-T}(\lambda_T(q_T)+\mu_T(q_T) + \alpha_T(q_T)) + 
-	G^T(\bar{h} - \mathbf{1}h_0)
+	\bar{G}^T\bar{H}_T^{-T}\mathcal{J}_T\dot{q}_T = - 	\bar{G}^T\bar{H}_T^{-T}(\lambda_T(q_T)+\mu_T(q_T) + \alpha_T(q_T)) +
+	\bar{G}^T(\bar{h} - \mathbf{1}h_0) +
+	(\bar{p}_\tau - \mathbf{1}p_0)
 \end{equation}
 
 which analogously to \cref{eq:RelativePressureDiffEqFinal} becomes:
 
 \begin{equation}\label{eq:RelativePressureDiffEqFinalG}
 	\begin{split}
-		G^T\bar{H}_T^{-T}\mathcal{J}_T\dot{q}_T &= 
-		-G^T\bar{H}_T^{-T}\mathcal{J}_T\bar{H}_T^{-1}\bar{H}_C\dot{q}_C + G^T\bar{H}_T^{-T}\mathcal{J}_T\bar{H}_T^{-1}F\dot{d}_f + G^T\bar{H}_T^{-T}\mathcal{J}_T\bar{H}_T^{-1}G\dot{d}_{\tau} \\
-		&= -G^T\bar{H}_T^{-T}(\lambda_T(q_T)+\mu_T(q_T) + \alpha_T(q_T)) + 
-		G^T(\bar{h} - \mathbf{1}h_0) \\	
+		\bar{G}^T\bar{H}_T^{-T}\mathcal{J}_T\dot{q}_T &= 
+		-\bar{G}^T\bar{H}_T^{-T}\mathcal{J}_T\bar{H}_T^{-1}\bar{H}_C\dot{q}_C + \bar{G}^T\bar{H}_T^{-T}\mathcal{J}_T\bar{H}_T^{-1}\bar{F}\dot{d}_f + \bar{G}^T\bar{H}_T^{-T}\mathcal{J}_T\bar{H}_T^{-1}\bar{G}\dot{d}_{\tau} \\
+		&= -\bar{G}^T\bar{H}_T^{-T}(\lambda_T(q_T)+\mu_T(q_T) + \alpha_T(q_T)) + 
+		\bar{G}^T(\bar{h} - \mathbf{1}h_0) +
+		(\bar{p}_\tau - \mathbf{1}p_0) \\	
 	\end{split}
 \end{equation}
 
@@ -231,12 +227,12 @@ and the matrices $\Phi, \Psi, \mathcal{I}$ are defined as:
 \begin{equation}\label{eq:NonLinearModelMatrices}
 	\Phi \triangleq 
 	\begin{bmatrix} 
-		I & -\bar{H}_C^T\bar{H}_T^{-T} \\ 0 & F^T\bar{H}_T^{-T} \\ 0  & G^T\bar{H}_T^{-T} \\ 
+		I & -\bar{H}_C^T\bar{H}_T^{-T} \\ 0 & \bar{F}^T\bar{H}_T^{-T} \\ 0  & \bar{G}^T\bar{H}_T^{-T} \\ 
 	\end{bmatrix}
 	, \qquad
 	\Psi \triangleq
 	\begin{bmatrix}
-		0 \\ F^T \\ G^T
+		0 \\ \bar{F}^T \\ \bar{G}^T
 	\end{bmatrix}
 	, \qquad
 	\mathcal{I} \triangleq

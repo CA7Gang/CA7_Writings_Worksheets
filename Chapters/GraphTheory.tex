@@ -6,13 +6,13 @@ This section describes the interconnected component in a water distributed netwo
 When using graph theory as an analytical tool the incident matrix $H$ comes in handy when describing the connection between edges and nodes. The rules shown below has been used as guidelines when writing up the incident matrix for a graph network. 
 
 \subsubsection{The Incident Matrix}
-\begin{equation*}
+\begin{equation}
 	H_{i,j} = \begin{cases}
 		-1 & \text{If the $j^{th}$ edge enters the $i^{th}$ node} \\
 		0 & \text{If the $j^{th}$ edge is not connected to the $i^{th}$ node} \\
 		1 & \text{If the $j^{th}$ edge s leaving the $i^{th}$ node}
 	\end{cases}
-\end{equation*} %Description of the incident matrix
+\end{equation} %Description of the incident matrix
 
 \subsubsection{The Loop Marix}
 The loop-matrix can be calculated in one of two ways. The first one is shown in the equation below
@@ -62,11 +62,11 @@ The reduced incident matrix by taking an arbitrary vertex as a reference, and re
 
 Chords and edges of the spanning tree
 
-\begin{equation*} 
+\begin{equation} 
 	\begin{split}
 		E_{C} &= \{e_{1},e_{4}\}   \\ E_{T} &= \{e_2,e_3,e_5,e_6,e_7\}
 	\end{split}
-\end{equation*}
+\end{equation}
 
 
 \begin{equation}
@@ -87,83 +87,81 @@ Chords and edges of the spanning tree
 	\end{figure}
 	
 	\begin{equation}
-		H = \begin{bmatrix}
-			1 & 0 & 0   & 0  & 0  & 0  & 0  & 0  & 0  & 0  & 0 \\
-			-1 & 1 & 0  & 1  & 0  & 0  & 0  & 0  & 0  & 0  & 0 \\
-			0 & -1 & 1  & 0  & 1  & 0  & 0  & 0  & 0  & 0  & 0 \\
-			0 & 0  & -1 & 0  & 0  & 0  & 0  & 0  & 0  & 0  & 0 \\
-			0 & 0  & 0  & -1 & 0  & 1  & 1  & 0  & 0  & 0  & 0 \\
-			0 & 0  & 0  & 0  & -1 & -1 & 0  & 1  & 0  & 0  & 0 \\
-			0 & 0  & 0  & 0  & 0  & 0  & 0  & 0  & -1 & 0  & 0 \\
-			0 & 0  & 0  & 0  & 0  & 0  & -1 & 0  & 1  & -1 & 0 \\
-			0 & 0  & 0  & 0  & 0  & 0  & 0  & -1 & 0  & 1  & -1 \\
-			0 & 0  & 0  & 0  & 0  & 0  & 0  & 0  & 0  & 0  & 1 
-		\end{bmatrix}
+		H = \kbordermatrix{
+		& e_1 & e_2 & e_3   & e_4  & e_5 & e_6  & e_7  & e_8  & e_9  & e_{10}  & e_{11}  \\	
+		v_1& 1 & 0 & 0   & 0  & 0  & 0  & 0  & 0  & 0  & 0  & 0 \\
+		v_2& -1 & 1 & 0  & 1  & 0  & 0  & 0  & 0  & 0  & 0  & 0 \\
+		v_3& 0 & -1 & 1  & 0  & 1  & 0  & 0  & 0  & 0  & 0  & 0 \\
+		v_4& 0 & 0  & -1 & 0  & 0  & 0  & 0  & 0  & 0  & 0  & 0 \\
+		v_5& 0 & 0  & 0  & -1 & 0  & 1  & 1  & 0  & 0  & 0  & 0 \\
+		v_6&0 & 0  & 0  & 0  & -1 & -1 & 0  & 1  & 0  & 0  & 0 \\
+		v_7& 0 & 0  & 0  & 0  & 0  & 0  & 0  & 0  & -1 & 0  & 0 \\
+		v_8& 0 & 0  & 0  & 0  & 0  & 0  & -1 & 0  & 1  & -1 & 0 \\
+		v_9& 0 & 0  & 0  & 0  & 0  & 0  & 0  & -1 & 0  & 1  & -1 \\
+		v_{10}& 0 & 0  & 0  & 0  & 0  & 0  & 0  & 0  & 0  & 0  & 1 \\
+	}
 	\end{equation}	
 	
 \begin{equation*} 
 	\begin{split}
-		H_{C} &= \{e_{2},e_{6}\}   \\ E_{T} &= \{e_1,e_3,e_4,e_5,e_7, e_8, e_9, e_{10} , e_{11}\}
+		E_{C} &= \{e_{2},e_{6}\}   \\ E_{T} &= \{e_1,e_3,e_4,e_5,e_7, e_8, e_9, e_{10} , e_{11}\}
 	\end{split}
 \end{equation*}	
 	
 	By removing $v_{6}$ from $H$ we get $\bar{H}$ which results in:
 	\begin{equation}
-		\bar{H} = \begin{bmatrix}
-			1 & 0 & 0   & 0  & 0  & 0  & 0  & 0  & 0  & 0  & 0 \\
-			-1 & 1 & 0  & 1  & 0  & 0  & 0  & 0  & 0  & 0  & 0 \\
-			0 & -1 & 1  & 0  & 1  & 0  & 0  & 0  & 0  & 0  & 0 \\
-			0 & 0  & -1 & 0  & 0  & 0  & 0  & 0  & 0  & 0  & 0 \\
-			0 & 0  & 0  & -1 & 0  & 1  & 1  & 0  & 0  & 0  & 0 \\
-			
-			0 & 0  & 0  & 0  & 0  & 0  & 0  & 0  & -1 & 0  & 0 \\
-			0 & 0  & 0  & 0  & 0  & 0  & -1 & 0  & 1  & -1 & 0 \\
-			0 & 0  & 0  & 0  & 0  & 0  & 0  & -1 & 0  & 1  & -1 \\
-			0 & 0  & 0  & 0  & 0  & 0  & 0  & 0  & 0  & 0  & 1 
-		\end{bmatrix}
+		\bar{H} = \kbordermatrix{
+		& e_1 & e_2 & e_3   & e_4  & e_5 & e_6  & e_7  & e_8  & e_9  & e_{10}  & e_{11}  \\	
+		v_1& 1 & 0 & 0   & 0  & 0  & 0  & 0  & 0  & 0  & 0  & 0 \\
+		v_2& -1 & 1 & 0  & 1  & 0  & 0  & 0  & 0  & 0  & 0  & 0 \\
+		v_3& 0 & -1 & 1  & 0  & 1  & 0  & 0  & 0  & 0  & 0  & 0 \\
+		v_4& 0 & 0  & -1 & 0  & 0  & 0  & 0  & 0  & 0  & 0  & 0 \\
+		v_5& 0 & 0  & 0  & -1 & 0  & 1  & 1  & 0  & 0  & 0  & 0 \\
+		v_7& 0 & 0  & 0  & 0  & 0  & 0  & 0  & 0  & -1 & 0  & 0 \\
+		v_8& 0 & 0  & 0  & 0  & 0  & 0  & -1 & 0  & 1  & -1 & 0 \\
+		v_9& 0 & 0  & 0  & 0  & 0  & 0  & 0  & -1 & 0  & 1  & -1 \\
+		v_{10}& 0 & 0  & 0  & 0  & 0  & 0  & 0  & 0  & 0  & 0  & 1 \\
+		}
 	\end{equation}
 	
+Furthermore we can define the open-node matrix $F$ and tank matrix $G$:
 	
-	
-	\begin{equation*}
-		M_{p} = \begin{bmatrix}
-			1 & 0\\
-			0 & 0\\
-			0 & 0\\
-			0 & 0\\
-			0 & 0\\
-			0 & 0\\
-			0 & 0\\
-			0 & 0\\
-			0 & 0\\
-			0 & 1
-		\end{bmatrix},
-		M_{c} = \begin{bmatrix}
-			0 & 0\\
-			0 & 0\\
-			0 & 0\\
-			1 & 0\\
-			0 & 0\\
-			0 & 0\\
-			0 & 1\\
-			0 & 0\\
-			0 & 0\\
-			0 & 0
-		\end{bmatrix},
-		M_{t} = \begin{bmatrix}
-			0\\
-			0\\
-			0\\
-			0\\
-			0\\
-			1\\
-			0\\
-			0\\
-			0\\
-			0
-		\end{bmatrix}
-	\end{equation*}
-	
-	
-	
+	\begin{equation}\label{eq:ONandTankMatrix}
+		F = \kbordermatrix{
+			&d_{f_1}&d_{f_2}&d_{f_3}&d_{f_4}\\
+		d_1	& 1 & 0 & 0 & 0\\
+		d_2	& 0 & 0 & 0 & 0\\
+		d_3 & 0 & 0 & 0 & 0\\
+		d_4 & 0 & 1 & 0 & 0\\
+		d_5 & 0 & 0 & 0 & 0\\
+		d_6 & 0 & 0 & 0 & 0\\
+		d_7 & 0 & 0 & 1 & 0\\
+		d_8 & 0 & 0 & 0 & 0\\
+		d_9 & 0 & 0 & 0 & 0\\
+		d_{10}& 0 & 0 & 0 & 1 \\
+			},
+	\qquad
+		G = \kbordermatrix{
+			&d_{\tau_1}\\
+			d_1& 0\\
+			d_2& 0\\
+			d_3& 0\\
+			d_4& 0\\
+			d_5& 0\\
+			d_6& 1\\
+			d_7& 0\\
+			d_8& 0\\
+			d_9& 0\\
+			d_{10}& 0 \\
+			}
+	\end{equation}
+
+with their reference-respective equivalents given by:
+
+\begin{equation}\label{eq:FbarGbar}
+	\bar{F} = F \setminus F_{6\star} \wedge \bar{G} = G \setminus G_{6\star}
+\end{equation}
+
+where the notation $X_{6\star}$ denotes the entire 6th row\footnote{Correspondingly, $X_{\star6}$ would denote the entire 6th column} of the matrix $X$ and $\setminus$ is the set relative complement operator. These matrices map demands at their respective nodes into the vector of total demands in the system $d \vee \bar{d}$.
+
 
