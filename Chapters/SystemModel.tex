@@ -97,7 +97,7 @@ where $\mathcal{J}, \lambda, \mu, \alpha$ are as defined in \cref{sec:ComponentM
 We can then invoke KNL on the left-hand side of \cref{eq:PressureFunctionKirch}, resulting in:
 
 \begin{equation}\label{eq:PressureFunctionKirchKNL}
-	B\mathcal{J}B^T\dot{q_C} + B \mathcal{J} 
+	B\mathcal{J}B^T\dot{q}_C + B \mathcal{J} 
 	\begin{bmatrix} 0 \\ \bar{H}_T^{-1} \end{bmatrix} \cdot (\bar{F} \cdot \dot{d_f} + \bar{G} \cdot \dot{d_{\tau}})
 	= -B(\lambda(q) + \mu(q) + \alpha(q))
 \end{equation}
@@ -105,7 +105,7 @@ We can then invoke KNL on the left-hand side of \cref{eq:PressureFunctionKirch},
 We now develop this expression further via the definition of $B$ in \cref{eq:LoopMatrix} and via a chord/tree-partition of $\mathcal{J}$ such that:
 
 \begin{equation}\label{eq:PressureFunctionKirchJPartitions}
-	B\mathcal{J}B^T\dot{q_C} + 
+	B\mathcal{J}B^T\dot{q}_C + 
 	\begin{bmatrix}		I_C & -\bar{H}_C^T\bar{H}_T^{-T}	\end{bmatrix} 
 	\begin{bmatrix}		\mathcal{J}_C & 0 \\ 0 & \mathcal{J}_T	\end{bmatrix} 
 	\begin{bmatrix} 0 \\ \bar{H}_T^{-1} \end{bmatrix} \cdot (\bar{F} \cdot \dot{d_f} + \bar{G} \cdot \dot{d_{\tau}})
@@ -115,7 +115,7 @@ We now develop this expression further via the definition of $B$ in \cref{eq:Loo
 This simplifies to:
 
 \begin{equation}\label{eq:PressureFunctionKirchJPartitionsSimp} % KEKW
-	B\mathcal{J}B^T\dot{q_C} 
+	B\mathcal{J}B^T\dot{q}_C 
 	-\bar{H}_C^T\bar{H}_T^{-T}\mathcal{J}_T\bar{H}_T^{-1} \bar{F} \dot{d_f} 
 	-\bar{H}_C^T\bar{H}_T^{-T}\mathcal{J}_T\bar{H}_T^{-1} \bar{G} \dot{d_{\tau}}
 	= -B(\lambda(q) + \mu(q) + \alpha(q))
