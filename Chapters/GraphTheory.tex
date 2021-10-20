@@ -3,7 +3,7 @@ This section describes the interconnected component in a water distributed netwo
 
 
 \subsection{Graph Theory}
-When using graph theory as an analytical tool the incident matrix $H$ comes in handy when describing the connection between edges and nodes. The rules shown below has been used as guidelines when writing up the incident matrix for a graph network. 
+When using graph theory as an analytical tool the incident matrix $H$ comes in handy when describing the connection between edges and nodes. The $H$ matrix is defined as follows: 
 
 \subsubsection{The Incident Matrix}
 \begin{equation}
@@ -14,7 +14,10 @@ When using graph theory as an analytical tool the incident matrix $H$ comes in h
 	\end{cases}
 \end{equation} %Description of the incident matrix
 
+
 \subsubsection{The Loop Marix}
+The definition of a loop is a unique route along the edges of the graph network, where all nodes are unique except the end node - In a loop the end node must also be the start node.
+
 The loop-matrix can be calculated in one of two ways. The first one is shown in the equation below
 
 \begin{equation}\label{eq:LoopMatrix}
@@ -23,7 +26,12 @@ The loop-matrix can be calculated in one of two ways. The first one is shown in 
 	\end{bmatrix}
 \end{equation}
 
-The other method is more graphical but can be formulated as follows: JEG KAN IKKE HUSKE REGLEN.
+The other method is more graphical but can be formulated as follows: 
+
+You define your spanning tree, which is the connected graph but with no loops, i.e you can not find a route around the graph where you start and end in the same node without entering a node more than one time. 
+When adding one chord to the graph, exactly one loop is created.
+Then the $ B $-matrix consist of the number of loops that can be created, which is represented by the $ I $ -matrix in \cref{eq:LoopMatrix}, and the edges along each loop route. The edges has to have the same sign as in the $ H $-matrix.
+
 
 \newpage
 \subsection{Simplified system}
