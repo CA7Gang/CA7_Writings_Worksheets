@@ -1,5 +1,26 @@
 This section is concerned with the control structure of the Water network
 
+\section{Linearised model}
+The linearised model of the system can be expressed on the standard state space form given in \cref{eq:StateSpace}
+\begin{equation}\label{eq:StateSpace}
+	\begin{split}
+	\dot{x} = Ax + Bu \\
+	y = Cx
+	\end{split}
+\end{equation}
+The inputs to our system will be the pump speeds. 
+The outputs will be the measured pressure at the tank node and the flows of the pumps. This yields
+\begin{equation}\label{eq:StateSpaceInputsOutputs}
+	\begin{split}
+		u = \begin{bmatrix} \omega_1 \\ \omega_2	\end{bmatrix} \\
+		x = \begin{bmatrix} q_c \\ d_f \\ d_{\tau}	\end{bmatrix} \\
+		y = \begin{bmatrix} d_1 \\ d_10 \\ p_{\tau}	\end{bmatrix} \\
+	\end{split}
+\end{equation}
+
+
+
+
 
 \subsection{Choice of state variables}
 
@@ -8,11 +29,12 @@ This section is concerned with the control structure of the Water network
 \subsection{Cascaded control}
 
 \subsection{Influence of pump delay}
-The pumps of the WDN system introduces a delay of approximately 5 seconds. According to \cite{Skogestad2005}, 
+The pumps of the WDN system introduces a delay of approximately 5 seconds. According to \cite{Skogestad2005} (pp. 182-183), 
 a time delay $\theta$ limits the possible bandwidth of a system to be 
 
 \begin{equation}\label{eq:BWdelay}
 	\omega_c < \frac{1}{\theta}
 \end{equation}
 
+This naturally sets a limitation as to how fast the inner loop of the control structure can be. As the inner loop sets a limitation of how fast the outer loop can be, i.e. 5-10 timer slower than the inner loop.
 
