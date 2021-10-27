@@ -1,0 +1,21 @@
+This section is concerned with the appendices of the WorkSheets
+
+\subsection{PumpCoefficients}
+
+A model of the pump is based on the following relationship between the pressure drop over the pump and the pump speed, flow through the pump and the pump coefficients.
+
+The full pump model:
+\begin{equation} \label{eq:pumpmodel}
+		\Delta p_{pump}  = a_0  \cdot \omega^2 + a_1 \cdot q \cdot \omega + a_2 \cdot q^2
+\end{equation}
+
+\begin{center}
+	\begin{tabular}{l p{8cm} l}
+		$a_{0-2}$ & are constants obtained from measurements of the pump
+		$\Delta p$ & is the pressure drop over the pump
+		$\omega ^2$ & is the angular velocity of the pump
+		q & is the flow through the pump
+	\end{tabular}
+\end{center}
+
+The pump coefficients are estimated from the pump performance curves from the data-sheets. These describe the exact relationship described in \cref{eq:pumpmodel}.
