@@ -31,7 +31,7 @@ where $T$ is the eigenspace of $A$. Then there exists a homeomorphism $H$ of som
 \end{equation*}
 \end{theorem}
 
-At first glance, this theorem looks opaquely mathematical and not immediately applicable. However, in practice, \cref{theorem:HartmanGrobman} simply tells us that in the immediate vicinity of some hyperbolic equilibrium point of our nonlinear system, there exists a \textit{linear} system that behaves in a largely identical manner when evolved in time.
+At first glance, this theorem looks opaquely mathematical and not immediately applicable. However, in practice, \cref{theorem:HartmanGrobman} simply tells us that in the immediate vicinity of some hyperbolic equilibrium point of our nonlinear system, there exists a \textit{linear} system that behaves in a generally identical manner when evolved in time. We note that it is not \textit{necessary} to linearise at a hyperbolic equilibrium, but doing so is favourable when possible as it precludes the presence of a center manifold, whose dynamics may not be captured by linearisation.
 
 Recalling that the first-order Taylor series of a function at a point can be thought of as a  generalisation of its tangent line, it is then possible to identify the linearisation of our system via:
 
@@ -39,22 +39,23 @@ Recalling that the first-order Taylor series of a function at a point can be tho
 \dot{x} \approx f(x_0) + \nabla f\bigg\rvert_{x_0} (x-x_0)
 \end{equation}
 
-We now revert our attention to the nonlinear model of the WDN, and make a few simplifying assumptions. We first make the assumption that $\Phi \mathcal{J} \Phi^T$ is invertible. This is not generally true, but tends to hold for the type of WDN in question. We furthermore assume that $K_v = 1 \wedge \forall t: \ OD(t) = 1$, allowing us to rewrite \cref{eq:NonLinearModelWithTank} as:
+We now revert our attention to the nonlinear model of the WDN. We will make the simplifying assumption that $\Phi \mathcal{J} \Phi^T$ is invertible, which is not generally true, but tends to hold for the type of WDN in question. We also introduce the notation $\mathcal{P}: (\Phi \mathcal{J} \Phi^T)^{-1}$, allowing allows us to rewrite \cref{eq:NonLinearModelWithTank} as:
 
 \begin{equation}\label{eq:NonLinearModelSimplified}
 	\begin{split}
-		\dot{q}_n &= (\Phi\mathcal{J}\Phi^T)^{-1} \Big(-\Phi\Big(\lambda(q_n)+\mu(q_n,OD)+\alpha(q_n,\omega)\Big) + \Psi(\bar{h}-\mathbf{1}h_0) + \mathcal{I}(p_{\tau}-\mathbf{1}p_0)\Big) \\
-		&= 	(\Phi\mathcal{J}\Phi^T)^{-1} \Big(-\Phi\Big(\lambda(q_n)+|q_n|q_n+\alpha(q_n,\omega)\Big) + \Psi(\bar{h}-\mathbf{1}h_0) + \mathcal{I}(p_{\tau}-\mathbf{1}p_0)\Big) \\
-		& = (\Phi\mathcal{J}\Phi^T)^{-1} \Big(-\Phi\Big(K_\lambda|q_n|q_n+|q_n|q_n+a_0\omega^2+a_1\omega q+a_2|q|q\Big) + \Psi(\bar{h}-\mathbf{1}h_0) + \mathcal{I}(p_{\tau}-\mathbf{1}p_0)\Big)
+		\dot{q}_n &=  -\mathcal{P}\Phi\Big(\lambda(q_n)+\mu(q_n,OD)+\alpha(q_n,\omega)\Big) + \mathcal{P}\Big(\Psi(\bar{h}-\mathbf{1}h_0) + \mathcal{I}(p_{\tau}-\mathbf{1}p_0)\Big) \\
+		&= 	-\mathcal{P}\Phi\Big(\lambda(q_n)+\frac{|q_n|q_n}{(K_v\cdot OD)^2}+\alpha(q_n,\omega)\Big) + 	\mathcal{P}\Big(\Psi(\bar{h}-\mathbf{1}h_0) + \mathcal{I}(p_{\tau}-\mathbf{1}p_0)\Big) \\
+		& = -\mathcal{P}\Phi\Big(K_\lambda|q_n|q_n+\frac{|q_n|q_n}{(K_v\cdot OD)^2}+a_0\omega^2+a_1\omega q+a_2|q|q\Big) + \mathcal{P}\Big(\Psi(\bar{h}-\mathbf{1}h_0) + \mathcal{I}(p_{\tau}-\mathbf{1}p_0)\Big)
 	\end{split}	
 \end{equation}
 
-We now make the additional observation that the terms $\Psi(\bar{h}-\mathbf{1}h_0)$ and  $\mathcal{I}(p_{\tau}-\mathbf{1}p_0)$ do not depend on $(q_n,\omega)$. This suggests that, when computing the Taylor expansion, these terms disappear under the action of the $\nabla$ operator, i.e. that:
+We now make the additional observation that the terms $\Psi(\bar{h}-\mathbf{1}h_0)$ and  $\mathcal{I}(p_{\tau}-\mathbf{1}p_0)$ do not depend on $\{q_n,OD,\omega\}$. This suggests that, when computing the Taylor expansion, these terms disappear under the action of the $\nabla$ operator, i.e. that:
 
 \begin{equation}\label{eq:PressureHeightDisappear}
 	\begin{split}
-		&\nabla \Big((\Phi\mathcal{J}\Phi^T)^{-1} \Big(-\Phi\Big(K_\lambda|q_n|q_n+|q_n|q_n+a_0\omega^2+a_1\omega q_n+a_2|q_n|q_n\Big) + \Psi(\bar{h}-\mathbf{1}h_0) + \mathcal{I}(p_{\tau}-\mathbf{1}p_0)\Big)\Big) \\ 
-		= &\nabla \Big((\Phi\mathcal{J}\Phi^T)^{-1} \Big(-\Phi\Big(K_\lambda|q_n|q_n+|q_n|q_n+a_0\omega^2+a_1\omega q_n+a_2|q_n|q_n\Big)\Big)
+		\nabla \dot{q}_n &= \nabla \Big(-\mathcal{P}\Phi\Big(\lambda(q_n)+\mu(q_n,OD)+\alpha(q_n,\omega)\Big) + \mathcal{P}\Big(\Psi(\bar{h}-\mathbf{1}h_0) + \mathcal{I}(p_{\tau}-\mathbf{1}p_0)\Big) \\ 
+		&=\nabla \Big(-\mathcal{P}\Phi\Big(\lambda(q_n)+\mu(q_n,OD)+\alpha(q_n,\omega)\Big)\Big) \\
+		&=\nabla \Big(-\mathcal{P}\Phi\Big(K_\lambda|q_n|q_n+\frac{|q_n|q_n}{(K_v\cdot OD)^2}+a_0\omega^2+a_1\omega q+a_2|q|q\Big)\Big)
 	\end{split}
 \end{equation}
 
@@ -62,35 +63,53 @@ Recognizing furthermore that $\Phi$ and $\mathcal{J}$ are simply linear transfor
 
 \begin{equation}\label{eq:SymbolicLinearisation}
 	\begin{split}
-		\dot{q}_n &\approx f(q_0,\omega_0) + \frac{\partial f}{\partial q_n}\bigg\rvert_{q_0,\omega_0} \tilde{q_n} + \frac{\partial f}{\partial \omega}\bigg\rvert_{q_0,\omega_0} \tilde{\omega} 
+		\dot{q}_n &\approx f(x_0) + \frac{\partial f}{\partial q_n}\bigg\rvert_{x_0} \tilde{q}_n + \frac{\partial f}{\partial OD}\bigg\rvert_{x_0} \tilde{OD} + \frac{\partial f}{\partial \omega}\bigg\rvert_{x_0} \tilde{\omega} 
 		\\
-		&= f(q_0,\omega_0) + (\Phi\mathcal{J}\Phi^T)^{-1} \Big(-\Phi\Big( \frac{\partial \Omega(q_n,\omega)}{\partial q_n}\bigg\rvert_{q_0,\omega_0} \tilde{q_n} + \frac{\partial \Omega(q_n,\omega)}{\partial \omega}\bigg\rvert_{q_0,\omega_0} \tilde{\omega} \Big)\Big) 
-	\end{split}
-\end{equation}
-
-which becomes: 
-
-\begin{equation}\label{eq:SymbolicLinearisationExpanded}
-	\begin{split}
-			\dot{q}_n &\approx f(q_0,\omega_0) \\ 
-			&+ (\Phi\mathcal{J}\Phi^T)^{-1} 
-		\Bigg(-\Phi\Bigg( 
-		\begin{bmatrix}
-			a_1\omega_0 + (1 + K_\lambda + a_2) (|q_0| + \text{sign}(q_0)q_0) \Big) & 0 \\ 0 & a_1 q_0+2 a_0 \omega_0
-		\end{bmatrix} 
-		\begin{bmatrix}
-			\tilde{q_n} \\ \tilde{\omega}
-		\end{bmatrix}  \Bigg)\Bigg) 
+		&= f(x_0) - \mathcal{P}\Phi\Big( \frac{\partial \Omega}{\partial q_n}\bigg\rvert_{x_0} \tilde{q}_n + \frac{\partial \Omega}{\partial OD}\bigg\rvert_{x_0} \tilde{OD} + \frac{\partial \Omega}{\partial \omega}\bigg\rvert_{x_0} \tilde{\omega} \Big)
 	\end{split}
 \end{equation}
 
 where: 
 
-\begin{align}\label{eq:SymbLinDefinitions}
-	\Omega(q_n,\omega) &= K_\lambda|q_n|q_n+|q_n|q_n+a_0\omega^2+a_1\omega q_n+a_2|q_n|q_n \\
-	\tilde{q_n} &= q_n - q_0 \\
-	\tilde{\omega} &= \omega - \omega_0
+\begin{align}
+	x_0 &= \{q_0,OD_0,\omega_0\} \label{eq:EquilibriumPoint} \\
+	\Omega &= K_\lambda|q_n|q_n+\frac{|q_n|q_n}{(K_v\cdot OD)^2}+a_0\omega^2+a_1\omega q_n+a_2|q_n|q_n \label{eq:OmegaFun} \\
+	\tilde{q}_n &= q_n - q_0 \label{eq:QTilde} \\
+	\tilde{OD} &= OD - OD_0 \label{eq:ODTilde} \\ 
+	\tilde{\omega} &= \omega - \omega_0 \label{eq:OmegaTilde} 
 \end{align}
+
+Writing out each of the partial derivatives in \cref{eq:SymbolicLinearisation}, we get:
+
+\begin{equation}\label{eq:PartialTaylorQ}
+	\frac{\partial \Omega}{\partial q_n}\bigg\rvert_{x_0} 
+	=
+	a_1\omega_0 + \Big(|q_0|+ \text{sign}(q_0)q_0\Big)\Bigg(K_\lambda + a_2 + \frac{1}{(K_v OD_0)^2}\Bigg) 
+\end{equation}
+
+\begin{equation}\label{eq:PartialTaylorOD}
+	\frac{\partial \Omega}{\partial OD}\bigg\rvert_{x_0} 
+	=
+	-|q_0|q_0 \frac{2}{K_v^2 OD_0^3}
+\end{equation}
+
+\begin{equation}\label{eq:PartialTaylorOmega}
+	\frac{\partial \Omega}{\partial \omega}\bigg\rvert_{x_0} 
+	=
+	a_1 q_0 + 2a_0\omega_0
+\end{equation}
+
+and the complete Taylor expansion becomes:
+
+\begin{equation}\label{eq:SymbolicLinearisationExpanded}
+	\begin{split}
+			\dot{q}_n \approx f(x_0) &-\mathcal{P}\Phi\Bigg(a_1\omega_0 + \Big(|q_0|+\text{sign}(q_0)q_0\Big)\Bigg(K_\lambda + a_2 + \frac{1}{(K_v OD_0)^2}\Bigg) \tilde{q}_n \Bigg)  \\
+			&- \mathcal{P}\Phi\Bigg(\Big(-|q_0|q_0 \frac{2}{K_v^2 OD_0^3}\Big) \tilde{OD}\Bigg) \\
+			&-  \mathcal{P}\Phi\Bigg(\Big(a_1 q_0 + 2a_0\omega_0\Big) \tilde{\omega}\Bigg)
+	\end{split}
+\end{equation}
+
+
 
 
 \subsection{Linearised model}
