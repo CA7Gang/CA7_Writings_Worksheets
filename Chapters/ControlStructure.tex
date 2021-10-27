@@ -1,6 +1,99 @@
-This section is concerned with the control structure of the Water network
+This section is concerned with the control structure of the WDN.
 
-\section{Linearised model}
+\subsection{System Linearisation}\label{subsec:Linearisation}
+
+Before the model presented in \cref{eq:NonLinearModelWithTank} is truly useful to us - at least within the scope of the \textit{linear} control strategies considered in this project - we must find a way to turn it into a linear model. The typical approach to this problem is \textit{linearisation}, whereby we exploit the extremely powerful Hartman-Grobman theorem, which we present roughly as outlined in \cite{Perko2001}:
+
+
+\begin{theorem}\label{theorem:HartmanGrobman}
+(\textbf{The Hartman-Grobman Theorem}) Let $E$ be an open subset of $\mathbb{R}^n$ containing the origin, and let $f$ be a continuously differentiable function on $E$:
+ 
+\begin{equation*}
+f \in C^1(E))
+\end{equation*}
+
+Let $\gamma_t$ be the flow of the nonlinear system $\dot{x} = f(x)$. Assume furthermore that there exists an equilibrium point at the origin: 
+
+\begin{equation*}
+f(0) = 0
+\end{equation*}
+
+and that this equilibrium point is hyberbolic: 
+
+\begin{equation*}
+\forall \lambda \in T(A): \ \text{Re}(\lambda) > 0, \quad A = \nabla f  
+\end{equation*}
+
+where $T$ is the eigenspace of $A$. Then there exists a homeomorphism $H$ of some open set $U, \ 0 \in U$ onto the open set $V, \ 0 \in V$, such that $\forall x_0 \in U$, there is an open interval $I_0 \subset \mathbb{R}, \ 0 \in I_0$ such that:
+
+\begin{equation*}
+	\forall x_0 \in U \wedge \forall t \in I_0: \ H \circ \gamma_t(x_0) = e^{At}H(x_0)
+\end{equation*}
+\end{theorem}
+
+At first glance, this theorem looks opaquely mathematical and not immediately applicable. However, in practice, \cref{theorem:HartmanGrobman} simply tells us that in the immediate vicinity of some hyperbolic equilibrium point of our nonlinear system, there exists a \textit{linear} system that behaves in a largely identical manner when evolved in time.
+
+Recalling that the first-order Taylor series of a function at a point can be thought of as a  generalisation of its tangent line, it is then possible to identify the linearisation of our system via:
+
+\begin{equation}\label{eq:TaylorSeries}
+\dot{x} \approx f(x_0) + \nabla f\bigg\rvert_{x_0} (x-x_0)
+\end{equation}
+
+We now revert our attention to the nonlinear model of the WDN, and make a few simplifying assumptions. We first make the assumption that $\Phi \mathcal{J} \Phi^T$ is invertible. This is not generally true, but tends to hold for the type of WDN in question. We furthermore assume that $K_v = 1 \wedge \forall t: \ OD(t) = 1$, allowing us to rewrite \cref{eq:NonLinearModelWithTank} as:
+
+\begin{equation}\label{eq:NonLinearModelSimplified}
+	\begin{split}
+		\dot{q}_n &= (\Phi\mathcal{J}\Phi^T)^{-1} \Big(-\Phi\Big(\lambda(q_n)+\mu(q_n,OD)+\alpha(q_n,\omega)\Big) + \Psi(\bar{h}-\mathbf{1}h_0) + \mathcal{I}(p_{\tau}-\mathbf{1}p_0)\Big) \\
+		&= 	(\Phi\mathcal{J}\Phi^T)^{-1} \Big(-\Phi\Big(\lambda(q_n)+|q_n|q_n+\alpha(q_n,\omega)\Big) + \Psi(\bar{h}-\mathbf{1}h_0) + \mathcal{I}(p_{\tau}-\mathbf{1}p_0)\Big) \\
+		& = (\Phi\mathcal{J}\Phi^T)^{-1} \Big(-\Phi\Big(K_\lambda|q_n|q_n+|q_n|q_n+a_0\omega^2+a_1\omega q+a_2|q|q\Big) + \Psi(\bar{h}-\mathbf{1}h_0) + \mathcal{I}(p_{\tau}-\mathbf{1}p_0)\Big)
+	\end{split}	
+\end{equation}
+
+We now make the additional observation that the terms $\Psi(\bar{h}-\mathbf{1}h_0)$ and  $\mathcal{I}(p_{\tau}-\mathbf{1}p_0)$ do not depend on $(q_n,\omega)$. This suggests that, when computing the Taylor expansion, these terms disappear under the action of the $\nabla$ operator, i.e. that:
+
+\begin{equation}\label{eq:PressureHeightDisappear}
+	\begin{split}
+		&\nabla \Big((\Phi\mathcal{J}\Phi^T)^{-1} \Big(-\Phi\Big(K_\lambda|q_n|q_n+|q_n|q_n+a_0\omega^2+a_1\omega q_n+a_2|q_n|q_n\Big) + \Psi(\bar{h}-\mathbf{1}h_0) + \mathcal{I}(p_{\tau}-\mathbf{1}p_0)\Big)\Big) \\ 
+		= &\nabla \Big((\Phi\mathcal{J}\Phi^T)^{-1} \Big(-\Phi\Big(K_\lambda|q_n|q_n+|q_n|q_n+a_0\omega^2+a_1\omega q_n+a_2|q_n|q_n\Big)\Big)
+	\end{split}
+\end{equation}
+
+Recognizing furthermore that $\Phi$ and $\mathcal{J}$ are simply linear transformations, the linearity of differentiation then allows us to write a general expression for the Taylor expansion of \cref{eq:NonLinearModelSimplified} as:
+
+\begin{equation}\label{eq:SymbolicLinearisation}
+	\begin{split}
+		\dot{q}_n &\approx f(q_0,\omega_0) + \frac{\partial f}{\partial q_n}\bigg\rvert_{q_0,\omega_0} \tilde{q_n} + \frac{\partial f}{\partial \omega}\bigg\rvert_{q_0,\omega_0} \tilde{\omega} 
+		\\
+		&= f(q_0,\omega_0) + (\Phi\mathcal{J}\Phi^T)^{-1} \Big(-\Phi\Big( \frac{\partial \Omega(q_n,\omega)}{\partial q_n}\bigg\rvert_{q_0,\omega_0} \tilde{q_n} + \frac{\partial \Omega(q_n,\omega)}{\partial \omega}\bigg\rvert_{q_0,\omega_0} \tilde{\omega} \Big)\Big) 
+	\end{split}
+\end{equation}
+
+which becomes: 
+
+\begin{equation}\label{eq:SymbolicLinearisationExpanded}
+	\begin{split}
+			\dot{q}_n &\approx f(q_0,\omega_0) \\ 
+			&+ (\Phi\mathcal{J}\Phi^T)^{-1} 
+		\Bigg(-\Phi\Bigg( 
+		\begin{bmatrix}
+			a_1\omega_0 + (1 + K_\lambda + a_2) (|q_0| + \text{sign}(q_0)q_0) \Big) & 0 \\ 0 & a_1 q_0+2 a_0 \omega_0
+		\end{bmatrix} 
+		\begin{bmatrix}
+			\tilde{q_n} \\ \tilde{\omega}
+		\end{bmatrix}  \Bigg)\Bigg) 
+	\end{split}
+\end{equation}
+
+where: 
+
+\begin{align}\label{eq:SymbLinDefinitions}
+	\Omega(q_n,\omega) &= K_\lambda|q_n|q_n+|q_n|q_n+a_0\omega^2+a_1\omega q_n+a_2|q_n|q_n \\
+	\tilde{q_n} &= q_n - q_0 \\
+	\tilde{\omega} &= \omega - \omega_0
+\end{align}
+
+
+\subsection{Linearised model}
 The linearised model of the system can be expressed on the standard state space form given in \cref{eq:StateSpace}
 \begin{equation}\label{eq:StateSpace}
 	\begin{split}
