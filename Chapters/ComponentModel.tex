@@ -4,7 +4,7 @@ All components (eg. pipes, valves and pumps) can be described by two variables, 
 \begin{bmatrix} p_{i} - p_{j} \\ q_{k} \end{bmatrix}    
 \end{equation}
 
-The following section will examine these two variables for pipes, valves and pumps.
+The following section will examine these two variables for pipes, valves and pumps. We source the equations from \cite{Swamee2008}.
 
 \subsection{Pipe model}\label{subsec:PipeModel}
 The differential pressure across a pipe can be modelled as follows:
@@ -152,11 +152,7 @@ The pressure differential across a centrifugal pump, such as the pumps used in t
 	\Delta p =   a_0\cdot \omega^2 +  a_1\cdot \omega \cdot q -a_2\cdot |q|\cdot q
 \end{equation}
 
-where $[a_0,a_1,a_2]$ is a tuple of coefficients that describe the pump's characteristic curve, $q$ is the flow rate through the pump, and $\omega$ is the rotational velocity of the pump. In practice neglecting the cross term $q\omega \cdot q$ generally remains a good approximation of the pump curve, giving:
-
-\begin{equation}\label{eq:PumpPressureSimple}
-	\Delta p =   a_0\cdot \omega^2  -a_2\cdot |q|\cdot q = \alpha(q)
-\end{equation}
+where $[a_0,a_1,a_2]$ is a tuple of coefficients that describe the pump's characteristic curve, $q$ is the flow rate through the pump, and $\omega$ is the rotational velocity of the pump.
 
 \subsection{Elevated water reservoir model}
 

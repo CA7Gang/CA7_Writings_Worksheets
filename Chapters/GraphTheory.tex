@@ -14,6 +14,10 @@ When using graph theory as an analytical tool the incident matrix $H$ comes in h
 	\end{cases}
 \end{equation} %Description of the incident matrix
 
+\subsubsection{Spanning Tree}
+The spanning tree is the connected graph but with no loops, i.e you can not find a route around the graph where you start and end in the same node without entering a node more than one time. 
+When adding one chord to the graph, exactly one loop is created.
+
 
 \subsubsection{The Loop Marix}
 The definition of a loop is a unique route along the edges of the graph network, where all nodes are unique except the end node - In a loop the end node must also be the start node.
@@ -26,11 +30,12 @@ The loop-matrix can be calculated in one of two ways. The first one is shown in 
 	\end{bmatrix}
 \end{equation}
 
+
+With $\bar{H}_{C}$ being the matrix containing only chord columns of the incident matrix. The same goes for  $\bar{H}_{T}$, containing only the non-chord columns. The bar indicates that the row corresponding to the reference node has been removed from the incident matrix.
+
 The other method is more graphical but can be formulated as follows: 
 
-You define your spanning tree, which is the connected graph but with no loops, i.e you can not find a route around the graph where you start and end in the same node without entering a node more than one time. 
-When adding one chord to the graph, exactly one loop is created.
-Then the $ B $-matrix consist of the number of loops that can be created, which is represented by the $ I $ -matrix in \cref{eq:LoopMatrix}, and the edges along each loop route. The edges has to have the same sign as in the $ H $-matrix.
+Adding one chord to the spanning tree, creates exactly one loop. Writing up the edges in the loop, with signs corresponing to the incident matrix creates a row in the loop matrix $ B $. 
 
 
 \newpage
@@ -86,6 +91,7 @@ Chords and edges of the spanning tree
 \newpage
 
 \subsection{Detailed system}
+In this section we present a graph of the water distribution network.
 
 \begin{figure}[h]
 	\centering
@@ -93,8 +99,12 @@ Chords and edges of the spanning tree
 	\caption{Detailed graph model of WDN} 
 		\label{fig:WDNDetailed}
 	\end{figure}
+$ d_1 $ and $ d_{10} $ represent the waterflow into the system from the pumps, which are represented by edge $ e_1 $ and $ e_{11} $ respectively.
+$ d_4 $ and $ d_7 $ represent the waterflow out of the system from the valves, which are represented by edge $ e_3 $ and $ e_9 $ respectively.
+$ d_\tau $ represent the waterflow in an out of the tank.
+The incident matrix for the graph on \cref{fig:WDNDetailed} is shown blow in \cref{eq:H_detailed}.
 	
-	\begin{equation}
+	\begin{equation}\label{eq:H_detailed}
 		H = \kbordermatrix{
 		& e_1 & e_2 & e_3   & e_4  & e_5 & e_6  & e_7  & e_8  & e_9  & e_{10}  & e_{11}  \\	
 		v_1& 1 & 0 & 0   & 0  & 0  & 0  & 0  & 0  & 0  & 0  & 0 \\
@@ -110,13 +120,15 @@ Chords and edges of the spanning tree
 	}
 	\end{equation}	
 	
+The chords and the spanning tree is chosen from \cref{fig:WDNDetailed} \footnote{Note that you can obtain several spanning trees in this network, just by choosing different chords}
+	
 \begin{equation*} 
 	\begin{split}
 		E_{C} &= \{e_{2},e_{6}\}   \\ E_{T} &= \{e_1,e_3,e_4,e_5,e_7, e_8, e_9, e_{10} , e_{11}\}
 	\end{split}
 \end{equation*}	
 	
-	By removing $v_{6}$ from $H$ we get $\bar{H}$ which results in:
+	By choosing the xxx node as a reference, and removing it from the incident matrix we obtain:
 	\begin{equation}
 		\bar{H} = \kbordermatrix{
 		& e_1 & e_2 & e_3   & e_4  & e_5 & e_6  & e_7  & e_8  & e_9  & e_{10}  & e_{11}  \\	
