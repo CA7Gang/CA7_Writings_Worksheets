@@ -1,4 +1,74 @@
-This section is concerned with the control structure of the WDN.
+This section is concerned with the control structure of the WDN. 
+\subsection{Control Structure}
+This section documents the structure of the control system for this project as seen in \cref{fig:controlstructure}. The intended control structure assumes that the dynamics of the system can be partitioned in two, the fast dynamics of the inertia of the pipes and the slow dynamics of the tank level.
+\begin{figure}[!htb] 
+	
+	
+	\centering
+	\begin{tikzpicture}[auto, node distance=2.5cm,>=latex']
+		% ========================== Nodes ============================
+		% Nodes in upper vertical line
+		\node [input, name=rinput] (rinput) {};
+		\node [sum, right of=rinput] (sum1) {};
+		\node [block, right of=sum1, node distance = 1.5cm] (LQR) {LQR};
+		\node [sum, right of=LQR, node distance =
+		1.5cm] (sum2) {};
+		\node [block, right of=sum2, node distance = 1.5cm] (PI){PI};
+		\node [block, right of=PI, align=center] (Fast){Fast\\Dynamics};
+		\node [block, right of=Fast, node distance = 3cm, align=center] (Slow){Slow\\Dynamics};
+		\node [output, right of=Slow] (output) {};
+		
+		% Nodes for inner feedback
+		\node [tmp, right of=Fast, node distance = 1.5cm] (tmp0){};
+		\node [tmp, below of=tmp0, node distance = 1.5cm] (tmp1){};
+		\node [tmp, below of=sum2, node distance = 1.5cm] (tmp2){};
+		
+		% Nodes for outer feedback
+		\node [tmp, right of=Slow, node distance = 1.5cm] (tmp10){};
+		\node [tmp, below of=tmp10,node distance = 2.5cm] (tmp11){};
+		\node [tmp, below of=sum1, node distance = 2.5cm] (tmp12){};
+		
+		% Nodes for Disturbance
+		\node [tmp, above of=tmp0, node distance = 2cm] (tmp20){};
+		\node [tmp, above of=tmp0, node distance = 1.5cm] (tmp21){};
+		\node [tmp, above of=Fast, node distance = 1.5cm] (tmp22){};
+		\node [tmp, above of=Slow, node distance = 1.5cm] (tmp23){};
+		
+		% ========================== Lines ============================
+		
+		% Lines in upper vertical part of block diagram
+		\draw [->] (rinput) -- node{$p_{ref}$} (sum1);
+		\draw [->] (sum1) --node[name=z,anchor=north]{} (LQR);
+		\draw [->] (LQR) -- node{$ q_{ref} $}(sum2);
+		\draw [->] (sum2) -- (PI);
+		\draw [->] (PI) -- node{$ \omega_{ref} $}(Fast);
+		\draw [->] (Fast) -- node{$q_n$}(Slow);
+		\draw [->] (Slow) -- node{$p_{\tau}$}(output);	
+		
+		% Lines for inner feedback
+		\draw [-] (tmp0) -- (tmp1);
+		\draw [-] (tmp1) -- (tmp2);
+		\draw [->] (tmp2) -- node[pos=0.99]{$ - $}(sum2);
+		
+		
+		% Lines for outer feedback
+		\draw [-] (tmp10) -- (tmp11);
+		\draw [-] (tmp11) -- (tmp12);
+		\draw [->] (tmp12) -- node[pos=0.99]{$ - $}(sum1);
+		
+		
+		% Lines for disturbance
+		\draw [-] (tmp20)node[above, align=center]{Consumer \\ Disturbance} -- (tmp21);
+		\draw [-] (tmp21) -- (tmp22);
+		\draw [-] (tmp21) -- (tmp23);
+		\draw [->] (tmp22) -- node[pos = 0.5]{OD}(Fast);
+		\draw [->] (tmp23) -- node[pos = 0.5]{$ d_c $}(Slow);
+		
+		
+	\end{tikzpicture}
+	\caption{Control Structure} \label{fig:controlstructure}
+\end{figure}
+
 
 \subsection{System Linearisation}\label{subsec:Linearisation}
 
