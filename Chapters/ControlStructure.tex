@@ -45,7 +45,7 @@ This section documents the structure of the control system for this project as s
 		\draw [->] (LQR) -- node{$ q_{ref} $}(sum2);
 		\draw [->] (sum2) -- (PI);
 		\draw [->] (PI) -- node[pos=0.4]{$ \omega_{ref} $}(Fast);
-		\draw [->] (Fast) -- node{$q_n$}(Slow);
+		\draw [->] (Fast) -- node{$d_p$}(Slow);
 		\draw [->] (Slow) -- node{$p_{\tau}$}(output);	
 		
 		% Lines for inner feedback
