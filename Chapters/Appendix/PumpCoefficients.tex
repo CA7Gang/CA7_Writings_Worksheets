@@ -59,3 +59,99 @@ The solution yields the following coefficients:
 
 
 
+
+
+
+
+
+
+\section{Legend for model}
+
+Model:
+\begin{equation}\label{eq:NonLinearModelWithTank}
+	\Phi\mathcal{J}\Phi^T \dot{q} = -\Phi\Big(\lambda(q_n)+\mu(q_n,OD)+\alpha(q_n,\omega)\Big) + \Psi(\bar{h}-\mathbf{1}h_0) + \mathcal{I}(p_{\tau}-\mathbf{1}p_0)
+\end{equation}
+
+where $p_{\tau}$ evolves according to:
+
+\begin{equation}\label{eq:TankDynamics}
+	\dot{p}_{\tau} = - \mathcal{T} \dot{d}_{\tau}, \ \mathcal{T} = diag(\tau_i)
+\end{equation}
+
+and the matrices $\Phi, \Psi, \mathcal{I}$ are defined as:
+
+\begin{equation}\label{eq:NonLinearModelMatrices}
+	\Phi \triangleq 
+	\begin{bmatrix} 
+		I & -\bar{H}_C^T\bar{H}_T^{-T} \\ 0 & \bar{F}^T\bar{H}_T^{-T} \\ 0  & \bar{G}^T\bar{H}_T^{-T} \\ 
+	\end{bmatrix}
+	, \qquad
+	\Psi \triangleq
+	\begin{bmatrix}
+		0 \\ \bar{F}^T \\ \bar{G}^T
+	\end{bmatrix}
+	, \qquad
+	\mathcal{I} \triangleq
+	\begin{bmatrix}
+		0 \\ 0 \\ I
+	\end{bmatrix}
+\end{equation}
+
+Contained in $\Phi$ and $\Psi$ are:
+\begin{center}
+	\begin{tabular}{l p{10cm} l}
+		$F$ & Open-node matrix - Extracts the pumps and consumer nodes & Dim = n x e \\
+		$G$ & Tank-node matrix/vector - Extracts the tank node. & Dim = n x 1 (one tank node) 
+	\end{tabular}
+\end{center}
+
+$ \mathcal{J}$ is the mass inertia of the water in all pipes. Dim =  n x n???
+
+$\lambda (q)$ is the drop in pressure due to friction in all pipes [\si{Pa}]
+
+$\mu(q,OD)$: is the pressure drop across a valve
+
+$\alpha(q,\omega)$: Pressure drop across the pump ($\Delta p_p$)
+% F: Open-node matrix - Extracts the pumps and consumer nodes. Dim = n x e
+%G: Tank-node matrix/vector - Extracts the tank node. Dim = n x 1 (one tank node)
+
+
+Pipe:
+\begin{center}
+	\begin{tabular}{l p{10cm} l}
+		
+		$\Delta{p_{k}}$ & The differential pressure across the $k^{th}$ component & [\si{Pa}]\\ 
+		${J_{k}}$ & Is the mass inertia of the water in the $k^{th}$ pipe & [\si{kg}/\si{m^{4}}] \\
+		$q_{k}$ & is the flow of water trough the $k_{th}$ pipe & [{\si{\meter\cubed}/\si{s}}] \\
+		$\mathrm{\lambda_{k}}(q_{k})$ & is the drop in pressure due to friction in the $k^{th}$ pipe & [\si{Pa}] \\
+		$\mathrm{\Delta{z_{k}}}$ & is the drop in pressure due to geodesic level & [\si{Pa}]\\
+	\end{tabular}
+\end{center}
+
+
+\begin{equation}
+	\Delta{p} = \mathcal{J}\dot{q} + \lambda(q) + \Delta z
+\end{equation}
+
+\begin{center}
+	\begin{tabular}{l p{10cm} l}
+		$\mathrm{\lambda}(q)$ & is the drop in pressure due to friction in all pipes & [\si{Pa}] \\
+		$ \mathcal{J}$ & Is the mass inertia of the water in all pipes & [\si{kg}/\si{m^{4}}] \\
+		$\Delta z$ & is the drop in pressure due to geodesic level & [\si{Pa}]\\
+	\end{tabular}
+\end{center}
+
+
+Valve:
+
+$\mu(q,OD)$: Pressure drop across a valve
+
+Pump:
+
+$\alpha(q,\omega)$: Pressure drop across the pump ($\Delta p_p$)
+
+
+\textbf{WDN stuff:}
+$H_T \bar{H_T}^-1$: Can be used to
+
+
