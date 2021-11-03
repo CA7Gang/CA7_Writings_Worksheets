@@ -1,6 +1,6 @@
 This section is concerned with the control structure of the WDN. 
 \subsection{Control Structure}
-This section documents the structure of the control system for this project as seen in \cref{fig:controlstructure}. The intended control structure assumes that the dynamics of the system can be partitioned in two, the fast dynamics of the inertia of the pipes and the slow dynamics of the tank level.
+This section documents the structure of the control system for this project as seen in \cref{fig:controlstructure}. The intended control structure assumes that the dynamics of the system can be partitioned in two, the fast dynamics of the inertia of the pipes (assuming the pump dynamics are infinitely fast) and the slow dynamics of the tank level.
 \begin{figure}[!htb] 
 	
 	
@@ -29,10 +29,13 @@ This section documents the structure of the control system for this project as s
 		\node [tmp, below of=sum1, node distance = 2.5cm] (tmp12){};
 		
 		% Nodes for Disturbance
-		\node [tmp, above of=tmp0, node distance = 2cm] (tmp20){};
-		\node [tmp, above of=tmp0, node distance = 1.5cm] (tmp21){};
-		\node [tmp, above of=Fast, node distance = 1.5cm] (tmp22){};
-		\node [tmp, above of=Slow, node distance = 1.5cm] (tmp23){};
+		\node [tmp, above of=tmp0, node distance = 2.5cm] (tmp20){};
+		\node [tmp, above of=tmp0, node distance = 2cm] (tmp21){};
+		\node [tmp, above of=Fast, node distance = 2cm] (tmp22){};
+		\node [tmp, above of=Slow, node distance = 2cm] (tmp23){};
+		
+		\draw[thick, dotted] ($(Fast.north west)+(-0.25, 0.25)$) rectangle  ($(Slow.south east)+(0.25, -0.25)$);
+		\node[above of =tmp0, node distance =1.1cm](sys_txt) {System};
 		
 		% ========================== Lines ============================
 		
@@ -41,7 +44,7 @@ This section documents the structure of the control system for this project as s
 		\draw [->] (sum1) --node[name=z,anchor=north]{} (LQR);
 		\draw [->] (LQR) -- node{$ q_{ref} $}(sum2);
 		\draw [->] (sum2) -- (PI);
-		\draw [->] (PI) -- node{$ \omega_{ref} $}(Fast);
+		\draw [->] (PI) -- node[pos=0.4]{$ \omega_{ref} $}(Fast);
 		\draw [->] (Fast) -- node{$q_n$}(Slow);
 		\draw [->] (Slow) -- node{$p_{\tau}$}(output);	
 		
@@ -61,7 +64,7 @@ This section documents the structure of the control system for this project as s
 		\draw [-] (tmp20)node[above, align=center]{Consumer \\ Disturbance} -- (tmp21);
 		\draw [-] (tmp21) -- (tmp22);
 		\draw [-] (tmp21) -- (tmp23);
-		\draw [->] (tmp22) -- node[pos = 0.5]{OD}(Fast);
+		\draw [->] (tmp22) -- node[left, pos = 0.5]{OD}(Fast);
 		\draw [->] (tmp23) -- node[pos = 0.5]{$ d_c $}(Slow);
 		
 		
