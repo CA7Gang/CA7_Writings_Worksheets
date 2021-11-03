@@ -184,4 +184,47 @@ with their reference-respective equivalents given by:
 
 where the notation $X_{6\star}$ denotes the entire 6th row\footnote{Correspondingly, $X_{\star6}$ would denote the entire 6th column} of the matrix $X$ and $\setminus$ is the set relative complement operator. These matrices map demands at their respective nodes into the vector of total demands in the system $d \vee \bar{d}$.
 
+\subsection{Detailed system V2}
+
+The H matrix:
+
+$ H = \begin{bmatrix}
+	1	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 \\
+	-1	& 1 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 \\
+	0	& -1 	& 1 	& 0 	& 1 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 \\
+	0	& 0 	& -1 	& 1 	& 0 	& 1 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 \\
+	0	& 0 	& 0 	& -1 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 \\
+	0	& 0 	& 0 	& 0 	& -1 	& 0 	& 1 	& 1 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 \\
+	0	& 0 	& 0 	& 0 	& 0 	& -1 	& -1 	& 0 	& 1 	& 0 	& 0 	& 0 	& 0 	& 0 \\
+	0	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& -1 	& 1 	& 0 	& 0 	& 0 	& 0 \\
+	0	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& -1 	& 0 	& 0 	& 0 \\
+	0	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& -1 	& 0 	& 0 	& 1 	& -1 	& 0 	& 0 \\
+	0	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& -1 	& 0 	& 1 	& -1 	& 0 \\
+	0	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 1 	& -1\\
+	0	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 1    
+\end{bmatrix}  $
+
+The H\_bar matrix:
+
+$ \bar{H} = \begin{bmatrix}
+	1	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 \\
+	-1	& 1 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 \\
+	0	& -1 	& 1 	& 0 	& 1 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 \\
+	0	& 0 	& -1 	& 1 	& 0 	& 1 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 \\
+	0	& 0 	& 0 	& -1 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 \\
+	0	& 0 	& 0 	& 0 	& -1 	& 0 	& 1 	& 1 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 \\
+	0	& 0 	& 0 	& 0 	& 0 	& -1 	& -1 	& 0 	& 1 	& 0 	& 0 	& 0 	& 0 	& 0 \\
+	0	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& -1 	& 1 	& 0 	& 0 	& 0 	& 0 \\
+	0	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& -1 	& 0 	& 0 	& 0 \\
+	0	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& -1 	& 0 	& 0 	& 1 	& -1 	& 0 	& 0 \\
+	0	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& -1 	& 0 	& 1 	& -1 	& 0 \\
+	0	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 1 	& -1\\
+\end{bmatrix}  $
+
+The B matrix (not even started):
+
+$ B = \begin{bmatrix}
+	1	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 \\
+	-1	& 1 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 \\
+\end{bmatrix}  $
 

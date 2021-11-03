@@ -9,13 +9,53 @@ The full pump model:
 		\Delta p_{pump}  = a_0  \cdot \omega^2 + a_1 \cdot q \cdot \omega + a_2 \cdot q^2
 \end{equation}
 
-\begin{center}
-	\begin{tabular}{l p{8cm} l}
-		$a_{0-2}$ & are constants obtained from measurements of the pump
-		$\Delta p$ & is the pressure drop over the pump
-		$\omega ^2$ & is the angular velocity of the pump
-		q & is the flow through the pump
-	\end{tabular}
-\end{center}
-
 The pump coefficients are estimated from the pump performance curves from the data-sheets. These describe the exact relationship described in \cref{eq:pumpmodel}.
+
+The preassure drops were read at the following flows:
+
+\begin{equation}
+	q = \begin{bmatrix}
+		0 & 0.5 & 1 & 1.5 & 2 & 2.5 & 3 & 3.5 
+	\end{bmatrix} 
+\label{eq:pump_q}
+\end{equation}
+
+At these flow speeds the pressure drop across the pump were read from the y-axis at three different pump speeds, namely 80\%, 69\% and 48\%. The recorded preassure drops were the following:
+
+\begin{equation}
+	p =  \begin{bmatrix}
+		p_{80}\\
+		p_{69} \\
+		p_{48}
+	\end{bmatrix}  = 
+	\begin{bmatrix}
+		5.57 & 5.85 & 5.9 & 5.7 & 5.1 & 4.253.3 & 3.3 & 2.4 \\
+		4.1 & 4.2 & 4.2 & 4 & 3.55 & 3 & 2.3 & 1.55 \\
+		1.75 & 1.85 & 1.7 & 1.3 & 0.95 &  &  &  
+	\end{bmatrix} 
+\label{eq:pump_p}
+\end{equation}
+
+Only 5 pressure readings were made from the 48\% pump speed.
+
+The coefficients are found by the least square solution to:
+
+\begin{equation}
+	Ax = b
+\end{equation}
+where 
+\begin{equation}
+	A = \begin{bmatrix}
+			\omega^2 & q \cdot \omega & q^2
+			\end{bmatrix}
+\end{equation}
+and b = p.
+
+The solution yields the following coefficients:
+\begin{itemize}
+	\item test
+	\item test 2
+\end{itemize}
+
+
+
