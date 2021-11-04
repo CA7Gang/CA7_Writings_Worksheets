@@ -105,13 +105,41 @@ Contained in $\Phi$ and $\Psi$ are:
 	\end{tabular}
 \end{center}
 
-$ \mathcal{J}$ is the mass inertia of the water in all pipes. Dim =  n x n???
+$ \mathcal{J}$ is the mass inertia of the water in all pipes. Dim =  m x m
 
-$\lambda (q)$ is the drop in pressure due to friction in all pipes [\si{Pa}]
+$\lambda (q_n)$ is the pressure drop across all components due to pipe friction [\si{Pa}]
+\begin{equation}
+	\lambda(q)  =	\Big(f \cdot \frac{8\cdot L\cdot q^{2}}{\pi^{2}\cdot g \cdot D^{5}} + k_{f}\cdot \frac{8\cdot q^{2}}{\pi^{2}\cdot g \cdot D^{4}}\Big)\cdot g \cdot \rho
+\end{equation}
 
-$\mu(q,OD)$: is the pressure drop across a valve
 
-$\alpha(q,\omega)$: Pressure drop across the pump ($\Delta p_p$)
+\begin{center}
+	\begin{tabular}{l p{10cm} l} 
+		f & friction constant &	[$ \cdot $]		\\
+		L & length of pipe &	[m]		\\
+		g & gravitational acceleration & [$ \frac{m}{s^2} $]\\
+		D & diameter of pipe & [m]			\\
+		$ \rho $ & density of water & [$ \frac{kg}{m^3} $]	
+	\end{tabular}
+\end{center}
+
+$\mu(q,OD)$: is the pressure drop across all components in the system due to valve friction [\si{Pa}]
+
+\begin{equation}\label{eq:ValvePressure}
+	 	 \mu(q_n,OD) = \frac{1}{K_{valve}(OD)^2} \cdot |q|\cdot q
+\end{equation}
+
+\begin{center}
+	\begin{tabular}{l p{10cm} l} 
+		f & friction constant &	[$ \cdot $]		\\
+		L & length of pipe &	[m]		\\
+		g & gravitational acceleration & [$ \frac{m}{s^2} $]\\
+		D & diameter of pipe & [m]			\\
+		$ \rho $ & density of water & [$ \frac{kg}{m^3} $]	
+	\end{tabular}
+\end{center}
+
+$\alpha(q,\omega)$: Pressure drop across the pump ($\Delta p_p$) [\si{Pa}]
 % F: Open-node matrix - Extracts the pumps and consumer nodes. Dim = n x e
 %G: Tank-node matrix/vector - Extracts the tank node. Dim = n x 1 (one tank node)
 
