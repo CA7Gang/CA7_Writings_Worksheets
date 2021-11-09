@@ -241,8 +241,8 @@ where the notation $X_{6\star}$ denotes the entire 6th row\footnote{Correspondin
 		%Create 3 (4) nodes in middle part of graph
 		\node[main] (8) [below of=4] {$ v_6 $};
 		\node[main] (9) [node distance={20mm},below of=5] {$ v_7 $};
-		\node (10) [node distance={15mm},right of=9] {};
 		\node[main] (11) [node distance={15mm},below of=9] {$ v_8 $};
+		\node (10) [node distance={15mm},right of=11] {};
 		%First 5 (7) nodes in bottom part of graph
 		\node[main] (12) [below of=8] {$ v_{10} $};
 		\node[main] (13) [left of=12] {$ v_9 $};
@@ -276,7 +276,7 @@ where the notation $X_{6\star}$ denotes the entire 6th row\footnote{Correspondin
 		\draw[->,dashed,] (6) -- node[above] {$d_5$} (7); %Create d5
 		\draw[->,dashed,] (13) -- node[above] {$d_9$} (14); %Create d13
 		\draw[->,dashed,] (18) -- node[above] {$d_{13}$} (17); %Create d13
-		\draw[<->,dashed,] (10) -- node[above] {$d_\tau$} (9); %Create d_tau
+		\draw[<->,dashed,] (10) -- node[above] {$d_\tau$} (11); %Create d_tau
 	\end{tikzpicture} 
 	\caption{Graph network of implemented water distributed network}
 \end{figure}
