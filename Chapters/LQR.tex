@@ -27,13 +27,14 @@ where $\lambda^T f(x(t),u(t))$ are commonly referred to as the \textit{costates}
 \forall t \in [0,T] \wedge \forall u \in U: \ \mathcal{H}(x^*(t),u^*(t),\lambda^*(t),t) \leq \mathcal{H}(x^*(t),u(t),\lambda^*(t),t)
 \end{equation}
 
-while the costates must fulfil the variational condition along the entire trajectory:
+while the costates and states must evolve according to each other's respective Hamiltonian gradients:
 
-\begin{equation}\label{eq:LagrangeVariationCondition}
-	-\dot{\lambda}^T(t) = \mathcal{H}(x^*(t),u^*(t),\lambda(t),t) = \lambda^T f(x^*(t),u^*(t)) + \lambda_0\mathcal{L}(x^*(t),u^*(t))
-\end{equation}
+\begin{align}
+	-\dot{\lambda}^T(t) &= \frac{\partial}{\partial x}\mathcal{H}(x^*(t),u^*(t),\lambda(t),t) = \frac{\partial}{\partial x} \Big( \lambda^T f(x^*(t),u^*(t)) + \lambda_0\mathcal{L}(x^*(t),u^*(t)) \Big) \label{eq:LagrangeVariationCondition} \\
+	\dot{x} &= \frac{\partial}{\partial \lambda} \mathcal{H}(x^*(t),u^*(t),\lambda(t),t) = \frac{\partial}{\partial \lambda} \Big( \lambda^T f(x^*(t),u^*(t)) + \lambda_0\mathcal{L}(x^*(t),u^*(t)) \Big) \label{eq:StateVariationCondition}
+\end{align}
 
-and must fulfil the terminal condition:
+and the costates must fulfil the terminal condition:
 
 \begin{equation}\label{eq:LagrangeTerminalCondition}
  \lambda^T(T) = \mathcal{M}_x(x(T))
@@ -68,7 +69,7 @@ and per \cite{Liberzon2012} we may freely choose $\lambda_0 = -1$ such that the 
 	\mathcal{H}(x(t),u(t),\lambda(t),t)) = \lambda^T(t)\big(A(t)x(t) + B(t)u(t)\big) - x^T(t)Q(t)x(t) - u^T(t)R(t)u(t)
 \end{equation}
 
-Intuitively, the control gradient $\frac{\partial \mathcal{H}}{\partial u}$ of \cref{eq:LQRHamiltonian} must vanish along the optimal control trajectory $u^*(t)$. Taking the partial differential, we obtain:
+Intuitively, the control gradient $\frac{\partial \mathcal{H}}{\partial u}$ of \cref{eq:LQRHamiltonian} must vanish along the optimal control trajectory $u^*(t)$ if we are to satisfy the first condition of Pontryagin's Minimum Principle in \cref{eq:MinimizeHamiltonian}. Taking the partial differential, we obtain:
 
 \begin{equation}\label{eq:HamiltonianUGradient}
  \frac{\partial \mathcal{H}}{\partial u} = B^T(t)\lambda^*(t) - 2R(t)u^*(t)
@@ -80,19 +81,25 @@ and thus it seems clear that $u^*(t)$ must satisfy:
 	u^*(t) = \frac{1}{2} R^{-1}(t)B^T(t)\lambda^*(t)
 \end{equation}
 
-It can then be shown - doing so is expressly outside the scope of this report - that $\lambda^*(t)$ must satisfy a relation of the form:
+It can then be shown - doing so is expressly outside the scope of this report, but relies on the remaining conditions \cref{eq:LagrangeVariationCondition,eq:StateVariationCondition,eq:LagrangeTerminalCondition} - that $\lambda^*(t)$ must satisfy a relation of the form:
 
 \begin{equation}\label{eq:OptimalCostateSequence}
 	\lambda^*(t) = -2P(t)x^*(t)
 \end{equation}
 
-which gives a state feedback control law in the form of:
+We see that this is quite clearly true at the boundary $t = T$, where per \cref{eq:LagrangeTerminalCondition} we must satisfy that:
+
+\begin{equation}\label{eq:PontryaginBoundaryCondition}
+	\lambda^T(T) = \mathcal{M}_x(x(T)) = -2\mathcal{M}x^*(T)
+\end{equation}
+
+The relation in \cref{eq:OptimalCostateSequence} then gives a state feedback control law in the form of:
 
 \begin{equation}\label{eq:LQRFeedbackLaw}
 	u^*(t) = -R^{-1}(t)B^T(t)P(t)x^*(t)
 \end{equation}
 
-and futhermore it can be shown that $P(t)$ evolves according to dynamics known as the \textit{Riccati differential equation}, which are given by:
+and furthermore it can be shown that $P(t)$ evolves according to dynamics known as the \textit{Riccati differential equation}, which are given by:
 
 \begin{equation}\label{eq:RDE}
 	\dot{P}(t) = -P(t)A(t) - A^T(t)P(t) - Q(t) + P(t)B(t)R^{-1}(t)B^T(t)P(t)
