@@ -1,0 +1,166 @@
+In the following section, we will develop the theory behind the Linear-Quadratic Regulator (LQR) based on the theory of \textit{calculus of variations}. We follow the presentation given in \cite{Liberzon2012} by Liberzon closely, but take the basic results relating to Pontryagin's Minimum Principle and the solution to the Algebraic Riccati Equation for granted.
+
+\subsection{Basic Structure of an Optimal Control Problem}\label{subsec:BasicOptimalControl}
+
+We start by sketching the basic structure of an optimal control problem in the language of calculus of variations. Let:
+
+\begin{align}
+\dot{x} = &f(x,u,t) \label{eq:BasicOptimalFunction} \\ 
+x(t_0) = x_0, \ &x \in \mathbb{R}^n, \ u \in U \in \mathbb{R}^m \label{eq:BasicOptimalDefinitions}
+\end{align}
+
+where $t \in \mathbb{R}$ is the time and $x,u$ are functions of $t$, with $U$ the set of admissible controls. We now seek to minimize a cost functional of the type:
+
+\begin{equation}\label{eq:BolzaProblem}
+	J = \mathcal{M}(x(T)) + \int_{0}^{T} \mathcal{L}(x(t),u(t)) dt
+\end{equation} 
+
+This type of minimization problem is known as a \textit{Bolza problem} and $\mathcal{L}$ is called the \textit{Lagrangian}. To minimize this functional under the constraint of the dynamics in \cref{eq:BasicOptimalDefinitions}, we can formulate a function known as the \textit{Hamiltonian}:
+
+\begin{equation}\label{eq:Hamiltonian}
+\mathcal{H}(x(t),u(t),\lambda(t),t) = \lambda^T(t) f(x(t),u(t)) + \lambda_0\mathcal{L}(x(t),u(t))
+\end{equation}
+
+where $\lambda^T f(x(t),u(t))$ are commonly referred to as the \textit{costates} of \cref{eq:BasicOptimalFunction} and $\lambda$ are called \textit{Lagrange multipliers}. The optimal state, control, and Lagrange multiplier sequences $x^*$, $u^*$, and $\lambda^*$ are then given by Pontryagin's Minimum Principle, which states that the optimal sequences must minimize the Hamiltonian such that:
+
+\begin{equation}\label{eq:MinimizeHamiltonian}
+\forall t \in [0,T] \wedge \forall u \in U: \ \mathcal{H}(x^*(t),u^*(t),\lambda^*(t),t) \leq \mathcal{H}(x^*(t),u(t),\lambda^*(t),t)
+\end{equation}
+
+while the costates must fulfil the variational condition along the entire trajectory:
+
+\begin{equation}\label{eq:LagrangeVariationCondition}
+	-\dot{\lambda}^T(t) = \mathcal{H}(x^*(t),u^*(t),\lambda(t),t) = \lambda^T f(x^*(t),u^*(t)) + \lambda_0\mathcal{L}(x^*(t),u^*(t))
+\end{equation}
+
+and must fulfil the terminal condition:
+
+\begin{equation}\label{eq:LagrangeTerminalCondition}
+ \lambda^T(T) = \mathcal{M}_x(x(T))
+\end{equation}
+
+\clearpage
+
+\subsection{The Linear-Quadratic Control Problem}\label{subsec:LQR}
+
+We will now address the well-known LQR problem as a special case of an optimal control problem. Following the same basic problem structure as in \cref{subsec:BasicOptimalControl}, let the dynamics of the system be given by:
+
+\begin{align}
+	&\dot{x}(t) = A(t)x(t) + B(t)u(t) \label{eq:TimeVaryingLinearSystem} \\
+	&x(t_0) = x_0
+\end{align}
+
+and let a cost functional be given by:
+
+\begin{equation}
+ J = \int_{t_0}^{t_1} \big(x^T(t)Q(t)x(t) + u^T(t)R(t)u(t)\big)dt + x^T(t_1)\mathcal{M}x(t_1)
+\end{equation}
+
+with $Q(t) \wedge \mathcal{M}$ symmetric and positive semidefinite, and $R(t)$ symmetric positive definite. Clearly, this is a Bolza problem with the Lagrangian:
+
+\begin{equation}\label{eq:LQRLagrangian}
+\mathcal{L}(x(t),u(t)) = x^T(t)Q(t)x(t) + u^T(t)R(t)u(t)
+\end{equation}
+
+and per \cite{Liberzon2012} we may freely choose $\lambda_0 = -1$ such that the Hamiltonian becomes:
+
+\begin{equation}\label{eq:LQRHamiltonian}
+	\mathcal{H}(x(t),u(t),\lambda(t),t)) = \lambda^T(t)\big(A(t)x(t) + B(t)u(t)\big) - x^T(t)Q(t)x(t) - u^T(t)R(t)u(t)
+\end{equation}
+
+Intuitively, the control gradient $\frac{\partial \mathcal{H}}{\partial u}$ of \cref{eq:LQRHamiltonian} must vanish along the optimal control trajectory $u^*(t)$. Taking the partial differential, we obtain:
+
+\begin{equation}\label{eq:HamiltonianUGradient}
+ \frac{\partial \mathcal{H}}{\partial u} = B^T(t)\lambda^*(t) - 2R(t)u^*(t)
+\end{equation}
+
+and thus it seems clear that $u^*(t)$ must satisfy:
+
+\begin{equation}\label{eq:OptimalControlSequence}
+	u^*(t) = \frac{1}{2} R^{-1}(t)B^T(t)\lambda^*(t)
+\end{equation}
+
+It can then be shown - doing so is expressly outside the scope of this report - that $\lambda^*(t)$ must satisfy a relation of the form:
+
+\begin{equation}\label{eq:OptimalCostateSequence}
+	\lambda^*(t) = -2P(t)x^*(t)
+\end{equation}
+
+which gives a state feedback control law in the form of:
+
+\begin{equation}\label{eq:LQRFeedbackLaw}
+	u^*(t) = -R^{-1}(t)B^T(t)P(t)x^*(t)
+\end{equation}
+
+and futhermore it can be shown that $P(t)$ evolves according to dynamics known as the \textit{Riccati differential equation}, which are given by:
+
+\begin{equation}\label{eq:RDE}
+	\dot{P}(t) = -P(t)A(t) - A^T(t)P(t) - Q(t) + P(t)B(t)R^{-1}(t)B^T(t)P(t)
+\end{equation}
+
+\subsection{The Infinite-Horizon Linear-Quadratic Control Problem}\label{subsec:InfiniteHorizonLQR}
+
+We will now narrow down the contents of \cref{subsec:LQR} even further to consider a particularly - and in terms of its solution, rather uniquely beautiful - special case of the LQR problem. Specifically, we will consider the infinite-horizon, time-invariant case with no terminal cost. Thus, let the dynamics be given by:
+
+\begin{align}
+	&\dot{x}(t) = Ax(t) + Bu(t) \label{eq:InvariantLinearSystem} \\
+	&x(t_0) = x_0
+\end{align}
+
+and let the cost functional be:
+
+\begin{equation}\label{eq:LagrangeProblem}
+ J = \int_{t_0}^{\infty} \big(x^T(t)Qx(t) + u^T(t)Ru(t)\big)dt
+\end{equation} 
+
+In the absence of a terminal cost, this is now known as a \textit{Lagrange problem}. Constructing the Hamiltonian as before, we have:
+
+\begin{equation}\label{eq:InfLQRHamiltonian}
+	\mathcal{H}(x(t),u(t),\lambda(t),t)) = \lambda^T(t)\big(Ax(t) + Bu(t)\big) - x^T(t)Qx(t) - u^T(t)Ru(t)
+\end{equation}
+
+As before, the control gradient:
+
+\begin{equation}\label{eq:HamiltonianUGradientInfLQR}
+	\frac{\partial \mathcal{H}}{\partial u} = B^T\lambda^*(t) - 2Ru^*(t)
+\end{equation}
+
+must vanish along the optimal trajectory, necessitating that:
+
+\begin{equation}\label{eq:OptimalControlSequence}
+	u^*(t) = \frac{1}{2} R^{-1}B^T\lambda^*(t)
+\end{equation}
+
+and it can analogously to \cref{subsec:LQR} be shown that:
+
+\begin{equation}\label{eq:OptimalCostateSequenceInfLQR}
+	\lambda^*(t) = -2Px^*(t)
+\end{equation}
+
+such that:
+
+\begin{equation}\label{eq:InfLQRFeedbackLaw}
+	u^*(t) = -R^{-1}B^TPx^*(t)
+\end{equation}
+
+with $P$ now time-invariant and fulfilling the \textit{algebraic Riccati equation}:
+
+\begin{equation}\label{eq:ARE}
+	 PA - A^TP + Q - PBR^{-1}B^TP = 0
+\end{equation}
+
+This motivates the - frankly somewhat stunning - conclusion that for the infinite-horizon, time-invariant LQR problem, the optimal state feedback law may be calculated \textit{entirely} offline.
+
+A final important result concerns the global stability of this feedback law. Let an auxiliary equation to \cref{eq:InvariantLinearSystem} be given by:
+
+\begin{equation}\label{eq:OutputEquation}
+	y = Cx
+\end{equation}
+
+then choosing $Q = C^TC$ such that the cost functional becomes:
+
+\begin{equation}\label{eq:ExpoStableLagrangeProblem}
+	J(u) = \int_{t_0}^{\infty} \big(x^T(t)C^TCx(t) + u^T(t)R(t)u(t)\big)dt
+\end{equation} 
+
+\textit{guarantees} exponential stability of the closed-loop system $\dot{x}^* = (A-BR^{-1}B^TP)x^*$ so long as $(A,C)$ are an observable pair \cite{Liberzon2012}.

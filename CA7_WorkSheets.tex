@@ -121,8 +121,9 @@
 
 % *** GRAPHICS RELATED PACKAGES ***
 % 
+%\usepackage{graphicx}
 \ifCLASSINFOpdf
-   \usepackage[pdftex]{graphicx}
+   \usepackage[]{graphicx}
   % declare the path(s) where your graphic files are
   % \graphicspath{{../pdf/}{../jpeg/}}
   % and their extensions so you won't have to specify these with
@@ -539,6 +540,10 @@ The abstract goes here.
 \clearpage
 \section{Control Structure}
 \input{Chapters/ControlStructure}
+
+\clearpage
+\section{Optimal Control and the Linear-Quadratic Regulator}
+\input{Chapters/LQR}
 
 
 \clearpage

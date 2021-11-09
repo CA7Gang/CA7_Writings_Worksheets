@@ -82,7 +82,7 @@ Before the model presented in \cref{eq:NonLinearModelWithTank} is truly useful t
 (\textbf{The Hartman-Grobman Theorem}) Let $E$ be an open subset of $\mathbb{R}^n$ containing the origin, and let $f$ be a continuously differentiable function on $E$:
  
 \begin{equation*}
-f \in C^1(E))
+f \in C^1(E)
 \end{equation*}
 
 Let $\gamma_t$ be the flow of the nonlinear system $\dot{x} = f(x)$. Assume furthermore that there exists an equilibrium point at the origin: 
@@ -94,7 +94,7 @@ f(0) = 0
 and that this equilibrium point is hyberbolic: 
 
 \begin{equation*}
-\forall \lambda \in T(A): \ \text{Re}(\lambda) > 0, \quad A = \nabla f  
+\forall \lambda \in T(A): \ \text{Re}(\lambda) \neq 0, \quad A = \nabla f  
 \end{equation*}
 
 where $T$ is the eigenspace of $A$. Then there exists a homeomorphism $H$ of some open set $U, \ 0 \in U$ onto the open set $V, \ 0 \in V$, such that $\forall x_0 \in U$, there is an open interval $I_0 \subset \mathbb{R}, \ 0 \in I_0$ such that:
@@ -122,13 +122,13 @@ We now revert our attention to the nonlinear model of the WDN. We will make the 
 	\end{split}	
 \end{equation}
 
-We now make the additional observation that the terms $\Psi(\bar{h}-\mathbf{1}h_0)$ and  $\mathcal{I}(p_{\tau}-\mathbf{1}p_0)$ do not depend on $\{q_n,OD,\omega\}$. This suggests that, when computing the Taylor expansion, these terms disappear under the action of the $\nabla$ operator, i.e. that:
+We now make the additional observation that $\Psi(\bar{h}-\mathbf{1}h_0)$ is constant for all time,   $\mathcal{I}(p_{\tau}-\mathbf{1}p_0)$ do not depend on $\{q_n,OD,\omega,p_\tau\}$. This suggests that, when computing the Taylor expansion, this term disappears under the action of the $\nabla$ operator, i.e. that:
 
 \begin{equation}\label{eq:PressureHeightDisappear}
 	\begin{split}
 		\nabla \dot{q}_n &= \nabla \Big(-\mathcal{P}\Phi\Big(\lambda(q_n)+\mu(q_n,OD)+\alpha(q_n,\omega)\Big) + \mathcal{P}\Big(\Psi(\bar{h}-\mathbf{1}h_0) + \mathcal{I}(p_{\tau}-\mathbf{1}p_0)\Big) \\ 
-		&=\nabla \Big(-\mathcal{P}\Phi\Big(\lambda(q_n)+\mu(q_n,OD)+\alpha(q_n,\omega)\Big)\Big) \\
-		&=\nabla \Big(-\mathcal{P}\Phi\Big(K_\lambda|q_n|q_n+\frac{|q_n|q_n}{(K_v\cdot OD)^2}+a_0\omega^2+a_1\omega q+a_2|q|q\Big)\Big)
+		&=\nabla \Big(-\mathcal{P}\Phi\Big(\lambda(q_n)+\mu(q_n,OD)+\alpha(q_n,\omega)\Big)\Big) + \nabla \mathcal{P}\Big({I}(p_{\tau}-\mathbf{1}p_0)\Big) \\
+		&=\nabla \Big(-\mathcal{P}\Phi\Big(K_\lambda|q_n|q_n+\frac{|q_n|q_n}{(K_v\cdot OD)^2}+a_0\omega^2+a_1\omega q+a_2|q|q\Big)\Big) + \nabla \mathcal{P}\Big({I}(p_{\tau}-\mathbf{1}p_0)\Big)
 	\end{split}
 \end{equation}
 
@@ -136,20 +136,21 @@ Recognizing furthermore that $\Phi$ and $\mathcal{J}$ are simply linear transfor
 
 \begin{equation}\label{eq:SymbolicLinearisation}
 	\begin{split}
-		\dot{q}_n &\approx f(x_0) + \frac{\partial f}{\partial q_n}\bigg\rvert_{x_0} \tilde{q}_n + \frac{\partial f}{\partial OD}\bigg\rvert_{x_0} \tilde{OD} + \frac{\partial f}{\partial \omega}\bigg\rvert_{x_0} \tilde{\omega} 
+		\dot{q}_n &\approx f(x_0) + \frac{\partial f}{\partial q_n}\bigg\rvert_{x_0} \tilde{q}_n + \frac{\partial f}{\partial OD}\bigg\rvert_{x_0} \tilde{OD} + \frac{\partial f}{\partial \omega}\bigg\rvert_{x_0} \tilde{\omega} +  \frac{\partial f}{\partial p_\tau}\bigg\rvert_{x_0} \tilde{p}_\tau
 		\\
-		&= f(x_0) - \mathcal{P}\Phi\Big( \frac{\partial \Omega}{\partial q_n}\bigg\rvert_{x_0} \tilde{q}_n + \frac{\partial \Omega}{\partial OD}\bigg\rvert_{x_0} \tilde{OD} + \frac{\partial \Omega}{\partial \omega}\bigg\rvert_{x_0} \tilde{\omega} \Big)
+		&= f(x_0) + \mathcal{P}\Big(-\Phi\Big( \frac{\partial \Omega}{\partial q_n}\bigg\rvert_{x_0} \tilde{q}_n + \frac{\partial \Omega}{\partial OD}\bigg\rvert_{x_0} \tilde{OD} + \frac{\partial \Omega}{\partial \omega}\bigg\rvert_{x_0} \tilde{\omega} \Big) + \mathcal{I} \frac{\partial f}{\partial p_\tau}\bigg\rvert_{x_0} \tilde{p}_\tau \Big)
 	\end{split}
 \end{equation}
 
 where: 
 
 \begin{align}
-	x_0 &= \{q_0,OD_0,\omega_0\} \label{eq:EquilibriumPoint} \\
+	x_0 &= \{q_0,OD_0,\omega_0, p_\tau \} \label{eq:EquilibriumPoint} \\
 	\Omega &= K_\lambda|q_n|q_n+\frac{|q_n|q_n}{(K_v\cdot OD)^2}+a_0\omega^2+a_1\omega q_n+a_2|q_n|q_n \label{eq:OmegaFun} \\
 	\tilde{q}_n &= q_n - q_0 \label{eq:QTilde} \\
 	\tilde{OD} &= OD - OD_0 \label{eq:ODTilde} \\ 
-	\tilde{\omega} &= \omega - \omega_0 \label{eq:OmegaTilde} 
+	\tilde{\omega} &= \omega - \omega_0 \label{eq:OmegaTilde} \\
+	\tilde{p}_\tau &= p_\tau - p_{\tau_0}
 \end{align}
 
 Writing out each of the partial derivatives in \cref{eq:SymbolicLinearisation}, we get:
@@ -172,18 +173,42 @@ Writing out each of the partial derivatives in \cref{eq:SymbolicLinearisation}, 
 	a_1 q_0 + 2a_0\omega_0
 \end{equation}
 
+\begin{equation}\label{eq:PartialTaylorPressure}
+		\frac{\partial \Omega}{\partial p_\tau}\bigg\rvert_{x_0} 
+	=
+	1
+\end{equation}
+
 and the complete Taylor expansion becomes:
 
 \begin{equation}\label{eq:SymbolicLinearisationExpanded}
 	\begin{split}
 			\dot{q}_n \approx f(x_0) &-\mathcal{P}\Phi\Bigg(a_1\omega_0 + \Big(|q_0|+\text{sign}(q_0)q_0\Big)\Bigg(K_\lambda + a_2 + \frac{1}{(K_v OD_0)^2}\Bigg) \tilde{q}_n \Bigg)  \\
 			&- \mathcal{P}\Phi\Bigg(\Big(-|q_0|q_0 \frac{2}{K_v^2 OD_0^3}\Big) \tilde{OD}\Bigg) \\
-			&-  \mathcal{P}\Phi\Bigg(\Big(a_1 q_0 + 2a_0\omega_0\Big) \tilde{\omega}\Bigg)
+			&-  \mathcal{P}\Phi\Bigg(\Big(a_1 q_0 + 2a_0\omega_0\Big) \tilde{\omega}\Bigg) \\
+			&+ \mathcal{P} \mathcal{I} \tilde{p}_\tau
 	\end{split}
 \end{equation}
 
+We will now make three additional abstractions to simplify \cref{eq:SymbolicLinearisationExpanded}. We first exploit the trivial condition that, when linearizing at an equilibrium point, $f(x_0) \equiv 0$. We then consider the fact that, in practice, $OD$ and $p_\tau$ vary very slowly compared to $q_n$ and $\omega$. It is therefore a reasonable assumption that at steady state for the latter variables, the error introduced by neglecting $\frac{\partial\Omega}{\partial OD}$ is:
 
+\begin{equation}\label{eq:IgnoreODError}
+	\mathcal{P}\Phi\Big(|\tilde{q}_{ss}|\tilde{q}_{ss}\frac{2}{K_v^2 OD_0^3} \tilde{OD}\Big)
+\end{equation}
 
+which, under the assumption that $q_n$ changes much faster than $OD$, is a constant offset and therefore removable by integral action. Analogously, the error induced by ignoring $\frac{\partial\Omega}{\partial p_\tau}$ is: 
+
+\begin{equation}\label{eq:IgnorePressureError}
+	\mathcal{P}\mathcal{I}\tilde{p}_\tau
+\end{equation}
+
+which is likewise a constant term that may be removed by integral action. Thus, we can restate a greatly simplified form of \cref{eq:SymbolicLinearisationExpanded} as
+
+\begin{equation}\label{eq:SymbolicLinearisationSimplified}
+	\dot{q}_n \approx -\mathcal{P}\Phi\Bigg(a_1\omega_0 + \Big(|q_0|+\text{sign}(q_0)q_0\Big)\Bigg(K_\lambda + a_2 + \frac{1}{(K_v OD_0)^2}\Bigg) \tilde{q}_n \Bigg) -  \mathcal{P}\Phi\Bigg(\Big(a_1 q_0 + 2a_0\omega_0\Big) \tilde{\omega}\Bigg)
+\end{equation}
+
+\clearpage
 
 \subsection{Linearised model}
 The linearised model of the system can be expressed on the standard state space form given in \cref{eq:StateSpace}
