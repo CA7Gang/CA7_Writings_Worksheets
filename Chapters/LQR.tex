@@ -21,7 +21,7 @@ This type of minimization problem is known as a \textit{Bolza problem} and $\mat
 \mathcal{H}(x(t),u(t),\lambda(t),t) = \lambda^T(t) f(x(t),u(t)) + \lambda_0\mathcal{L}(x(t),u(t))
 \end{equation}
 
-where $\lambda^T f(x(t),u(t))$ are commonly referred to as the \textit{costates} of \cref{eq:BasicOptimalFunction} and $\lambda$ are called \textit{Lagrange multipliers}. The optimal state, control, and Lagrange multiplier sequences $x^*$, $u^*$, and $\lambda^*$ are then given by Pontryagin's Minimum Principle, which states that the optimal sequences must minimize the Hamiltonian such that:
+where $\lambda^T$ are \textit{Lagrange multipliers} that are commonly referred to as the \textit{costates} of \cref{eq:BasicOptimalFunction} in the context of control. The optimal state, control, and Lagrange multiplier sequences $x^*$, $u^*$, and $\lambda^*$ are then given by Pontryagin's Minimum Principle, which states that the optimal sequences must minimize the Hamiltonian such that:
 
 \begin{equation}\label{eq:MinimizeHamiltonian}
 \forall t \in [0,T] \wedge \forall u \in U: \ \mathcal{H}(x^*(t),u^*(t),\lambda^*(t),t) \leq \mathcal{H}(x^*(t),u(t),\lambda^*(t),t)
@@ -63,7 +63,7 @@ with $Q(t) \wedge \mathcal{M}$ symmetric and positive semidefinite, and $R(t)$ s
 \mathcal{L}(x(t),u(t)) = x^T(t)Q(t)x(t) + u^T(t)R(t)u(t)
 \end{equation}
 
-and per \cite{Liberzon2012} we may freely choose $\lambda_0 = -1$ such that the Hamiltonian becomes:
+and per \cite{Liberzon2012} we may freely choose $\lambda_0 = -1$\footnote{Letting $\lambda_0 = 1$ will simply result in an inverted sign of the optimal gain, and an optimal feedback law of the type $-Kx$ instead of $Kx$.} such that the Hamiltonian becomes:
 
 \begin{equation}\label{eq:LQRHamiltonian}
 	\mathcal{H}(x(t),u(t),\lambda(t),t)) = \lambda^T(t)\big(A(t)x(t) + B(t)u(t)\big) - x^T(t)Q(t)x(t) - u^T(t)R(t)u(t)
@@ -153,7 +153,7 @@ such that:
 with $P$ now time-invariant and fulfilling the \textit{algebraic Riccati equation}:
 
 \begin{equation}\label{eq:ARE}
-	 PA - A^TP + Q - PBR^{-1}B^TP = 0
+	 PA + A^TP + Q - PBR^{-1}B^TP = 0
 \end{equation}
 
 This motivates the - frankly somewhat stunning - conclusion that for the infinite-horizon, time-invariant LQR problem, the optimal state feedback law may be calculated \textit{entirely} offline.
