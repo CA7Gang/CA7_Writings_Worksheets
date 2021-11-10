@@ -1,0 +1,136 @@
+\section{Model Legend}
+
+Model:
+\begin{equation*}
+	\Phi\mathcal{J}\Phi^T \dot{q} = -\Phi\Big(\lambda(q_n)+\mu(q_n,OD)+\alpha(q_n,\omega)\Big) + \Psi(\bar{h}-\mathbf{1}h_0) + \mathcal{I}(p_{\tau}-\mathbf{1}p_0)
+\end{equation*}
+
+where $p_{\tau}$ evolves according to:
+
+\begin{equation*}
+	\dot{p}_{\tau} = - \mathcal{T} \dot{d}_{\tau}, \ \mathcal{T} = diag(\tau_i)
+\end{equation*}
+
+and the matrices $\Phi, \Psi, \mathcal{I}$ are defined as:
+
+\begin{equation*}
+	\Phi \triangleq 
+	\begin{bmatrix} 
+		I & -\bar{H}_C^T\bar{H}_T^{-T} \\ 0 & \bar{F}^T\bar{H}_T^{-T} \\ 0  & \bar{G}^T\bar{H}_T^{-T} \\ 
+	\end{bmatrix}
+	, \qquad
+	\Psi \triangleq
+	\begin{bmatrix}
+		0 \\ \bar{F}^T \\ \bar{G}^T
+	\end{bmatrix}
+	, \qquad
+	\mathcal{I} \triangleq
+	\begin{bmatrix}
+		0 \\ 0 \\ I
+	\end{bmatrix}
+\end{equation*}
+
+\medskip
+\noindent $\Phi$ and $\Psi$ contains:
+\begin{center}
+	\begin{tabular}{l p{10cm} l}
+		$F$ & Open-node matrix - Extracts the pumps and consumer nodes & Dim = n x e \\
+		$G$ & Tank-node matrix/vector - Extracts the tank node. & Dim = n x 1 (one tank node) 
+	\end{tabular}
+\end{center}
+
+\begin{equation*}
+	F = \kbordermatrix{
+		&d_{f_1}&d_{f_2}&d_{f_3}&d_{f_4}\\
+		d_1	& 1 & 0 & 0 & 0\\
+		d_2	& 0 & 0 & 0 & 0\\
+		d_3 & 0 & 0 & 0 & 0\\
+		d_4 & 0 & 1 & 0 & 0\\
+		d_5 & 0 & 0 & 0 & 0\\
+		d_6 & 0 & 0 & 0 & 0\\
+		d_7 & 0 & 0 & 1 & 0\\
+		d_8 & 0 & 0 & 0 & 0\\
+		d_9 & 0 & 0 & 0 & 0\\
+		d_{10}& 0 & 0 & 0 & 1 \\
+	},
+	\qquad
+	G = \kbordermatrix{
+		&d_{\tau_1}\\
+		d_1& 0\\
+		d_2& 0\\
+		d_3& 0\\
+		d_4& 0\\
+		d_5& 0\\
+		d_6& 1\\
+		d_7& 0\\
+		d_8& 0\\
+		d_9& 0\\
+		d_{10}& 0 \\
+	}
+\end{equation*}
+
+\begin{equation*}
+	\bar{F} = F \setminus F_{6\star} \wedge \bar{G} = G \setminus G_{6\star}
+\end{equation*}
+
+
+\medskip
+\noindent $ \mathcal{J}$ is the mass inertia of the water in all pipes [\si{kg}/\si{m^{4}}]. Dim =  m x m
+
+\medskip
+\noindent $\lambda (q_n)$ is the pressure drop across all components due to pipe friction [\si{Pa}]
+\begin{equation*}
+	\lambda(q)  =	\Big(f \cdot \frac{8\cdot L\cdot q^{2}}{\pi^{2}\cdot g \cdot D^{5}} + k_{f}\cdot \frac{8\cdot q^{2}}{\pi^{2}\cdot g \cdot D^{4}}\Big)\cdot g \cdot \rho
+\end{equation*}
+
+
+\begin{center}
+	\begin{tabular}{l p{10cm} l} 
+		f & Friction constant &	[$ \cdot $]		\\
+		L & Length of pipe &	[m]		\\
+		g & Gravitational acceleration & [$ \frac{m}{s^2} $]\\
+		D & Diameter of pipe & [m]			\\
+		$ \rho $ & Density of water & [$ \frac{kg}{m^3} $]	
+	\end{tabular}
+\end{center}
+
+\medskip
+\noindent $\mu(q_n,OD)$: is the pressure drop across all components in the system due to valve friction [\si{Pa}]
+
+\begin{equation*}
+	\mu(q, OD) = \frac{1}{K_{valve}(OD)^2} \cdot |q|\cdot q
+\end{equation*}
+
+\begin{center}
+	\begin{tabular}{l p{10cm} l} 
+		OD & Opening degree &	[$ \% $]		\\
+		$ K_{valve} $ & Constant: flow in $ \frac{m^3}{h} $at OD = 100 \% at 1 bar $\Delta p$ &	[$\cdot$]		\\
+	\end{tabular}
+\end{center}
+
+\medskip
+\noindent $\alpha(q_n, \omega)$: Pressure drop across the pump ($\Delta p_p$) [\si{Pa}]
+
+\begin{equation*}
+	\alpha (q, \omega) = a_0\cdot \omega^2 +  a_1\cdot \omega \cdot q -a_2\cdot |q|\cdot q
+\end{equation*}
+
+\begin{center}
+	\begin{tabular}{l p{10cm} l} 
+		$\omega$ & Pump angular velocity &	[$ \frac{rad}{s} $]		\\
+		$ \alpha_0 - \alpha_2 $ & tuple of coefficients that describe the pump's characteristic curve &	[$\cdot$]		\\
+	\end{tabular}
+\end{center}
+
+\medskip
+\noindent $\bar{h}$: Height of all nodes excluding the reference node [m]
+
+\noindent $h_0$: The reference node height [m]
+
+\medskip
+\noindent $p_\tau$: The pressure at the bottom of the tank [Pa].
+
+\noindent $p_0$: The reference node pressure [Pa]
+
+
+
