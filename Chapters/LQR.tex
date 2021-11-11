@@ -171,3 +171,75 @@ then choosing $Q = C^TC$ such that the cost functional becomes:
 \end{equation} 
 
 \textit{guarantees} exponential stability of the closed-loop system $\dot{x}^* = (A-BR^{-1}B^TP)x^*$ so long as $(A,C)$ are an observable pair \cite{Liberzon2012}.
+
+\subsection{Tracking LQR and Integral Action}\label{subsec:TrackingAndIntegralAction}
+
+The aware reader will have noted that the preceding sections in \cref{sec:LQR} strictly address \textit{regulator} problems - i.e., the regulation of a system to the origin. In practice, this is rarely a sufficient problem definition for practical purposes, as most systems have some setpoint or other. 
+
+Fortunately, casting the Lagrange problem in \cref{eq:LagrangeProblem} as a tracking problem is largely trivial, as we may simply choose a new coordinate system with the target as the origin. We may perform a similar coordinate shift on the control to specify a desired operating point. For convenience of notation, we let $\hat{x} = x-x_r$ and $\hat{u} = u-u_r$ and take the time index $t$ to be implicit. Then we can represent the Lagrange problem in the shifted coordinate system as:
+
+\begin{equation}\label{eq:LagrangeProblemSetpoint}
+	J = \int_{t_0}^{\infty} \big(\hat{x}^TQ\hat{x} + \hat{u}^TR\hat{u}\big)dt
+\end{equation} 
+
+We can by a similar ploy convert \cref{eq:LagrangeProblemSetpoint} into an \textit{output} tracking problem, which is perhaps the most common practical control problem, as $C$ is simply a linear transformation (i.e a coordinate translation) on the states:
+
+\begin{equation}\label{eq:LagrangeProblemOutput}
+	J = \int_{t_0}^{\infty} \big((C\hat{x})^TQ_y(C\hat{x}) + \hat{u}^TR\hat{u}\big)dt = \int_{t_0}^{\infty} \big(\hat{y}^TQ_y\hat{y} + \hat{u}^TR\hat{u}\big)dt
+\end{equation} 
+
+We now note that as with many other state-space control algorithms, an LQR controller does not inherently have integral action. There are multiple ways of adding this to LQR, such as the classical integrator state approach \cite{Skogestad2005}. Here the extended state $\bar{x} = [x \ x_i]^T$ is defined, and the system evolves according to the dynamics:
+
+\begin{align}\label{eq:ClassicalIntegralAction}
+&u = -\bar{K}\bar{x} \\
+&\dot{\bar{x}} = \bar{A}\bar{x} + \bar{B}u + B_r r \\ 
+&y = \bar{C}\bar{x} \\
+&\bar{A} = \begin{bmatrix}A & 0 \\ -C & 0 \end{bmatrix}, \ \bar{B} = \begin{bmatrix} B \\ 0 \end{bmatrix}, \ B_r = \begin{bmatrix} 0 \\ 1 \end{bmatrix}, \ \bar{C} = \begin{bmatrix} C & 0 \end{bmatrix},
+\ \bar{K} = -\begin{bmatrix} K & -K_i \end{bmatrix},
+\end{align}
+
+This approach, however, introduces the issue of weighting $x_i$ appropriately. This can be an awkward weight to choose, as the state represents the time integral of the tracking error, rather than the tracking error directly. We therefore prefer an alternative integral action design, which we describe in \cref{subsec:VelocityFormLQR}.
+
+\subsection{The Velocity-Form LQR Algorithm}\label{subsec:VelocityFormLQR}
+
+We will now present the velocity-form LQR algorithm, as detailed in \cite{Pannocchia2001,Ruscio2012}. We will make the initial assumption that the system dynamics have been discretised by some appropriate method, and we then define the deviation variables:
+
+\begin{equation}\label{eq:VelocityVariables}
+	\Delta x_k = x_k - x_{k-1}, \ \Delta y_k = y_k - r_k, \ \Delta u_k = u_k-u_{k-1}
+\end{equation}
+
+where $k$ is the sample index. We now define the extended vectors and matrices:
+
+\begin{equation}\label{eq:VelocityMatrices}
+	\tilde{x}_k = \begin{bmatrix} \Delta x_k \\ \Delta y_k	\end{bmatrix}, \ \tilde{u}_k = \Delta u_k, \
+	\tilde{A} = \begin{bmatrix} A & 0 \\ CA & I	\end{bmatrix}, \ 
+	\tilde{B} = \begin{bmatrix} B \\ CB	\end{bmatrix}, \ \tilde{C} = \begin{bmatrix} 0 & I	\end{bmatrix}
+\end{equation}
+
+and the velocity-form dynamics:
+
+\begin{align}\label{eq:VelocityDynamics}
+	&\tilde{x}_{k+1} = \tilde{A}\tilde{x}_k + \tilde{B}\tilde{u}_k \\
+	&\Delta y_k = \tilde{C}\tilde{x}_k \\
+	&u_k = u_{k-1} + \tilde{u}_k
+\end{align}
+
+We now note a number of interesting properties about this velocity-form algorithm. Consider first the origin regulation problem, i.e. $\tilde{x} \rightarrow 0$. Clearly, driving $\tilde{x}$ to $0$ must drive the system to settle at exactly $r$, per the definitions in \cref{eq:VelocityVariables}, as:
+
+\begin{equation}\label{eq:VelocityDriveToOrigin}
+	\begin{split}
+		&\tilde{x} = 0 \Rightarrow \Delta x = 0 \\ 
+		&\tilde{x} = 0 \Rightarrow \Delta y = 0 \Rightarrow y = r
+	\end{split}
+\end{equation}
+
+Consider now the discretized Lagrange problem phrased in terms of these deviation variables:
+
+\begin{equation}\label{eq:LagrangeProblemDeviation}
+	J = \sum_{k_0}^{\infty} \big(\tilde{x}^TQ\tilde{x} + \tilde{u}^TR\tilde{u}\big) = \sum_{k_0}^{\infty}\left( \begin{bmatrix} \Delta x_k \\ \Delta y_k\end{bmatrix}^T Q
+	\begin{bmatrix} \Delta x_k \\ \Delta y_k\end{bmatrix} + 
+	\Delta u_k^TR\Delta u_k \right)
+\end{equation} 
+
+Clearly, this functional penalizes deviations from the origin of the state space, which is located exactly at $\{0,0,r\}$, while penalizing deviations from the default control input of $0$.
+
