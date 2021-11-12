@@ -241,5 +241,20 @@ Consider now the discretized Lagrange problem phrased in terms of these deviatio
 	\Delta u_k^TR\Delta u_k \right)
 \end{equation} 
 
-Clearly, this functional penalizes deviations from the origin of the state space, which is located exactly at $\{0,0,r\}$, while penalizing deviations from the default control input of $0$.
+Clearly, this functional penalizes deviations from the origin of the state space, which is located exactly at $\{0,0,r\}$, while penalizing deviations from the default control input of $0$. Consider now the case of an arbitrary linearisation around some equilibrium point $x_{e}$ and corresponding operating point $u_{op}$. A linearization of this type will take the form:
+
+\begin{equation}\label{eq:LinearizationAroundOP}
+	\begin{split}
+	&f(x,u) \approx \frac{\partial f}{\partial x} \tilde{x} + \frac{\partial f}{\partial u} \tilde{u}, \\ 
+	&\tilde{x} = x-x_e, \ \tilde{u} = u - u_{op}
+	\end{split}
+\end{equation}
+
+which lends itself to the interpretation that:
+
+\begin{equation}\label{eq:DeltaInterpretation}
+	\Delta \tilde{x} = x-x_e, \ \Delta \tilde{u} = u-u_{op}
+\end{equation}
+
+and therefore suggests that \cref{eq:LagrangeProblemDeviation} penalizes deviations from exactly the equilibrium point $\{x_e,u_{op}\}$. This is a quite attractive quality when contextualised by the Hartman-Grobman theorem, as we expect our linearised model dynamics to closely\footnote{Exactly, in fact, in some indeterminately sized region} approximate the real system dynamics in some region around precisely this equilibrium point. 
 
