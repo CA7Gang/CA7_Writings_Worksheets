@@ -29,7 +29,7 @@ At these flows the pressure drop across the pump were read from the y-axis at th
 		p_{48}
 	\end{bmatrix}  = 
 	\begin{bmatrix}
-		5.57 & 5.85 & 5.9 & 5.7 & 5.1 & 4.253.3 & 3.3 & 2.4 \\
+		5.57 & 5.85 & 5.9 & 5.7 & 5.1 & 4.25 & 3.3 & 2.4 \\
 		4.1 & 4.2 & 4.2 & 4 & 3.55 & 3 & 2.3 & 1.55 \\
 		1.75 & 1.85 & 1.7 & 1.3 & 0.95 &  &  &  
 	\end{bmatrix} 
@@ -38,18 +38,23 @@ At these flows the pressure drop across the pump were read from the y-axis at th
 
 Only 5 pressure readings were made from the 48\% pump speed.
 
-The coefficients are found by the least square solution to:
+The coefficients are found by finding the leas square solution to following equation:
 
 \begin{equation}
-	Ax = b \leftrightarrow x = bA^{-1}
+	Ax = b \leftrightarrow x = (A^TA)^{-1}A^Tb
 \end{equation}
-where 
+where A is a matrix defined as follows:
 \begin{equation}
 	A = \begin{bmatrix}
 			\omega^2 & q \cdot \omega & q^2
 			\end{bmatrix}
 \end{equation}
-and b = p from \cref{eq:pump_p}.
+
+With number of rows corresponding to the amount of data points in $ p $, i.e. the for 8 rows corresponds to measurements made for $ \omega = 80$, the next 8 rows corresponds to measurements made for $ \omega = 69 $ etc.  
+
+and $ b = \begin{bmatrix}
+	p_{80} \hspace{0.3cm} p_{69} \hspace{0.3cm} p_{48}
+\end{bmatrix} $$ ^T $ from \cref{eq:pump_p}.
 
 The solution yields the following coefficients:
 \begin{equation}
@@ -60,11 +65,10 @@ The solution yields the following coefficients:
 	\end{split}
 \end{equation}
 
-We try to confirm our pump model with the actual values from the pump datasheet:
-
+We confirm our pump model by comparing it to actual data points on the pump curve from the data sheet.
 \begin{figure}[h!]
 	\centering
-	\includegraphics[width=0.5\textwidth]{Pictures/Pumpcurve_69.png}
+	\includegraphics[width=0.7\textwidth]{Pictures/Pumpcurve_69.png}
 	\caption{Comparing model of pump curve with actual values from data sheet}
 	\label{fig:Pumpcurve_69}
 \end{figure}
