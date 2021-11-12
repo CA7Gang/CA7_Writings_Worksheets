@@ -211,6 +211,20 @@ which is likewise a constant term that may be removed by integral action. Thus, 
 \clearpage
 
 \subsection{Linearised model}
+
+Before linearizing the system model, presented in \cref{eq:NonLinearModelWithTank}, we need to identify the equilibrium points. This is done by evaluating the before mentioned model, at fixed $ \omega $ and $ OD $, with dynamic states set to zero. We choose pump speeds as an average of those used in \cref{ap:PumpCoef}, which is $ 66\% $ for each pump. We set OD to $ 0.5 $ for each valve. This yields the following equilibrium point:
+
+\begin{equation}
+	\begin{split}
+		q_C^* = \begin{bmatrix} 1 \\ 2
+		\end{bmatrix} \\
+		\bar{d}_f^* = \begin{bmatrix} 1 \\ 2 \\ 3	
+		\end{bmatrix} \\
+		\bar{d}_\tau^* = 0 \\
+	\end{split}
+\end{equation}
+
+
 The linearised model of the system can be expressed on the standard state space form given in \cref{eq:StateSpace}
 \begin{equation}\label{eq:StateSpace}
 	\begin{split}

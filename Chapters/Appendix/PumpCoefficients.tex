@@ -1,6 +1,6 @@
 This section is concerned with the appendices of the WorkSheets
 
-\subsection{PumpCoefficients}
+\subsection{PumpCoefficients} \label{ap:PumpCoef}
 
 A model of the pump is based on the following relationship between the pressure drop over the pump and the pump speed, flow through the pump and the pump coefficients.
 
@@ -41,7 +41,7 @@ Only 5 pressure readings were made from the 48\% pump speed.
 The coefficients are found by the least square solution to:
 
 \begin{equation}
-	Ax = b
+	Ax = b \leftrightarrow x = bA^{-1}
 \end{equation}
 where 
 \begin{equation}
@@ -52,11 +52,22 @@ where
 and b = p from \cref{eq:pump_p}.
 
 The solution yields the following coefficients:
-\begin{itemize}
-	\item test
-	\item test 2
-\end{itemize}
+\begin{equation}
+	\begin{split}
+		a_0 = 0.0001 \\
+		a_1 = 0.0004 \\
+		a_2 = -0.0323 \\
+	\end{split}
+\end{equation}
 
+We try to confirm our pump model with the actual values from the pump datasheet:
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.5\textwidth]{Pictures/Pumpcurve_69.png}
+	\caption{Comparing model of pump curve with actual values from data sheet}
+	\label{fig:Pumpcurve_69}
+\end{figure}
 
 
 
