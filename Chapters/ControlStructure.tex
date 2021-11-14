@@ -287,32 +287,34 @@ The outputs will be the measured pressure at the tank node and the flows of the 
 \end{equation}
 
 \subsubsection{State space model - tank pressure dynamics}
-The tank pressure dynamics is quite a bit more simple than that of the pump flows. For the slow dynamics the pump inputs have got no immediate influence, therefore the input matrix is neglected:
-\begin{equation}
+The tank pressure dynamics are significantly simpler than the fast dynamics of the system - in fact, the slow tank pressure dynamics of the system are a linear first-order system that evolves according to:
+
+\begin{equation}\label{eq:SlowTankDynamics}
 	\begin{split}
-		\dot{x} = Ax \\
-		y = Cx
+		\dot{p}_\tau &= p_\tau - \tau d_\tau \\
+		&= p_\tau - \tau \left(d_1 + d_{13} - d_5 - d_9\right)
 	\end{split}
 \end{equation}
 
-For the case of the tank pressure dynamics the state space model is:
-\begin{equation}
-		A = \begin{bmatrix}
-			0&0&0&0&-0.0001&0
-		\end{bmatrix} \\
-	\end{equation}
-\begin{equation}
-		C = \begin{bmatrix}
-			-\tau&-\tau&-\tau&-\tau&0&1
-		\end{bmatrix}
-\end{equation}
+This can be represented as a state-space equation on the form:
 
-\begin{equation}\label{eq:StateSpaceInputsOutputsFast}
+\begin{equation}\label{eq:TankPressureStateSpace}
 	\begin{split}
-		x = \begin{bmatrix} d_f \\ d_{\tau} \\ p_{\tau}	\end{bmatrix} \\
-		y = \begin{bmatrix} p_\tau \\ \end{bmatrix} \\ 
+				\dot{p}_\tau = A p_\tau - \tau (B_pd_p + B_cd_c ) 
+				&= A p_\tau - \tau \left(B_p \begin{bmatrix}d_1 & d_{13}\end{bmatrix} 
+				+ B_c\begin{bmatrix}d_5 & d_9\end{bmatrix}\right) \\
+				 A = 1, \ B_p &= \begin{bmatrix}-1 \\ -1\end{bmatrix}, \ B_c = \begin{bmatrix}-1 \\ -1\end{bmatrix}
 	\end{split}
 \end{equation}
+
+In practice the consumer flows may not always be measurable, in which case we can eliminate the disturbance term so that \cref{eq:TankPressureStateSpace} becomes:
+
+\begin{equation}\label{eq:TankPressureStateSpaceReduced}
+		\dot{p}_\tau = A p_\tau - (B_pd_p)
+		= A p_\tau - \tau \left(B_p \begin{bmatrix}d_1 & d_{13}\end{bmatrix}\right)
+\end{equation}
+
+and integral action will be required to compensate for the disturbance term $B_c d_c$. However, in some cases this will not elicit the required control performance, and it will instead be necessary to use the model in \cref{eq:TankPressureStateSpace} together with an observer to estimate any unmeasured flows.
 
 \subsection{Choice of state variables}
 
