@@ -256,5 +256,11 @@ which lends itself to the interpretation that:
 	\Delta \tilde{x} = x-x_e, \ \Delta \tilde{u} = u-u_{op}
 \end{equation}
 
-and therefore suggests that \cref{eq:LagrangeProblemDeviation} penalizes deviations from exactly the equilibrium point $\{x_e,u_{op}\}$. This is a quite attractive quality when contextualised by the Hartman-Grobman theorem, as we expect our linearised model dynamics to closely\footnote{Exactly, in fact, in some indeterminately sized region} approximate the real system dynamics in some region around precisely this equilibrium point. 
+\clearpage
+
+This is a quite attractive quality when contextualised by the Hartman-Grobman theorem, as we expect our linearised model dynamics to closely\footnote{Exactly, in fact, in some indeterminately sized region} approximate the real system dynamics in some region around the equilibrium point $\{x_e,u_{op}\}$, and the velocity LQR algorithm will penalize deviations from the point $\{x_e,u_{op},r\}$, thus regulating the system to $r$ while deviating minimally from the vicinity of the equilibrium $\{x_e,u_{op}\}$.
+
+\subsection{Implementation and Simulation Study}\label{subsec:LQRSimulationStudy}
+
+We now implement a velocity-form LQR controller for the tank pressure dynamics described by \cref{eq:TankPressureStateSpaceReduced}. We choose a discretisation time $t_s = 10 \si{s}$, and the tank constant is $\tau = -0.000096 \frac{\si{bar}}{\si{m^3}}$
 
