@@ -262,5 +262,28 @@ This is a quite attractive quality when contextualised by the Hartman-Grobman th
 
 \subsection{Implementation and Simulation Study}\label{subsec:LQRSimulationStudy}
 
-We now implement a velocity-form LQR controller for the tank pressure dynamics described by \cref{eq:TankPressureStateSpaceReduced}. We choose a discretisation time $t_s = 10 \si{s}$, and the tank constant is $\tau = -0.000096 \frac{\si{bar}}{\si{m^3}}$
+We now implement a velocity-form LQR controller for the tank pressure dynamics described by \cref{eq:TankPressureStateSpaceReduced}. We choose a discretisation time $t_s = 10 \si{s}$, and the tank constant is $\tau = -0.000096 \frac{\si{bar}}{\si{m^3}}$, such that $T = 0.00096$. This results in the system:
+
+\begin{equation}\label{eq:TankPressureMatrices}
+	\begin{gathered}
+		x_\tau(k+1) = A x_\tau(k) + B_pd_p \\
+		p_\tau(k) = Cx_\tau(k) + B_cd_c \\
+		A = 1, \ B_p = B_c = [0.00096 \ 0.00096], \ C = 1	
+	\end{gathered}
+\end{equation}
+
+Using the velocity-form transform from \cref{eq:VelocityMatrices}, the system becomes:
+
+\begin{equation}\label{eq:TankPressureVelocityMatrices}
+\begin{gathered}
+	 \begin{bmatrix}\Delta	x_\tau(k+1) \\\ p_\tau(k+1)-p_{r}
+	\end{bmatrix} = \tilde{A} \Delta x_\tau(k) + \tilde{B}\Delta d_p \\
+	p_\tau(k) = \tilde{C}\Delta x_\tau(k) \\
+	\tilde{A} = \begin{bmatrix} 1 & 0 \\ 1 & 1 \end{bmatrix},
+	 \ \tilde{B}_p = \begin{bmatrix} 0.00096 & 0.00096 \\ 0.00096 & 0.00096
+	\end{bmatrix}, \ \tilde{C} = [0 \ 1]	
+\end{gathered}
+\end{equation}
+
+
 
