@@ -340,3 +340,64 @@ a time delay $\theta$ limits the possible bandwidth of a system to be
 
 This naturally sets a limitation as to how fast the inner loop of the control structure can be. As the inner loop sets a limitation of how fast the outer loop can be, i.e. 5-10 timer slower than the inner loop.
 
+\subsection{Design of pump controllers}
+This section will cover design of pump controllers, which corresponds to control of the fast dynamics of the system. It is also considered the inner loop. 
+\subsubsection{Decentralised control}
+Based on the obtained linearised model, controllers for the pumps are being introduced. Its desired to obtain decentralised control as this mitigates network faults and decrease delays in the system. Decentralised control can be obtained in a MIMO system if the plant is close to diagonal, meaning that the system can be considered a collection of independent sub-systems \cite{Skogestad2005} p. 91. 
+In order to validate whether decentralised control can be obtained, the interactions in the off diagonals of the systems is investigated with a magnitude plot. The magnitude plot can be seen in \cref{fig:PumpMagPlot}
+
+\begin{figure}[h!]
+	\centering
+		\includegraphics[width=0.8\textwidth]{Pictures/PumpMagPlot.png}
+		
+		\caption{Magnitude Plot from inputs to outputs}
+	\label{fig:PumpMagPlot}
+\end{figure}
+
+As seen in \cref{fig:PumpMagPlot}, the gain from $\omega_1$ to $d_13$ is for all frequencies less than -50 dB, compared to -10 dB from $\omega_1$ to $d_1$. \\
+Likewise is the gain from $\omega_2$ to $d_1$ for all frequencies less than -50 dB, compared to -15 dB from $\omega_2$ to $d_13$.\\
+In both cases, the coupling is at least -35 dB corresponding to more than a factor of 50. Thus the system will be assumed have no interaction/coupling, which allows for design of controllers independently of the interactions, and solely from the diagonal transfer functions in the transfer matrix.
+
+\subsubsection{Similarities within the diagonal systems and simplification}
+The diagonal transfer functions are considered to be identical, based on the poles and zeros of the two diagonal transfer functions seen in \cref{eq:PumpDiagonalPolesZeros}: 
+
+\begin{equation}\label{eq:PumpDiagonalPolesZeros}
+	\begin{gathered}
+		z_{11} = \begin{bmatrix}-18.9173&  -13.9942&   -0.5571&   -0.3357&   -0.1944 \end{bmatrix} \\
+		z_{22} = \begin{bmatrix}-20.7216&  -14.1600&   -0.4079&   -0.3639&   -0.1597 \end{bmatrix} \\
+		p_{11} = p_{22} = \begin{bmatrix} 20.7703&  -14.8635&   -0.5624&   -0.3930&   -0.3337&   -0.1597 \end{bmatrix} \\
+	\end{gathered}
+\end{equation}
+
+In considering the two systems to be identical enables the design of only one controller for both the subsystems, namely both the pumps.\\
+Realising that many of the poles more or less cancels out with the zeros can simplify the model very much for the root locus design, yielding poles and zeros \cref{eq:SimplifiedPolesZeros}:
+
+ \begin{equation}\label{eq:SimplifiedPolesZeros}
+ 	\begin{gathered}
+ 		z = \begin{bmatrix}  -0.1944 \end{bmatrix} \\
+ 		p = \begin{bmatrix}  -0.3930&  -0.1597 \end{bmatrix} \\
+ 	\end{gathered}
+ \end{equation}
+
+\subsubsection{Requirements for control performance}
+Before starting the actual root locus design of the controller, the desired performance of the controlled system needs to be defined. \\
+The first priority of the controlled system is for it to be stable. This can be achieved by making sure that the bandwidth (BW) of the system does not conflict with the limitation imposed by the pump delay of ~4 sec, yielding $BW < 1/4 $ rad/sec. On the other hand, the system at hand is the inner loop of the system and such should be at least 5 times faster than the slow outer system. The desired BW of the system is chosen to be 0.05 rad/s. 
+
+
+Next, the controlled system should have no or very low steady state error for step inputs. Lastly the system should have low overshoot (OS), to indicate a sound phase margin to accommodate model uncertainty, i.e OS < 30%. 
+
+\subsubsection{Choice of controller type}
+A PI controller is considered to be a sufficient solution for the requirements put forth. The integral action will take care of the steady state error, and then the gain can be chosen based on root locus design.
+
+\subsubsection{Root locus design}
+In the controller design, the delay is disregarded, as we can only model the delay as a pade approximation, which introduces RHP zeros depending on the order of the pade. Since a delay does not imply a RHP zero, it is assumed to make the root locus design unreliable, and for this reason it is kept out of the root locus design. In stead, the limitation imposed by the delay is considered in the requirements. \\
+\\
+\\
+HOWEVER: this does not really make any sense, since we then do not really see the instability problems imposed by the delay. 
+
+
+
+
+
+
+
