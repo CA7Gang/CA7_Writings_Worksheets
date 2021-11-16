@@ -208,7 +208,7 @@ We will now present the velocity-form LQR algorithm, as detailed in \cite{Pannoc
 	\Delta x_k = x_k - x_{k-1}, \ \Delta y_k = y_k - r_k, \ \Delta u_k = u_k-u_{k-1}
 \end{equation}
 
-where $k$ is the sample index. We now define the extended vectors and matrices:
+where $k$ is the sample index. We then define the extended vectors and matrices:
 
 \begin{equation}\label{eq:VelocityMatrices}
 	\tilde{x}_k = \begin{bmatrix} \Delta x_k \\ \Delta y_k	\end{bmatrix}, \ \tilde{u}_k = \Delta u_k, \
@@ -258,17 +258,27 @@ which lends itself to the interpretation that:
 
 \clearpage
 
-This is a quite attractive quality when contextualised by the Hartman-Grobman theorem, as we expect our linearised model dynamics to closely\footnote{Exactly, in fact, in some indeterminately sized region} approximate the real system dynamics in some region around the equilibrium point $\{x_e,u_{op}\}$, and the velocity LQR algorithm will penalize deviations from the point $\{x_e,u_{op},r\}$, thus regulating the system to $r$ while deviating minimally from the vicinity of the equilibrium $\{x_e,u_{op}\}$.
+This is a quite attractive quality when contextualised by the Hartman-Grobman theorem, as we expect linearised model dynamics to closely\footnote{Exactly, in fact, in some indeterminately sized region} approximate the real system dynamics in some region around the equilibrium point $\{x_e,u_{op}\}$, and the velocity LQR algorithm will penalize deviations from the point $\{x_e,u_{op},r\}$, thus regulating the system to $r$ while deviating minimally from the vicinity of the equilibrium $\{x_e,u_{op}\}$.
+
+\subsection{Disturbance-Accommodating Linear Quadratic Regulator for Exogenous Inputs}\label{subsec:DALQR}
+
+We now address a final LQR-related wrinkle. As shown in \cref{eq:TankPressureStateSpace}, the consumer demand flows are modelled as exogenous, uncontrolled inputs. Standard LQR does not accommodate this construction, but may be modified to accommodate exogenous inputs by adding an additional term to the optimal control law \cite{Singh2017} such that:
+
+
+\begin{equation}\label{eq:ELQRControlLaw}
+	u^*(k) = -Kx(k) - B^\dagger B \delta(k)
+\end{equation}
+
+where $B^\dagger$ is the Moore-Penrose pseudoinverse of $B$ and $\delta(k)$ is the exogenous input at time $k$.
 
 \subsection{Implementation and Simulation Study}\label{subsec:LQRSimulationStudy}
 
-We now implement a velocity-form LQR controller for the tank pressure dynamics described by \cref{eq:TankPressureStateSpaceReduced}. We choose a discretisation time $t_s = 10 \si{s}$, and the tank constant is $\tau = -0.000096 \frac{\si{bar}}{\si{m^3}}$, such that $T = 0.00096$. This results in the system:
+In this section, we detail the implementation and simulation study of a velocity-form LQR controller for the tank pressure dynamics described by \cref{eq:TankPressureStateSpace}. We choose a discretisation time $t_s = 10 \si{s}$, and the tank constant is $\tau = -0.000096 \frac{\si{bar}}{\si{m^3}}$, such that $T = 0.00096$. This results in the system:
 
 \begin{equation}\label{eq:TankPressureMatrices}
 	\begin{gathered}
-		x_\tau(k+1) = A x_\tau(k) + B_pd_p \\
-		p_\tau(k) = Cx_\tau(k) + B_cd_c \\
-		A = 1, \ B_p = B_c = [0.00096 \ 0.00096], \ C = 1	
+		p_\tau(k+1) = A p_\tau(k) + B_p d_p(k) + B_c d_c(k)  \\
+		A = 1, \ B_p = B_c = [0.00096 \ 0.00096], \ C = 1 ,
 	\end{gathered}
 \end{equation}
 
@@ -276,12 +286,10 @@ Using the velocity-form transform from \cref{eq:VelocityMatrices}, the system be
 
 \begin{equation}\label{eq:TankPressureVelocityMatrices}
 \begin{gathered}
-	 \begin{bmatrix}\Delta	x_\tau(k+1) \\\ p_\tau(k+1)-p_{r}
-	\end{bmatrix} = \tilde{A} \Delta x_\tau(k) + \tilde{B}\Delta d_p \\
-	p_\tau(k) = \tilde{C}\Delta x_\tau(k) \\
+	 \begin{bmatrix}\Delta	p_\tau(k+1) \\\ p_\tau(k+1)-p_{r}
+	\end{bmatrix} = \tilde{A} \Delta p_\tau(k) + \tilde{B}_p \Delta d_p(k) + \tilde{B}_c \Delta d_c(k)  \\
 	\tilde{A} = \begin{bmatrix} 1 & 0 \\ 1 & 1 \end{bmatrix},
-	 \ \tilde{B}_p = \begin{bmatrix} 0.00096 & 0.00096 \\ 0.00096 & 0.00096
-	\end{bmatrix}, \ \tilde{C} = [0 \ 1]	
+	 \ \tilde{B}_p = \tilde{B}_c = \begin{bmatrix} 0.00096 & 0.00096 & \\ 0.00096 & 0.00096\end{bmatrix}, \ \tilde{C} = [0 \ 1]	
 \end{gathered}
 \end{equation}
 

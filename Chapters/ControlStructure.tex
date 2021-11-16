@@ -299,30 +299,25 @@ The tank pressure dynamics are significantly simpler than the fast dynamics of t
 We can discretize this with Euler's method, resulting in:
 
 \begin{equation}\label{eq:TankDynamicsDiscrete}
-	p_\tau(k+1) = p_\tau(k) + \tau \left(d_1 + d_{13} + d_5 + d_9\right)t_s = T\left(d_1 + d_{13} + d_5 + d_9\right), \ T = \tau\cdot t_s 
+	\begin{gathered}
+			p_\tau(k+1) = p_\tau(k) + \tau \left(d_1(k) + d_{13}(k) + d_5(k) + d_9(k)\right)t_s = T\left(d_1(k) + d_{13}(k) + d_5(k) + d_9(k)\right) \\ 
+			T = \tau\cdot t_s 
+	\end{gathered}
 \end{equation}
 
 which can be converted into the following state-space system:
 
 \begin{equation}\label{eq:TankPressureStateSpace}
 	\begin{gathered}
-				p_\tau(k+1) = A p_\tau(k) + B_pd_p + B_cd_c
-				= A p_\tau(k) + \left(B_p \begin{bmatrix}d_1 \\ d_{13}\end{bmatrix} 
-				+ B_c\begin{bmatrix}d_5 \\ d_9\end{bmatrix}\right) = Ap_\tau(k) + B_\tau \begin{bmatrix} d_1 \\ d_{13} \\ d_5 \\ d_9 \end{bmatrix} \\      
-				A = 1, \ B_p = \begin{bmatrix}T & T \end{bmatrix}, \ B_c = \begin{bmatrix}T & T\end{bmatrix}, \ B_\tau = \left[B_p \ B_c \right]
+				p_\tau(k+1) = A p_\tau(k) + B_pd_p(k) + B_cd_c(k)
+				= A p_\tau(k) + \left(B_p \begin{bmatrix}d_1(k) \\ d_{13}(k)\end{bmatrix} 
+				+ B_c\begin{bmatrix}d_5(k) \\ d_9(k)\end{bmatrix}\right) \\      
+				A = 1, \ B_p = \begin{bmatrix}T & T \end{bmatrix}, \ B_c = \begin{bmatrix}T & T\end{bmatrix}
 	\end{gathered}
 \end{equation}
 
-In practice the consumer flows may not always be measurable, in which case we can convert the consumer flow term into an output disturbance:
+In practice the flows may not all be measurable, in which case they must be estimated with an observer. As \cref{eq:TankPressureStateSpace} is clearly linear, either a simple Luenberger observer or a Kalman filter will do. Additionally, we note the presence of $B_cd_c$, an exogenous input over which we have no control. This will be addressed in \cref{sec:LQR}.
 
-\begin{equation}\label{eq:TankPressureStateSpaceReduced}
-	\begin{gathered}
-		x_\tau(k+1) = A x_\tau(k) + B_pd_p \\
-		p_\tau(k) = Cx_\tau(k) + B_cd_c
-	\end{gathered}
-\end{equation}
-
-and integral action is used to compensate for the unmeasured disturbance term $B_c d_c$. However, in some cases this will not elicit the required control performance, and it will instead be necessary to use the model in \cref{eq:TankPressureStateSpace} together with an observer to estimate any unmeasured flows. This may in particular be anticipated if consumer demand varies quickly relative to the tank dynamics.
 
 \subsection{Choice of state variables}
 
@@ -354,8 +349,8 @@ In order to validate whether decentralised control can be obtained, the interact
 	\label{fig:PumpMagPlot}
 \end{figure}
 
-As seen in \cref{fig:PumpMagPlot}, the gain from $\omega_1$ to $d_13$ is for all frequencies less than -50 dB, compared to -10 dB from $\omega_1$ to $d_1$. \\
-Likewise is the gain from $\omega_2$ to $d_1$ for all frequencies less than -50 dB, compared to -15 dB from $\omega_2$ to $d_13$.\\
+As seen in \cref{fig:PumpMagPlot}, the gain from $\omega_1$ to $d_{13}$ is for all frequencies less than -50 dB, compared to -10 dB from $\omega_1$ to $d_1$. \\
+Likewise is the gain from $\omega_2$ to $d_1$ for all frequencies less than -50 dB, compared to -15 dB from $\omega_2$ to $d_{13}$.\\
 In both cases, the coupling is at least -35 dB corresponding to more than a factor of 50. Thus the system will be assumed have no interaction/coupling, which allows for design of controllers independently of the interactions, and solely from the diagonal transfer functions in the transfer matrix.
 
 \subsubsection{Similarities within the diagonal systems and simplification}
@@ -384,7 +379,7 @@ Before starting the actual root locus design of the controller, the desired perf
 The first priority of the controlled system is for it to be stable. This can be achieved by making sure that the bandwidth (BW) of the system does not conflict with the limitation imposed by the pump delay of ~4 sec, yielding $BW < 1/4 $ rad/sec. On the other hand, the system at hand is the inner loop of the system and such should be at least 5 times faster than the slow outer system. The desired BW of the system is chosen to be 0.05 rad/s. 
 
 
-Next, the controlled system should have no or very low steady state error for step inputs. Lastly the system should have low overshoot (OS), to indicate a sound phase margin to accommodate model uncertainty, i.e OS < 30%. 
+Next, the controlled system should have no or very low steady state error for step inputs. Lastly the system should have low overshoot (OS), to indicate a sound phase margin to accommodate model uncertainty, i.e $OS < 30\%$. 
 
 \subsubsection{Choice of controller type}
 A PI controller is considered to be a sufficient solution for the requirements put forth. The integral action will take care of the steady state error, and then the gain can be chosen based on root locus design.
