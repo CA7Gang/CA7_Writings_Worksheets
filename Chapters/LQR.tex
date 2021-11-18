@@ -221,7 +221,6 @@ and the velocity-form dynamics:
 \begin{align}\label{eq:VelocityDynamics}
 	&\tilde{x}_{k+1} = \tilde{A}\tilde{x}_k + \tilde{B}\tilde{u}_k \\
 	&\Delta y_k = \tilde{C}\tilde{x}_k \\
-	&u_k = u_{k-1} + \tilde{u}_k
 \end{align}
 
 We now note a number of interesting properties about this velocity-form algorithm. Consider first the origin regulation problem, i.e. $\tilde{x} \rightarrow 0$. Clearly, driving $\tilde{x}$ to $0$ must drive the system to settle at exactly $r$, per the definitions in \cref{eq:VelocityVariables}, as:
@@ -259,6 +258,21 @@ which lends itself to the interpretation that:
 \clearpage
 
 This is a quite attractive quality when contextualised by the Hartman-Grobman theorem, as we expect linearised model dynamics to closely\footnote{Exactly, in fact, in some indeterminately sized region} approximate the real system dynamics in some region around the equilibrium point $\{x_e,u_{op}\}$, and the velocity LQR algorithm will penalize deviations from the point $\{x_e,u_{op},r\}$, thus regulating the system to $r$ while deviating minimally from the vicinity of the equilibrium $\{x_e,u_{op}\}$.
+
+We note additionally - and importantly - that the control law resulting from \cref{eq:LagrangeProblemDeviation} is a control \textit{increment} law, i.e. that:
+
+\begin{equation}\label{eq:ControlIncrementLaw}
+	\Delta u^*(k) = -\Delta K(k) \Delta x(k) 
+\end{equation}
+
+and that the actual control applied to the system at any time $k$ is:
+
+\begin{equation}\label{eq:ActualControlApplied}
+	\begin{gathered}
+		u(k) = -K(k)x(k) \\
+		K(k) = \sum_{i=1}^{k} \Delta K(i)
+	\end{gathered}
+\end{equation}
 
 \subsection{Disturbance-Accommodating Linear Quadratic Regulator for Exogenous Inputs}\label{subsec:DALQR}
 
