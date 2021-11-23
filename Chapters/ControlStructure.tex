@@ -333,13 +333,13 @@ a time delay $\theta$ limits the possible bandwidth of a system to be
 	\omega_c < \frac{1}{\theta}
 \end{equation}
 
-This naturally sets a limitation as to how fast the inner loop of the control structure can be. As the inner loop sets a limitation of how fast the outer loop can be, i.e. 5-10 timer slower than the inner loop.
+This naturally sets a limitation as to how fast the inner loop of the control structure can be. As the inner loop sets a limitation of how fast the outer loop can be, i.e. 5-10 timer slower than the inner loop. This is a nessesary limitation, since the inner loop needs to be sufficiently fast for it to be used to linearize the outer loop. 
 
 \subsection{Design of pump controllers}
 This section will cover design of pump controllers, which corresponds to control of the fast dynamics of the system. It is also considered the inner loop. 
 \subsubsection{Decentralised control}
 Based on the obtained linearised model, controllers for the pumps are being introduced. Its desired to obtain decentralised control as this mitigates network faults and decrease delays in the system. Decentralised control can be obtained in a MIMO system if the plant is close to diagonal, meaning that the system can be considered a collection of independent sub-systems \cite{Skogestad2005} p. 91. 
-In order to validate whether decentralised control can be obtained, the interactions in the off diagonals of the systems is investigated with a magnitude plot. The magnitude plot can be seen in \cref{fig:PumpMagPlot}
+In order to validate whether decentralised control can be obtained, the interactions in the off diagonals of the systems are investigated with magnitude plots. For this analysis the tank is assumed to have a constant pressure. This is part of the seperation of the inner and outer loop, where the outer loop is assumed to be sufficienly slow, so it can be ignored in analysis of the inner loop. The magnitude plots can be seen in \cref{fig:PumpMagPlot}. They show the gain from a input frequency $\omega$ on each of the pumps to the output flows of the pumps.
 
 \begin{figure}[h!]
 	\centering
@@ -374,27 +374,100 @@ Realising that many of the poles more or less cancels out with the zeros can sim
  	\end{gathered}
  \end{equation}
 
+\subsubsection{Modelling of time delay}
+The timedelay of the pumps can be modelled with a pade approximation, using Matlab. The order of the approximation is not unimportant. The higher the order, the closer to a true time delay the result will be. It comes however at the cost of clarity, as a nth-order approximation places n LHP poles and n RHP zeroes, to simulate the delay. This is shown in \cref{fig:PadeApprox}.
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.8\textwidth]{Pictures/PadeApprox.png}
+	\caption{Pole-zero map of various order pade approximations of a 4 second delay}
+	\label{fig:PadeApprox}
+\end{figure}
+
+An investigation has been performed to show the error in closed loop pole locations introduced by using a low order approximation. \cref{fig:PadeApprox} and \cref{fig:PadeApprox} shows the closed loop pole locations when using a 1st, 2nd and 10th order pade approximation. The plots show a noticable difference from 1st to 2nd order, but no significance above that.
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.8\textwidth]{Pictures/PZmap_CL.png}
+	\caption{Pole-zero map of closed loop pole locations with various order pade approximations of a 4 second delay}
+	\label{fig:CLPoles}
+\end{figure}
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.8\textwidth]{Pictures/PZmap_CL_zoom.png}
+	\caption{Pole-zero map of closed loop pole locations with various order pade approximations of a 4 second delay. Zoomed in on the dominant complex conjugate pole pair.}
+	\label{fig:CLPolesZoom}
+\end{figure}
+When considering both convenience of use and modelling error the optimal approximation order was chosen to be 2.
+
+
 \subsubsection{Requirements for control performance}
 Before starting the actual root locus design of the controller, the desired performance of the controlled system needs to be defined. \\
-The first priority of the controlled system is for it to be stable. This can be achieved by making sure that the bandwidth (BW) of the system does not conflict with the limitation imposed by the pump delay of ~4 sec, yielding $BW < 1/4 $ rad/sec. On the other hand, the system at hand is the inner loop of the system and such should be at least 5 times faster than the slow outer system. The desired BW of the system is chosen to be 0.05 rad/s. 
+The first priority of the controlled system is for it to be stable. This is achived by ensuring that the closed loop poles of the system are placed in the left half plane on the s-plane. Simultaniously the inner loop of the system should be at least 5 times faster than the slow outer system. The desired BW of the inner loop is chosen to be 0.1 rad/s. This in turn is another restriction on the closed loop pole locations.
+
+Next, the controlled system should have no steady state error for step inputs. This ensures that the outer controller freely can set the desired pump speed and expect the pumps to achieve that excact speed. Lastly the system should have no overshoot a low amount of oscilations in its stepresponse, to indicate a sound phase margin to accommodate model uncertainty.
+
+Since the transfer function of a pump can be simplified as having two real poles and one zero, and the pade approximation adds two complex poles and zeros, the system can not be described as a second order system. Therefore traditional requirements like damping ratio do not apply in the normal sense. The requirements will thus be simpler, allowing more freedom for the designer to tune the controller based on the actual stepresponse.
+
+The requirements for the controller can be condensed to the following: 
+\begin{itemize}
+	\item No poles must be in the right half plane.
+	\item An open loop pole must be placed in the origin.
+	\item The closed loop system must have a bandwidth of approximately 0.1 rad/s.
+	\item The closed loop system must have a time constant of approximately $\frac{1}{bw} = \frac{1}{0.1} = 10s$.
+\end{itemize}
 
 
-Next, the controlled system should have no or very low steady state error for step inputs. Lastly the system should have low overshoot (OS), to indicate a sound phase margin to accommodate model uncertainty, i.e $OS < 30\%$. 
 
 \subsubsection{Choice of controller type}
-A PI controller is considered to be a sufficient solution for the requirements put forth. The integral action will take care of the steady state error, and then the gain can be chosen based on root locus design.
+A PI controller is considered to be a sufficient solution for the requirements put forth. The integral action will take care of the steady state error, and the gain and zero location can be chosen based on the design criteria.
 
 \subsubsection{Root locus design}
-In the controller design, the delay is disregarded, as we can only model the delay as a pade approximation, which introduces RHP zeros depending on the order of the pade. Since a delay does not imply a RHP zero, it is assumed to make the root locus design unreliable, and for this reason it is kept out of the root locus design. In stead, the limitation imposed by the delay is considered in the requirements. \\
-\\
-\\
-HOWEVER: this does not really make any sense, since we then do not really see the instability problems imposed by the delay. 
-
-decide on complex pole pair desired and try defining kp and 1/Ti for pade of order 1. Try introducing pade aprox of 2 order and see where the complex pole pair end up with the same kp and 1/Ti. Base the complex pole pair on the standard 2 order form. 
+Since the controller is to be used locally for one pump, the root locus is drawn for the transfer function that takes the rotational speed of pump 1 as input and the resulting flow of pump 1 as output. The transfer function is in reduced form, where close pole-zero pairs have been cancelled out. The 2nd order pade approximation of a 4 second time delay is included.
 
 
+The controller design is then performed in four steps:
+\begin{enumerate}
+	\item Place one pole at the origin.
+	\item Place one real zero in the left half plane.
+	\item Select a gain K that yields optimal closed loop poles.
+	\item Evaluate the step response and readjust the zero location and gain value if needed.
+\end{enumerate}
+
+While step 1 requires no intuition, step 2 has to be done rather carefully. Placing the zero too close to the origin will slow down the integration drastically. Placing it too far to the left however, creates a loci where the possible closed loop poles are all undesireable.
+
+For step 3, the gain was increased until the bandwidth of 0.1 rad/s was achieved with no oscilations. 
+
+As step 4 implies, the PI controller was designed after some iterations, resulting in the following controller:
+
+ \begin{equation}\label{eq:PITransferFunction}
+	G_{PI} = 1.8 \frac{s+0.125}{s}
+\end{equation}
+
+With this controller the root locus can be seen on \cref{fig:RootLocus_PadeTwo}. The plot show zeroes as o's, poles as x's and closed loop poles as red dots.
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.8\textwidth]{Pictures/RootLocus_Pade2.png}
+	
+	\caption{Root locus of delayed pump transfer function with PI controller}
+	\label{fig:RootLocus_PadeTwo}
+\end{figure}
+
+The resulting closed loop step response is seen on \cref{fig:StepResponse_Pade2}. The step response shows an initial undershoot. This is not a result of the physical system, but rather the pade approximation, which places zeroes in the right half plane. These zeroes cause the step response to undershoot in an attempt to delay the signal. Increasing the order of approximation can reduce this, as shown in \cref{fig:StepResponse_Pade10}. \cref{fig:StepResponse_Pade10} also shows that no significant error in the step response is caused by using a 2nd order approximation rather that 10th order.
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.8\textwidth]{Pictures/StepResponse_Pade2.png}
+	
+	\caption{Step response of the closed loop system with a 2nd order pade approximation}
+	\label{fig:StepResponse_Pade2}
+\end{figure}
 
 
-
-
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.8\textwidth]{Pictures/StepResponse_Pade10.png}
+	
+	\caption{Step response of the closed loop system with a 10th order pade approximation}
+	\label{fig:StepResponse_Pade10}
+\end{figure}
 
