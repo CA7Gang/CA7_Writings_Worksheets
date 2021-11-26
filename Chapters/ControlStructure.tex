@@ -210,7 +210,7 @@ which is likewise a constant term that may be removed by integral action. Thus, 
 
 \clearpage
 
-\subsection{Linearised model}
+\subsection{Linearised model} \label{sec:LinearisedModel}
 In the following section state space models are presented both for the fast and the slow system, that is the pump flow and the tank pressure dynamics respectively. 
 
 \subsubsection{State space model - pump dynamics}
@@ -470,4 +470,60 @@ The resulting closed loop step response is seen on \cref{fig:StepResponse_Pade2}
 	\caption{Step response of the closed loop system with a 10th order pade approximation}
 	\label{fig:StepResponse_Pade10}
 \end{figure}
+
+\clearpage \newpage
+\subsection{Estimation of disturbance with Kalman Filter}
+This section will cover some the use of a Kalman Filter to estimate the consumer disturbance in the WDN, which is required for the outer loop controller. The Kalman filter can such be considered an observer for the states $d_c$. \\
+The Kalman filter is an optimal estimator. It is used to estimate unknown variables by a combination of a system model and a measurement that is related to the uknown variables. The Kalman filter iteratively finds the optimal \textit{Kalman Gain} for the given system to minimize the MSE, thus the optimality. The performance of the Kalman filter relies heavily on the guessed covariance of the measurements noise and the covariance of the system model noise. This means in practice that an online tuning of covariances is desirable to avoid bad guesses of the covariances \cite{Doraiswami2014} p. 232.
+
+
+\subsubsection{Mathematical formulation of Kalman filter}
+The Kalman Filter is based on a system model which in this case will be a state space representation: 
+
+\begin{align}
+	&x(k+1) = Ax(k) + Bu(k) + Z(k)  \label{eq:KalmanSystemEquations} \\
+	&y(k) = Cx(k)+W(k)
+\end{align}
+Where A, B, C are the state space models. Z and W are respectively the model uncertainty noise, and W is the measurement noise. Y is the observable output and x is the unknown states. \\
+\textbf{Describe assumptions about noise. } zero mean and no correlation between measurement and model noise.\\
+Desribe covariance matrices.
+
+The Kalman equations are: TBD
+
+
+\subsubsection{System model}
+In order to implement the Kalman filter, a model for consumer flows is needed. This could potentially be based on the linearised model from \cref{subsec:LinearisedModel}, however knowing a full model of a hydraulic network would in reality be an unrealistic assumption. In stead we want to derive a model of the periodicity of the consumption pattern and base our Kalman filter system model on that. It turns out that the water consumption behavior provides a periodic behavior that can be modelled as a state space system. 
+
+\begin{align}
+	&x(k+1) = Ax(k) + Z(k)  \label{eq:KalmanSystemEquations2} \\
+	&y(k) = Cx(k)+W(k)
+\end{align}
+
+\begin{equation}
+	A = \begin{bmatrix}
+		0 & 0 		& 0			& 0 		& 0 		\\
+		0 & 0 		& -\omega	& 0 		& 0 		\\
+		0 & \omega 	& 0			& 0 		& 0 		\\
+		0 & 0		& 0			& 0 		& -\omega/2 \\
+		0 & 0		& 0			& \omega/2 	& 0 		\\
+	\end{bmatrix}
+\end{equation}
+
+\begin{equation}
+	C = \begin{bmatrix}
+		1 & 1 & 0 & 1 & 0 
+	\end{bmatrix}
+\end{equation}
+ 
+
+\subsubsection{Channel model}
+Sum of three flows, - the pump flows, $d_p = [d_1, d_{13}]^T$ and the tank flow $d_{\tau}$
+
+The measurement noise will be will be based on three measurements. The noise is assumed to be white gaussian noise with a variance that can be assumed to be the sum of the three noise sources in the measurement. 
+
+\begin{equation}
+	Var(W_{d_{1}}(k) + W_{d_{13}}(k) + W_{d_{\tau}}(k)) = Var(W_{d_{1}}(k)) + Var(W_{d_{13}}(k)) +Var(W_{d_{\tau}}(k))
+\end{equation}
+as the noise of the flow sensors are assumed to be independent 
+
 
