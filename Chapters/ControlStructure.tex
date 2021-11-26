@@ -326,7 +326,7 @@ In practice the flows may not all be measurable, in which case they must be esti
 \subsection{Cascaded control}
 
 \subsection{Influence of pump delay}
-The pumps of the WDN system introduces a delay of approximately 5 seconds. According to \cite{Skogestad2005} (pp. 182-183), 
+The pumps of the WDN system introduces a delay of approximately 4 seconds. According to \cite{Skogestad2005} (pp. 182-183), 
 a time delay $\theta$ limits the possible bandwidth of a system to be 
 
 \begin{equation}\label{eq:BWdelay}
@@ -351,7 +351,7 @@ In order to validate whether decentralised control can be obtained, the interact
 
 As seen in \cref{fig:PumpMagPlot}, the gain from $\omega_1$ to $d_{13}$ is for all frequencies less than -50 dB, compared to -10 dB from $\omega_1$ to $d_1$. \\
 Likewise is the gain from $\omega_2$ to $d_1$ for all frequencies less than -50 dB, compared to -15 dB from $\omega_2$ to $d_{13}$.\\
-In both cases, the coupling is at least -35 dB corresponding to more than a factor of 50. Thus the system will be assumed have no interaction/coupling, which allows for design of controllers independently of the interactions, and solely from the diagonal transfer functions in the transfer matrix.
+In both cases, the coupling is at least -35 dB corresponding to less than a factor of 1/50. Thus the system will be assumed to have no interaction/coupling, which allows for design of controllers independently of the interactions, and solely from the diagonal transfer functions in the transfer matrix.
 
 \subsubsection{Similarities within the diagonal systems and simplification}
 The diagonal transfer functions are considered to be identical, based on the poles and zeros of the two diagonal transfer functions seen in \cref{eq:PumpDiagonalPolesZeros}: 
@@ -364,7 +364,7 @@ The diagonal transfer functions are considered to be identical, based on the pol
 	\end{gathered}
 \end{equation}
 
-In considering the two systems to be identical enables the design of only one controller for both the subsystems, namely both the pumps.\\
+Considering the two systems identical enables the design of only one controller for both the subsystems.\\
 Realising that many of the poles more or less cancels out with the zeros can simplify the model very much for the root locus design, yielding poles and zeros \cref{eq:SimplifiedPolesZeros}:
 
  \begin{equation}\label{eq:SimplifiedPolesZeros}
@@ -375,7 +375,7 @@ Realising that many of the poles more or less cancels out with the zeros can sim
  \end{equation}
 
 \subsubsection{Modelling of time delay}
-The timedelay of the pumps can be modelled with a pade approximation, using Matlab. The order of the approximation is not unimportant. The higher the order, the closer to a true time delay the result will be. It comes however at the cost of clarity, as a nth-order approximation places n LHP poles and n RHP zeroes, to simulate the delay. This is shown in \cref{fig:PadeApprox}.
+The timedelay of the pumps can be modelled with a pade approximation, using Matlab. The order of the approximation is not unimportant. The higher the order, the closer to a true time delay the result will be. It comes however at the cost of clarity, as a nth-order approximation places \textit{n} LHP poles and \textit{n} RHP zeroes, to simulate the delay. This is shown in \cref{fig:PadeApprox}.
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=0.8\textwidth]{Pictures/PadeApprox.png}
@@ -383,7 +383,7 @@ The timedelay of the pumps can be modelled with a pade approximation, using Matl
 	\label{fig:PadeApprox}
 \end{figure}
 
-An investigation has been performed to show the error in closed loop pole locations introduced by using a low order approximation. \cref{fig:PadeApprox} and \cref{fig:PadeApprox} shows the closed loop pole locations when using a 1st, 2nd and 10th order pade approximation. The plots show a noticable difference from 1st to 2nd order, but no significance above that.
+An investigation has been performed to show the error in closed loop pole locations introduced by using a low order approximation. \cref{fig:CLPoles} and \cref{fig:CLPolesZoom} shows the closed loop pole locations when using a 1st, 2nd and 10th order pade approximation. The plots show a noticable difference from 1st to 2nd order, but no significance above that.
 
 \begin{figure}[h!]
 	\centering
@@ -402,11 +402,11 @@ When considering both convenience of use and modelling error the optimal approxi
 
 \subsubsection{Requirements for control performance}
 Before starting the actual root locus design of the controller, the desired performance of the controlled system needs to be defined. \\
-The first priority of the controlled system is for it to be stable. This is achived by ensuring that the closed loop poles of the system are placed in the left half plane on the s-plane. Simultaniously the inner loop of the system should be at least 5 times faster than the slow outer system. The desired BW of the inner loop is chosen to be 0.1 rad/s. This in turn is another restriction on the closed loop pole locations.
+The first priority of the controlled system is for it to be stable. This is achived by ensuring that the closed loop poles of the system are placed in the left half plane on the s-plane. Simultaniously the inner loop of the system should be at least 5 times faster than the slow outer system [we have to come up with a reasonable estimate of this]. The desired BW of the inner loop is chosen to be 0.1 rad/s. This in turn is another restriction on the closed loop pole locations.
 
-Next, the controlled system should have no steady state error for step inputs. This ensures that the outer controller freely can set the desired pump speed and expect the pumps to achieve that excact speed. Lastly the system should have no overshoot a low amount of oscilations in its stepresponse, to indicate a sound phase margin to accommodate model uncertainty.
+Next, the controlled system should have no steady state error for step inputs. This ensures that the outer controller freely can set and achieve the desired pump flow reference. Lastly the system should have no overshoot and low amount of oscilations in its stepresponse, to indicate a sound phase margin to accommodate model uncertainty.
 
-Since the transfer function of a pump can be simplified as having two real poles and one zero, and the pade approximation adds two complex poles and zeros, the system can not be described as a second order system. Therefore traditional requirements like damping ratio do not apply in the normal sense. The requirements will thus be simpler, allowing more freedom for the designer to tune the controller based on the actual stepresponse.
+Since the transfer function of the desired subsystem can be simplified as having two real poles and one zero, and the pade approximation adds two complex poles and zeros, the system can not be described as a second order system. Therefore traditional requirements like damping ratio do not apply in the normal sense. The requirements will thus be simpler, allowing more freedom for the designer to tune the controller based on the actual stepresponse.
 
 The requirements for the controller can be condensed to the following: 
 \begin{itemize}
