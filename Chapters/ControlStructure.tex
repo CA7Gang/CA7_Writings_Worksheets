@@ -473,22 +473,37 @@ The resulting closed loop step response is seen on \cref{fig:StepResponse_Pade2}
 
 \clearpage \newpage
 \subsection{Estimation of disturbance with Kalman Filter}
-This section will cover some the use of a Kalman Filter to estimate the consumer disturbance in the WDN, which is required for the outer loop controller. The Kalman filter can such be considered an observer for the states $d_c$. \\
-The Kalman filter is an optimal estimator. It is used to estimate unknown variables by a combination of a system model and a measurement that is related to the uknown variables. The Kalman filter iteratively finds the optimal \textit{Kalman Gain} for the given system to minimize the MSE, thus the optimality. The performance of the Kalman filter relies heavily on the guessed covariance of the measurements noise and the covariance of the system model noise. This means in practice that an online tuning of covariances is desirable to avoid bad guesses of the covariances \cite{Doraiswami2014} p. 232.
+This section will cover some the use of a Kalman Filter to estimate the consumer disturbance in the WDN, which is required for the outer loop controller. The Kalman filter can such be considered an observer for the states $d_c = [d_5 d_9]$. \\
+The Kalman filter is an optimal estimator. It is used to estimate unknown variables by a combination of a system model and a measurement that is related to the unknown variables. 
+
+\textbf{- INSERT BLOCK DIAGRAM OF A KALMAN FILTER }
+
+\textbf{System has to be observable: show it}
+
+The Kalman filter recursively finds the optimal \textit{Kalman Gain} for the given system to minimize the residual MSE, fulfilling the orthogonality principle. Finding the optimal gain relies on assuming that the model and measurement noise are uncorrelated white noise processes with known covariances. 
+
+The performance of the Kalman filter relies heavily on the guessing the covariance of measurements and model noise. This means in practice that an online tuning of covariances is desirable to avoid bad guesses of the covariances \cite{Doraiswami2014} p. 232.
 
 
 \subsubsection{Mathematical formulation of Kalman filter}
-The Kalman Filter is based on a system model which in this case will be a state space representation: 
+The Kalman Filter is based on a system model which in this case will be a discrete time state space representation: 
 
 \begin{align}
 	&x(k+1) = Ax(k) + Bu(k) + Z(k)  \label{eq:KalmanSystemEquations} \\
 	&y(k) = Cx(k)+W(k)
 \end{align}
-Where A, B, C are the state space models. Z and W are respectively the model uncertainty noise, and W is the measurement noise. Y is the observable output and x is the unknown states. \\
+where $x(k)$ is the state vector at time index k, $u(k)$ is the input at time index k, 
+Z and W are respectively the model uncertainty noise, and W is the measurement noise. Y is the observable output and x is the unknown states. \\
 \textbf{Describe assumptions about noise. } zero mean and no correlation between measurement and model noise.\\
-Desribe covariance matrices.
 
-The Kalman equations are: TBD
+Describe covariance matrices\\
+
+
+The Kalman equations are: TBD \\
+
+The steady state Covariance matrix P and kalman Gain is ...
+
+
 
 
 \subsubsection{System model}
