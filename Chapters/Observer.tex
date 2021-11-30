@@ -1,0 +1,185 @@
+This section concerns the observer to enables access to unknown states.
+
+\subsection{Observer Objective}
+
+State space controller needs access to all states - consumers are not measured, as this is the most realistic assumption for real life application, and such needs to be estimated.
+
+
+
+
+\subsection{Model for observer}
+Full WDN model vs. consumption pattern model
+
+Unrealistic to have accurate enough WDN model - hence, consumption pattern model provide a good alternative
+
+Do we call the consumption pattern model a reduced order observer??
+
+Description of consumption pattern model. 
+ - State space equation
+ 
+SHOW OBSERVABILITY
+
+\subsection{Observer topologies}
+Model and measurement disturbance/noise means that the measured output and estimated state are stochastic processes. If we use the kalman filter, this can give us the most accurate estimator of affine estimators, fulfilling the orthogonality principle. 
+
+The kalman filter can be seen as a classic Luenberger observer with the optimal gain kalman gain.
+
+
+\clearpage \newpage
+\subsection{The Kalman Filter}
+The Kalman filter is an optimal estimator, where the optimality criterion is to reduce the Mean Squared Error (MSE) of the residuals.
+It estimates unknown processes by a combination of a system model and a measurement that is related to the unknown processes. 
+
+The Kalman filter recursively finds the optimal \textit{Kalman Gain} for the given system to minimize the residual MSE. Finding the optimal gain relies on assuming that the model and measurement noise are uncorrelated white noise processes with known covariances. 
+
+The performance of the Kalman filter relies heavily on the guessing the covariance of measurements and model noise. This means in practice that an online tuning of covariances is desirable to avoid bad guesses of the covariances \cite{Doraiswami2014} p. 232.
+
+\subsubsection{Mathematical formulation of the Kalman filter in state space}
+The Kalman Filter described in this report will based on a discrete time state space representation: 
+
+\begin{align}
+	&\textbf{x}(k+1) = \textbf{A}\textbf{x}(k) + \textbf{B}\textbf{u}(k) + \textbf{w}(k)  \label{eq:KalmanSystemEquations} \\
+	&\textbf{y}(k) = \textbf{C}\textbf{x}(k)+\textbf{v}(k) 
+\end{align}
+where 
+\begin{align*}
+	&\text{$\textbf{x}(k)$ is the state vector at time index k,	}	\\[-1em]
+	&\text{$\textbf{u}(k)$ is the input at time index k, 		}	\\[-1em]
+	&\text{$\textbf{w}(k)$ is the model noise,					}	\\[-1em]
+	&\text{$\textbf{v}(k)$ is the measurement noise,				}	\\[-1em]
+	&\text{$\textbf{y}(k)$ is the observable output, 			}	\\[-1em]
+	&\text{\textbf{A} is the state transition matrix,			}	\\[-1em]
+	&\text{\textbf{B} is the control-input matrix,				}	\\[-1em]
+	&\text{\textbf{C} is the observation matrix. 				}	\\[-1em]
+\end{align*}
+
+To accommodate limited cognitive capacity of the readers of this report (students) the Kalman equations will be presented in the form of 9 equations, after which they can be combined to yield the traditional and more dense form.
+The Kalman equations will further be divided into two phases: the prediction stage and the update stage. Assuming the model of the system is constant, we can furthermore disregard time indices of A, B, C.\\
+\textbf{Prediction stage}
+\begin{align}
+	&\hat{\textbf{x}}(k|k-1) = \textbf{A} \hat{\textbf{x}}(k-1|k-1) + \textbf{B}\textbf{u}(k) + \textbf{w}(k) 	\label{eq:Kalman_pred_state} 	\\
+	&\hat{\textbf{y}}(k|k-1) = \textbf{C}\hat{\textbf{x}}(k|k-1)												\label{eq:Kalman_pred_output} 	\\
+	&\textbf{P}(k|k-1) = \textbf{C}\textbf{P}(k-1|k-1)\textbf{C}^T+\textbf{Q} 								\label{eq:Kalman_pred_cov} 		
+\end{align}
+
+where 
+\begin{align*}
+	&\text{$\hat{\textbf{x}}(k|k-1)$ is the state prediction estimate at time index $k$ given all $ k-1 $ samples		}	\\[-1em]
+	&\text{$\hat{\textbf{x}}(k-1|k-1)$ is the state estimate at time index $k-1$ given all $ k-1 $ samples				}	\\[-1em]
+	&\text{$\hat{\textbf{y}}(k|k-1)$ is the output prediction estimate at time index $k$ given all $ k-1 $ samples		}	\\[-1em]
+	&\text{$\textbf{P}(k|k-1)$ is the predicted estimate covariance matrix at time index $k$ given all $ k-1 $ samples			}	\\[-1em]
+	&\text{$\textbf{P}(k-1|k-1)$ is the updated estimate covariance matrix at time index $k-1$ given all $ k-1 $ samples		}	\\[-1em]
+	&\text{$\textbf{Q}$	is the model/process noise covariance}	\\[-1em]
+\end{align*}
+
+All three prediction equations predicts the a priori $ k^{th}$ (next) estimate based on the $k-1$ previous samples and the model knowledge.
+
+\textbf{Update stage}
+\begin{align}
+	&\textbf{e}(k) = \textbf{y}(k) - \hat{\textbf{y}}(k|k-1)						\\
+	&\textbf{S}(k) = \textbf{C}\textbf{P}(k|k-1)\textbf{C}^T + \textbf{R}			\\
+	&\textbf{K}(k) = \textbf{P}(k|k-1)\textbf{C}^T\textbf{S}^{-1}(k)				\\
+	&\hat{\textbf{x}}(k|k) = \hat{\textbf{x}}(k|k-1) + \textbf{K}(k)\textbf{e}(k) 	\\
+	&\textbf{P}(k|k) = (\textbf{I} - \textbf{K}(k)\textbf{C})\textbf{P}(k|k-1)		
+\end{align}
+
+where 
+\begin{align*}
+	&\text{$\textbf{e}(k)$ is the innovation term for time index $ k $															}	\\[-1em]
+	&\text{$\textbf{y}(k)$ is the observed output at time index $ k $															}	\\[-1em]
+	&\text{$\textbf{S}(k)$ is the innovation covariance for time index $ k $													}	\\[-1em]
+	&\text{$\textbf{R}$ is the observation noise covariance																		}	\\[-1em]
+	&\text{$\textbf{K}(k)$ is the Kalman gain for time index $ k $																}	\\[-1em]
+	&\text{$\hat{\textbf{x}}(k|k)$ is the estimate of the state vector at time index $ k $										}	\\[-1em]
+	&\text{$\textbf{P}(k|k)$ is the updated estimate covariance matrix at time index $k$ given all $ k$ samples					}	\\[-1em]
+	&\text{$\textbf{I}$ is the identity matrix																					}	\\[-1em]			
+\end{align*}
+%All the equations in the update stage estimates the posteriori estimate of the $ k^{th} $ sample based on all $ k $ samples and the model knowledge. A few more remarks to give some intuitions to what the equations actually represent. The estimate covariance and innovation covariance can respectively be represented as 
+\begin{align}
+	&\textbf{P}(k|k) = \text{cov}(\textbf{x}(k)-\hat{\textbf{x}}(k|k))			\\
+	&\textbf{P}(k|k-1) = \text{cov}(\textbf{x}(k)-\hat{\textbf{x}}(k|k-1)) 	\\
+	&\textbf{S}(k) = \text{cov}(\textbf{e}(k)) 
+\end{align}
+
+
+
+Describe covariance matrices\\
+
+
+The Kalman equations are: TBD \\
+
+The steady state Covariance matrix P and kalman Gain is ...
+
+
+
+
+\clearpage \newpage
+\subsection{Estimation of disturbance with Kalman Filter - I.E. OLD SHIT - needs to be deleted.}
+This section will cover some the use of a Kalman Filter to estimate the consumer disturbance in the WDN, which is required for the outer loop controller. The Kalman filter can such be considered an observer for the states $d_c = [d_5 d_9]$. \\
+The Kalman filter is an optimal estimator. It is used to estimate unknown variables by a combination of a system model and a measurement that is related to the unknown variables. 
+
+\textbf{- INSERT BLOCK DIAGRAM OF A KALMAN FILTER }
+
+\textbf{System has to be observable: show it}
+
+The Kalman filter recursively finds the optimal \textit{Kalman Gain} for the given system to minimize the residual MSE, fulfilling the orthogonality principle. Finding the optimal gain relies on assuming that the model and measurement noise are uncorrelated white noise processes with known covariances. 
+
+The performance of the Kalman filter relies heavily on the guessing the covariance of measurements and model noise. This means in practice that an online tuning of covariances is desirable to avoid bad guesses of the covariances \cite{Doraiswami2014} p. 232.
+
+
+\subsubsection{Mathematical formulation of Kalman filter}
+The Kalman Filter is based on a system model which in this case will be a discrete time state space representation: 
+
+\begin{align}
+	&x(k+1) = Ax(k) + Bu(k) + Z(k)  \label{eq:KalmanSystemEquations} \\
+	&y(k) = Cx(k)+W(k)
+\end{align}
+where $x(k)$ is the state vector at time index k, $u(k)$ is the input at time index k, 
+Z and W are respectively the model uncertainty noise, and W is the measurement noise. Y is the observable output and x is the unknown states. \\
+\textbf{Describe assumptions about noise. } zero mean and no correlation between measurement and model noise.\\
+
+Describe covariance matrices\\
+
+
+The Kalman equations are: TBD \\
+
+The steady state Covariance matrix P and kalman Gain is ...
+
+
+
+
+\subsubsection{System model}
+In order to implement the Kalman filter, a model for consumer flows is needed. This could potentially be based on the linearised model from \cref{subsec:LinearisedModel}, however knowing a full model of a hydraulic network would in reality be an unrealistic assumption. In stead we want to derive a model of the periodicity of the consumption pattern and base our Kalman filter system model on that. It turns out that the water consumption behavior provides a periodic behavior that can be modelled as a state space system. 
+
+\begin{align}
+	&x(k+1) = Ax(k) + Z(k)  \label{eq:KalmanSystemEquations2} \\
+	&y(k) = Cx(k)+W(k)
+\end{align}
+
+\begin{equation}
+	A = \begin{bmatrix}
+		0 & 0 		& 0			& 0 		& 0 		\\
+		0 & 0 		& -\omega	& 0 		& 0 		\\
+		0 & \omega 	& 0			& 0 		& 0 		\\
+		0 & 0		& 0			& 0 		& -\omega/2 \\
+		0 & 0		& 0			& \omega/2 	& 0 		\\
+	\end{bmatrix}
+\end{equation}
+
+\begin{equation}
+	C = \begin{bmatrix}
+		1 & 1 & 0 & 1 & 0 
+	\end{bmatrix}
+\end{equation}
+
+
+\subsubsection{Channel model}
+Sum of three flows, - the pump flows, $d_p = [d_1, d_{13}]^T$ and the tank flow $d_{\tau}$
+
+The measurement noise will be will be based on three measurements. The noise is assumed to be white gaussian noise with a variance that can be assumed to be the sum of the three noise sources in the measurement. 
+
+\begin{equation}
+	Var(W_{d_{1}}(k) + W_{d_{13}}(k) + W_{d_{\tau}}(k)) = Var(W_{d_{1}}(k)) + Var(W_{d_{13}}(k)) +Var(W_{d_{\tau}}(k))
+\end{equation}
+as the noise of the flow sensors are assumed to be independent 
+
