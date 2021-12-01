@@ -1,0 +1,28 @@
+This section concerns the estimator used for estimation of the consumer disturbance.
+
+\subsection{Estimator Objective}
+
+State space controller needs access to all states - consumers are not measured, as this is the most realistic assumption for real life application, and such needs to be estimated.
+
+
+
+
+\subsection{Model for estimation}
+Full WDN model observer vs. consumption pattern model
+
+Unrealistic to have accurate enough WDN model - hence, consumption pattern model provide a good alternative
+
+
+Description of consumption pattern model. 
+ - State space equation
+ 
+SHOW OBSERVABILITY
+
+\subsection{Observer topologies}
+Model and measurement disturbance/noise means that the measured output and estimated state are stochastic processes. If we use the kalman filter, this can give us the most accurate estimator of affine estimators, fulfilling the orthogonality principle. 
+
+An option for kalman filter implementation is with a Luenberg observer. Here the observer gain L is interchanged with the Kalman gain, which is recursively calculated at every time-step.
+
+
+
+
