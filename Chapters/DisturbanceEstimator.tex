@@ -1,0 +1,119 @@
+This section concerns the estimator used for estimation of the consumer demand flows.
+
+\subsection{Estimator Objective}
+The LQR controller relies on knowledge of the current  consumer demand flows. The consumption flow is not measured directly but can be calculated from the combined measurements of tank flow $d_\tau$ and pump flows $d_p$. If no leakage is present all nodal demands sum to zero and thus $d_c = d_p + d_\tau$.  Noise will be present on all flow sensor measurements which will affect LQR controller performance. Thus it is favorable to estimate the actual consumer flow.
+
+\subsection{Estimator model}
+An initial solution for estimating the consumer flow is to utilize the full fast dynamic system matrix. This requires the ability to accurately model the full system which has been done in this case but in practice this is not feasible. Therefore another solution is explored.
+
+If prior knowledge of the behavior of the process is available then this can be taken advantage of. A new state space model describing the behavior of the process can be made. The consumption pattern behaves like a harmonic series (up to 4th order???) like seen in \cref{eq:consump_pattern}.
+
+\begin{equation} \label{eq:consump_pattern}
+	d_{c_estimate} = K + k_1 cos(\omega t) + k_2 cos(\frac{\omega}{2} t)
+\end{equation}
+
+
+
+This process model output should be achievable as a combination of states. As such the following states are chosen:
+
+\begin{equation} \label{eq:consump_x}
+	x_{desired} =  \begin{bmatrix}
+		x_1 \\
+		x_2 \\
+		x_3
+	\end{bmatrix}
+	=
+	\begin{bmatrix}
+		K \\
+		k_1 cos(\omega t) \\
+		k_2 cos(\frac{\omega}{2} t)
+	\end{bmatrix}
+\end{equation}
+
+As with any state-space system these states need to be expressed in terms of their derivatives ($\dot x = Ax$) which are:
+
+\begin{equation} \label{eq:consump_x_deriv_s}
+	\dot x_{desired}  = \begin{bmatrix}
+		\dot x_1 \\
+		\dot x_2 \\
+		\dot x_3
+	\end{bmatrix}
+	=
+	\begin{bmatrix}
+		0 \\
+		- \omega k_1 sin(\omega t) \\
+		- \frac{\omega}{2} k_2 sin(\frac{\omega}{2} t)
+	\end{bmatrix}
+\end{equation}
+
+No linear combination of our current states can yield this derivative. Thus we need to expand our states such that this can be achieved. Our state vector expands to:
+
+\begin{equation} \label{eq:consump_x_l}
+		x =  \begin{bmatrix}
+			x_1 \\
+			x_2 \\
+			x_3 \\
+			x_4 \\
+			x_5
+		\end{bmatrix}
+		=
+		 \begin{bmatrix}
+		K \\
+		k_1 cos(\omega t) \\
+		k_2 cos(\frac{\omega}{2} t) \\
+		k_1 sin(\omega t) \\
+		k_2 sin(\frac{\omega}{2}) 
+	\end{bmatrix}
+\end{equation}
+
+Which has the state derivative:
+
+\begin{equation} \label{eq:consump_x_deriv_l}
+	\dot x =  \begin{bmatrix}
+		\dot x_1 \\
+		\dot x_2 \\
+		\dot x_3 \\
+		\dot x_4 \\
+		\dot x_5
+	\end{bmatrix}
+	=
+	\begin{bmatrix}
+		0 \\
+		- \omega k_1 sin(\omega t) \\
+		- \frac{\omega}{2} k_2 sin(\frac{\omega}{2} t) \\
+		\omega k_1 cos (\omega t) \\
+		\frac{\omega}{2} k_2 cos (\frac{\omega}{2} t)
+	\end{bmatrix}
+\end{equation}
+
+
+The system matrix then needs to be:
+
+\begin{equation} \label{eq:consump_A}
+	A = \begin{bmatrix}
+		0 & 0 				& 0					& 0 				& 0 \\
+		0 & 0 				& 0					& -\omega 	& 0 \\
+		0 & 0				& 0					& 0 				& - \omega/2 \\
+		0 & \omega	& 0						& 0 				& 0 \\
+		0 & 0				& \omega/2 	& 0					& 0
+	\end{bmatrix}
+\end{equation}
+
+For $y = Cx$ to be equal to \cref{eq:consump_pattern} the C-matrix becomes: 
+
+\begin{equation}
+	C = \begin{bmatrix} 1 & 1 & 1 & 0 & 0 \end{bmatrix}
+\end{equation}
+
+\subsection{Estimator type}
+Several estimator options are available, including the classical Luenberg observer. Although the Kalman filter is the desired estimator if it is assumed that:
+
+\begin{enumerate}
+	\item the consumer flow disturbance can be modeled as a dynamic system excited by white zero-mean uncorrelated gaussian noise
+	\item the flow measurement noise can be considered white zero-mean uncorrelated gaussian noise
+\end{enumerate}
+
+It is the optimal affine estimator given some assumptions about the precision of the model of the process and the knowledge of the process and measurement noise, which is further described in \cref{sec:kalman_filter} \todo{This section label is yet to be created}.
+
+
+
