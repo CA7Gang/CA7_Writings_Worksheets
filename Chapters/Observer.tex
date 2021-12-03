@@ -54,76 +54,153 @@ where
 \end{align*}
 
 To simplify the presentation for the readers of this report the Kalman equations will be presented in the form of 9 equations, after which they can be combined to yield the traditional and more dense form.
-The Kalman equations will further be divided into two phases: the prediction stage and the update stage. %Assuming the model of the system is constant, we can furthermore disregard time indices of A, B, C.\\
+The Kalman equations will further be divided into two phases: the prediction stage and the update stage. 
+
 \textbf{Prediction stage}
 \begin{align}
-	&\hat{\textbf{x}}(k+1|k) = \textbf{A} \hat{\textbf{x}}(k|k) + \textbf{B}\textbf{u}(k)  				\label{eq:Kalman_pred_state} 	\\
-	&\hat{\textbf{y}}(k+1|k) = \textbf{C}\hat{\textbf{x}}(k+1|k)										\label{eq:Kalman_pred_output} 	\\
-	&\textbf{P}(k+1|k) = \textbf{A}\textbf{P}(k|k)\textbf{A}^T+\textbf{Q} 								\label{eq:Kalman_pred_cov} 		
+	&\hat{\textbf{x}}	(k|k-1) = \textbf{A} 	\hat{\textbf{x}}(k-1|k-1) + \textbf{B}\textbf{u}(k-1)  				\label{eq:Kalman_pred_state} 	\\
+	&\hat{\textbf{y}}	(k|k-1) = \textbf{C}	\hat{\textbf{x}}(k|k-1)										\label{eq:Kalman_pred_output} 	\\
+	&\textbf{P}			(k|k-1) = \textbf{A}	\textbf{P}(k-1|k-1)\textbf{A}^T+\textbf{Q} 								\label{eq:Kalman_pred_cov} 		
 \end{align}
+
 where 
 \begin{align*}
-	&\text{$\hat{\textbf{x}}(k+1|k)$ 	is the state prediction 			estimate at time index $k+1$ 		given all $ k $ samples		}	\\[-1em]
-	&\text{$\hat{\textbf{x}}(k|k)$ 		is the state 						estimate at time index $k$ 	given all $ k $ samples				}	\\[-1em]
-	&\text{$\hat{\textbf{y}}(k+1|k)$ 	is the output prediction 			estimate at time index $k+1$ 		given all $ k $ samples		}	\\[-1em]
-	&\text{$\textbf{P}(k+1|k)$ 			is the predicted estimate  covariance matrix at time index $k+1$ 		given all $ k $ samples		}	\\[-1em]
-	&\text{$\textbf{P}(k|k)$ 			is the updated estimate    covariance matrix at time index $k$ 	given all $ k $ samples				}	\\[-1em]
-	&\text{$\textbf{Q}$					is the model/process noise covariance matrix														}	\\[-1em]
+	&\text{$\hat{\textbf{x}}	(k|k-1)$ 	is the state prediction 			estimate at time index $k$ 		given all $ k-1 $ samples		}	\\[-1em]
+	&\text{$\hat{\textbf{x}}	(k-1|k-1)$ 	is the state 						estimate at time index $k-1$ 	given all $ k-1 $ samples		}	\\[-1em]
+	&\text{$\hat{\textbf{y}}	(k|k-1)$ 	is the output prediction 			estimate at time index $k$ 		given all $ k-1 $ samples		}	\\[-1em]
+	&\text{$\textbf{P}			(k|k-1)$ 	is the predicted estimate  covariance matrix at time index $k$ 		given all $ k-1 $ samples		}	\\[-1em]
+	&\text{$\textbf{P}			(k-1|k-1)$ 	is the updated estimate    covariance matrix at time index $k-1$ 	given all $ k-1 $ samples		}	\\[-1em]
+	&\text{$\textbf{Q}$						is the model/process noise covariance matrix														}	\\[-1em]
 \end{align*}
 
-All three prediction equations predicts the a priori $ k^{th}$ (next) estimate based on the $k-1$ previous samples and the model knowledge.
-
+All three prediction equations predicts the a priori $k$ (next) estimate based on the $k-1$ previous samples and the model knowledge.\\
 \textbf{Update stage}
 
 \begin{align}
-	&\textbf{e}(k+1) = \textbf{y}(k+1) - \hat{\textbf{y}}(k+1|k)							\label{eq:Kalman_upd_inno}			\\
-	&\textbf{S}(k+1) = \textbf{C}\textbf{P}(k+1|k)\textbf{C}^T + \textbf{R}					\label{eq:Kalman_upd_inno_cov}		\\
-	&\textbf{K}(k+1) = \textbf{P}(k+1|k)\textbf{C}^T\textbf{S}^{-1}(k+1)					\label{eq:Kalman_upd_kalman_gain}	\\
-	&\hat{\textbf{x}}(k+1|k+1) = \hat{\textbf{x}}(k+1|k) + \textbf{K}(k+1)\textbf{e}(k+1) 	\label{eq:Kalman_upd_est_state}		\\
-	&\textbf{P}(k+1|k+1) = (\textbf{I} - \textbf{K}(k+1)\textbf{C})\textbf{P}(k+1|k)		\label{eq:Kalman_upd_est_cov}
+	&\textbf{e}			(k) 		= \textbf{y}(k) - \hat{\textbf{y}}(k|k-1)							\label{eq:Kalman_upd_inno}			\\
+	&\textbf{S}			(k) 		= \textbf{C}\textbf{P}(k|k-1)\textbf{C}^T + \textbf{R}				\label{eq:Kalman_upd_inno_cov}		\\
+	&\textbf{K}			(k) 		= \textbf{P}(k|k-1)\textbf{C}^T\textbf{S}^{-1}(k)					\label{eq:Kalman_upd_kalman_gain}	\\
+	&\hat{\textbf{x}}	(k|k) 		= \hat{\textbf{x}}(k|k-1) + \textbf{K}(k)\textbf{e}(k) 				\label{eq:Kalman_upd_est_state}		\\
+	&\textbf{P}			(k|k) 		= (\textbf{I} - \textbf{K}(k)\textbf{C})\textbf{P}(k|k-1)			\label{eq:Kalman_upd_est_cov}
 \end{align}
+
 where 
+
 \begin{align*}
-	&\text{$\textbf{e}(k+1)$ is the innovation term for time index $ k+1 $													}	\\[-1em]
-	&\text{$\textbf{y}(k+1)$ is the observed output at time index $ k+1 $													}	\\[-1em]
-	&\text{$\textbf{S}(k+1)$ is the innovation covariance for time index $ k+1 $											}	\\[-1em]
-	&\text{$\textbf{R}$ is the observation noise covariance																	}	\\[-1em]
-	&\text{$\textbf{K}(k+1)$ is the Kalman gain for time index $ k + 1 $													}	\\[-1em]
-	&\text{$\hat{\textbf{x}}(k+1|k+1)$ is the estimate of the state vector at time index $ k+1 $ given all $ k+1$ samples	}	\\[-1em]
-	&\text{$\textbf{P}(k+1|k+1)$ is the updated estimate covariance matrix at time index $k+1$ given all $ k+1$ samples		}	\\[-1em]
-	&\text{$\textbf{I}$ is the identity matrix																				}	\\[-1em]			
+	&\text{$\textbf{e}		(k)$ 		is the innovation term for time index 					$ k $													}	\\[-1em]
+	&\text{$\textbf{y}		(k)$ 		is the observed output at time index 					$ k $													}	\\[-1em]
+	&\text{$\textbf{S}		(k)$ 		is the innovation covariance for time index 			$ k $											}	\\[-1em]
+	&\text{$\textbf{R}$ 				is the observation noise covariance																}	\\[-1em]
+	&\text{$\textbf{K}		(k)$ 		is the Kalman gain for time index 						$ k $													}	\\[-1em]
+	&\text{$\hat{\textbf{x}}(k|k)$ 	is the estimate of the state vector at time index 			$ k $ given all 	$ k$ samples	}	\\[-1em]
+	&\text{$\textbf{P}		(k|k)$ 	is the updated estimate covariance matrix at time index 	$ k $ given all 	$ k$ samples		}	\\[-1em]
+	&\text{$\textbf{I}$ 				is the identity matrix																				}	\\[-1em]			
 \end{align*}
-All the equations in the update stage estimates the posteriori estimate of the $ k^{th} $ sample based on all $ k $ samples and the model knowledge. A few more remarks to give some intuitions to what the equations actually represent. The estimate covariance and innovation covariance can respectively be represented as 
+
+All the equations in the update stage estimates the posteriori estimate of the $ k $ sample based on all $ k $ samples and the model knowledge. A few more remarks to give some intuitions to what the equations actually represent. The estimate covariance and innovation covariance can respectively be represented as 
+
 \begin{align}
-	&\textbf{P}(k+1|k+1) = \text{cov}(\textbf{x}(k+1)-\hat{\textbf{x}}(k+1|k+1))	\\
-	&\textbf{P}(k+1|k) = \text{cov}(\textbf{x}(k+1)-\hat{\textbf{x}}(k+1|k)) 		\\
-	&\textbf{S}(k+1) = \text{cov}(\textbf{e}(k+1)) 
+	&\textbf{P}(k|k) 	= \text{cov}(\textbf{x}(k)-	\hat{\textbf{x}}(k|k))	\\
+	&\textbf{P}(k|k-1) 	= \text{cov}(\textbf{x}(k)-	\hat{\textbf{x}}(k|k-1)) 		\\
+	&\textbf{S}(k) 		= \text{cov}(\textbf{e}(k)) 
 \end{align}
 
 \textbf{Compact form}\\
 Now collecting some of the above equations gives the more compact form of the Kalman equations.
-\cref{eq:Kalman_pred_state} and \cref{eq:Kalman_pred_cov} remains in the same form in the prediction equations.\\
-\cref{eq:Kalman_upd_inno_cov} and \cref{eq:Kalman_upd_kalman_gain} are combined yielding \cref{eq:Kalman_upd_kalman_gain_compact}.
-\cref{eq:Kalman_pred_output} is combined with \cref{eq:Kalman_upd_inno} and \cref{eq:Kalman_upd_est_state} yielding \cref{eq:Kalman_upd_est_state_compact}. And \cref{eq:Kalman_upd_est_cov} remains the same.\\
+Eq.'s \ref{eq:Kalman_pred_state} and \ref{eq:Kalman_pred_cov} remains in the same form as yielding \cref{eq:Kalman_pred_state_compact} and \cref{eq:Kalman_pred_cov_compact}. Eq.'s \ref{eq:Kalman_upd_inno_cov}, \ref{eq:Kalman_upd_kalman_gain} are combined yielding \cref{eq:Kalman_upd_kalman_gain_compact}. Eq. \ref{eq:Kalman_pred_output} is combined with \cref{eq:Kalman_upd_inno} and \cref{eq:Kalman_upd_est_state} yielding \cref{eq:Kalman_upd_est_state_compact}, while \cref{eq:Kalman_upd_est_cov} remains the same. All these combined presents the kalman equations as in \cite{Li2016}\\
 \textbf{Prediction}
+
 \begin{align}
-	&\hat{\textbf{x}}(k+1|k) = \textbf{A} \hat{\textbf{x}}(k|k) + \textbf{B}\textbf{u}(k)  		\label{eq:Kalman_pred_state_compact} 	\\
-	&\textbf{P}(k+1|k) = \textbf{A}\textbf{P}(k|k)\textbf{A}^T+\textbf{Q} 						\label{eq:Kalman_pred_cov_compact} 		
+	&\hat{\textbf{x}}	(k|k-1) = \textbf{A} \hat{\textbf{x}}	(k-1|k-1) + \textbf{B}\textbf{u}	(k-1)  		\label{eq:Kalman_pred_state_compact} 	\\
+	&\textbf{P}			(k|k-1) = \textbf{A}\textbf{P}			(k-1|k-1)\textbf{A}^T+\textbf{Q} 				\label{eq:Kalman_pred_cov_compact} 		
 \end{align}
+
 \textbf{Update}
 \begin{align}
-	&\textbf{K}(k+1) = \textbf{P}(k+1|k)\textbf{C}^T(\textbf{C}\textbf{P}(k+1|k)\textbf{C}^T + \textbf{R})^{-1}					\label{eq:Kalman_upd_kalman_gain_compact} \\
-	&\hat{\textbf{x}}(k+1|k+1) = \hat{\textbf{x}}(k+1|k) + \textbf{K}(k+1)(\textbf{y}(k+1) - \textbf{C}\hat{\textbf{x}}(k+1|k)) \label{eq:Kalman_upd_est_state_compact} \\
-	&\textbf{P}(k+1|k+1) = (\textbf{I} - \textbf{K}(k+1)\textbf{C})\textbf{P}(k+1|k)											\label{eq:Kalman_upd_est_cov_compact}
+	&\textbf{K}			(k) 		= \textbf{P}				(k|k-1)\textbf{C}^T(\textbf{C}\textbf{P}	(k|k-1)	\textbf{C}^T + \textbf{R})^{-1}										\label{eq:Kalman_upd_kalman_gain_compact} \\
+	&\hat{\textbf{x}}	(k|k-1) 	= \hat{\textbf{x}}			(k|k-1) + \textbf{K}						(k)	(\textbf{y}		(k) - \textbf{C}\hat{\textbf{x}}		(k|k-1)) 	\label{eq:Kalman_upd_est_state_compact} \\
+	&\textbf{P}			(k|k-1) 	= (\textbf{I} - \textbf{K}	(k)\textbf{C})\textbf{P}					(k|k-1)																		\label{eq:Kalman_upd_est_cov_compact}
 \end{align}
 
+% ============================================================================================================================ 
+% OLD PREDICTION EQUATIONS.
+% ============================================================================================================================
+%\textbf{Prediction stage}
+%\begin{align}
+%	&\hat{\textbf{x}}(k+1|k) = \textbf{A} \hat{\textbf{x}}(k|k) + \textbf{B}\textbf{u}(k)  				\label{eq:Kalman_pred_state} 	\\
+%	&\hat{\textbf{y}}(k+1|k) = \textbf{C}\hat{\textbf{x}}(k+1|k)										\label{eq:Kalman_pred_output} 	\\
+%	&\textbf{P}(k+1|k) = \textbf{A}\textbf{P}(k|k)\textbf{A}^T+\textbf{Q} 								\label{eq:Kalman_pred_cov} 		
+%\end{align}
+%where 
+%\begin{align*}
+%	&\text{$\hat{\textbf{x}}(k+1|k)$ 	is the state prediction 			estimate at time index $k+1$ 		given all $ k $ samples		}	\\[-1em]
+%	&\text{$\hat{\textbf{x}}(k|k)$ 		is the state 						estimate at time index $k$ 	given all $ k $ samples				}	\\[-1em]
+%	&\text{$\hat{\textbf{y}}(k+1|k)$ 	is the output prediction 			estimate at time index $k+1$ 		given all $ k $ samples		}	\\[-1em]
+%	&\text{$\textbf{P}(k+1|k)$ 			is the predicted estimate  covariance matrix at time index $k+1$ 		given all $ k $ samples		}	\\[-1em]
+%	&\text{$\textbf{P}(k|k)$ 			is the updated estimate    covariance matrix at time index $k$ 	given all $ k $ samples				}	\\[-1em]
+%	&\text{$\textbf{Q}$					is the model/process noise covariance matrix														}	\\[-1em]
+%\end{align*}
+%
+%All three prediction equations predicts the a priori $k+1$ (next) estimate based on the $k$ previous samples and the model knowledge.\\
+%\textbf{Update stage}
+%
+%\begin{align}
+%	&\textbf{e}(k+1) = \textbf{y}(k+1) - \hat{\textbf{y}}(k+1|k)							\label{eq:Kalman_upd_inno}			\\
+%	&\textbf{S}(k+1) = \textbf{C}\textbf{P}(k+1|k)\textbf{C}^T + \textbf{R}					\label{eq:Kalman_upd_inno_cov}		\\
+%	&\textbf{K}(k+1) = \textbf{P}(k+1|k)\textbf{C}^T\textbf{S}^{-1}(k+1)					\label{eq:Kalman_upd_kalman_gain}	\\
+%	&\hat{\textbf{x}}(k+1|k+1) = \hat{\textbf{x}}(k+1|k) + \textbf{K}(k+1)\textbf{e}(k+1) 	\label{eq:Kalman_upd_est_state}		\\
+%	&\textbf{P}(k+1|k+1) = (\textbf{I} - \textbf{K}(k+1)\textbf{C})\textbf{P}(k+1|k)		\label{eq:Kalman_upd_est_cov}
+%\end{align}
+%where 
+%\begin{align*}
+%	&\text{$\textbf{e}(k+1)$ is the innovation term for time index $ k+1 $													}	\\[-1em]
+%	&\text{$\textbf{y}(k+1)$ is the observed output at time index $ k+1 $													}	\\[-1em]
+%	&\text{$\textbf{S}(k+1)$ is the innovation covariance for time index $ k+1 $											}	\\[-1em]
+%	&\text{$\textbf{R}$ is the observation noise covariance																	}	\\[-1em]
+%	&\text{$\textbf{K}(k+1)$ is the Kalman gain for time index $ k + 1 $													}	\\[-1em]
+%	&\text{$\hat{\textbf{x}}(k+1|k+1)$ is the estimate of the state vector at time index $ k+1 $ given all $ k+1$ samples	}	\\[-1em]
+%	&\text{$\textbf{P}(k+1|k+1)$ is the updated estimate covariance matrix at time index $k+1$ given all $ k+1$ samples		}	\\[-1em]
+%	&\text{$\textbf{I}$ is the identity matrix																				}	\\[-1em]			
+%\end{align*}
+%All the equations in the update stage estimates the posteriori estimate of the $ k+1 $ sample based on all $ k +1$ samples and the model knowledge. A few more remarks to give some intuitions to what the equations actually represent. The estimate covariance and innovation covariance can respectively be represented as 
+%\begin{align}
+%	&\textbf{P}(k+1|k+1) = \text{cov}(\textbf{x}(k+1)-\hat{\textbf{x}}(k+1|k+1))	\\
+%	&\textbf{P}(k+1|k) = \text{cov}(\textbf{x}(k+1)-\hat{\textbf{x}}(k+1|k)) 		\\
+%	&\textbf{S}(k+1) = \text{cov}(\textbf{e}(k+1)) 
+%\end{align}
+%
+%\textbf{Compact form}\\
+%Now collecting some of the above equations gives the more compact form of the Kalman equations.
+%Eq.'s \ref{eq:Kalman_pred_state} and \ref{eq:Kalman_pred_cov} remains in the same form as yielding \cref{eq:Kalman_pred_state_compact} and \cref{eq:Kalman_pred_cov_compact}. Eq.'s \ref{eq:Kalman_upd_inno_cov}, \ref{eq:Kalman_upd_kalman_gain} are combined yielding \cref{eq:Kalman_upd_kalman_gain_compact}. Eq. \ref{eq:Kalman_pred_output} is combined with \cref{eq:Kalman_upd_inno} and \cref{eq:Kalman_upd_est_state} yielding \cref{eq:Kalman_upd_est_state_compact}, while \cref{eq:Kalman_upd_est_cov} remains the same. All these combined presents the kalman equations as in \cite{Li2016}\\
+%\textbf{Prediction}
+%\begin{align}
+%	&\hat{\textbf{x}}(k+1|k) = \textbf{A} \hat{\textbf{x}}(k|k) + \textbf{B}\textbf{u}(k)  		\label{eq:Kalman_pred_state_compact} 	\\
+%	&\textbf{P}(k+1|k) = \textbf{A}\textbf{P}(k|k)\textbf{A}^T+\textbf{Q} 						\label{eq:Kalman_pred_cov_compact} 		
+%\end{align}
+%\textbf{Update}
+%\begin{align}
+%	&\textbf{K}(k+1) = \textbf{P}(k+1|k)\textbf{C}^T(\textbf{C}\textbf{P}(k+1|k)\textbf{C}^T + \textbf{R})^{-1}					\label{eq:Kalman_upd_kalman_gain_compact} \\
+%	&\hat{\textbf{x}}(k+1|k+1) = \hat{\textbf{x}}(k+1|k) + \textbf{K}(k+1)(\textbf{y}(k+1) - \textbf{C}\hat{\textbf{x}}(k+1|k)) \label{eq:Kalman_upd_est_state_compact} \\
+%	&\textbf{P}(k+1|k+1) = (\textbf{I} - \textbf{K}(k+1)\textbf{C})\textbf{P}(k+1|k)											\label{eq:Kalman_upd_est_cov_compact}
+%\end{align}
 
-Describe covariance matrices Q and R\\
+\subsubsection{Steady-state Kalman filter}
+If we assume that our system is time invariant, which we have done so far, the estimate Covariance and Kalman gain can be calculated analytically as they don't depend on measurements and because A and C are constant. As such, the Kalman filter itself becomes a LTI filter. The steady state estimate covariance can be found by solving the Algebraic Riccati equation:
+
+%\begin{align}
+	
+%\end{align}
+
+
+\subsubsection{Implementation of Kalman filter}
+For our case, the disturbance model has $ \textbf{u}(k)=0 $ meaning that our implementation can disregard the $ \textbf{B}\textbf{u}(k) $ in \cref{eq:Kalman_pred_state_compact}.
 
 
 The steady state Covariance matrix P and kalman Gain is ... (asymtotic kalman gain and P)
 Constant Q and R, there will be an asymptotic solution - Riccati equations. 
 
+\subsubsection{Assumptions about noise}
+Describe covariance matrices Q and R\\
 
 
 
