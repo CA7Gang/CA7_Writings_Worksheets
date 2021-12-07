@@ -1,4 +1,4 @@
-This section concerns the observer to enables access to unknown states.
+{\LARGE This document is outdated and will be removed!! '..Chapters/DisturbanceEstimator' is the newest and updated document regarding disturbance estimation and Kalman }
 
 \subsection{Observer Objective}
 
@@ -58,7 +58,7 @@ The Kalman equations will further be divided into two phases: the prediction sta
 
 \textbf{Prediction stage}
 \begin{align}
-	&\hat{\textbf{x}}	(k|k-1) = \textbf{A} 	\hat{\textbf{x}}(k-1|k-1) + \textbf{B}\textbf{u}(k-1)  				\label{eq:Kalman_pred_state} 	\\
+	&\hat{\textbf{x}}	(k|k-1) = \textbf{A} 	\hat{\textbf{x}}(k-1|k-1)  				\label{eq:Kalman_pred_state} 	\\
 	&\hat{\textbf{y}}	(k|k-1) = \textbf{C}	\hat{\textbf{x}}(k|k-1)										\label{eq:Kalman_pred_output} 	\\
 	&\textbf{P}			(k|k-1) = \textbf{A}	\textbf{P}(k-1|k-1)\textbf{A}^T+\textbf{Q} 								\label{eq:Kalman_pred_cov} 		
 \end{align}
