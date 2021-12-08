@@ -94,7 +94,6 @@ Chords and edges of the spanning tree
 In this section we present a graph of the water distribution network.
 
 \begin{figure}[h!]
-	
 	\centering
 	\begin{tikzpicture}[node distance=35mm,thick, main/.style = {draw, circle}] 
 		\node (1)  {};
@@ -140,6 +139,7 @@ In this section we present a graph of the water distribution network.
 		
 	\end{tikzpicture} 
 	\caption{Graph network of water distributed network}
+	\label{fig:WDNDetailed}
 \end{figure}
 $ d_1 $ and $ d_{10} $ represent the waterflow into the system from the pumps, which are represented by edge $ e_1 $ and $ e_{11} $ respectively.
 $ d_4 $ and $ d_7 $ represent the waterflow out of the system from the valves, which are represented by edge $ e_3 $ and $ e_9 $ respectively.
@@ -162,7 +162,7 @@ The incident matrix for the graph on \cref{fig:WDNDetailed} is shown blow in \cr
 	}
 	\end{equation}	
 	
-The chords and the spanning tree is chosen from \cref{fig:WDNDetailed} \footnote{Note that you can obtain several spanning trees in this network, just by choosing different chords}
+The chords and the spanning tree is chosen from \cref{fig:WDNDetailed} \footnote{Note that you can obtain several spanning trees in this network, just by choosing different edged as chords}
 	
 \begin{equation*} 
 	\begin{split}
@@ -226,10 +226,11 @@ with their reference-respective equivalents given by:
 
 where the notation $X_{6\star}$ denotes the entire 6th row\footnote{Correspondingly, $X_{\star6}$ would denote the entire 6th column} of the matrix $X$ and $\setminus$ is the set relative complement operator. These matrices map demands at their respective nodes into the vector of total demands in the system $d \vee \bar{d}$.
 
+\newpage
 \subsection{Implementation of Detailed system}
-
-\begin{figure}[h!]
-	
+It is not possible to implement the WDN model shown in \cref{fig:WDNDetailed} in the laboratory, due to the fact that we don't have access a 4-way-splitter as shown at node $v_6$ in the before mentioned figure. Therefore the Graph model is altered one which can be implemented; the graph is shown in \cref{fig:ImplementedWDN}.
+  
+\begin{figure}[h!]	
 	\begin{tikzpicture}[node distance=30mm, thick, main/.style = {draw,circle}] 
 		\node (1)  {};
 		\node[main] (2) [node distance={15mm},right of=1] {$v_1$}; 
@@ -279,6 +280,7 @@ where the notation $X_{6\star}$ denotes the entire 6th row\footnote{Correspondin
 		\draw[<->,dashed,] (10) -- node[above] {$d_\tau$} (11); %Create d_tau
 	\end{tikzpicture} 
 	\caption{Graph network of implemented water distributed network}
+	\label{fig:ImplementedWDN}
 \end{figure}
 
 The H matrix:
@@ -323,10 +325,13 @@ The reduced incident matrix $ \bar{H} $ for the system given by \cref{eq:labH} i
 		%v_{13}&	0	& 0	& 0	& 0	& 0 & 0	& 0 & 0 & 0 & 0 & 0 & 0 & 0	& 1    
 	}
 \end{equation}	
-The B matrix (not even started):
 
-$ B = \begin{bmatrix}
-	1	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 \\
-	-1	& 1 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 \\
-\end{bmatrix}  $
+The B matrix is obtained by choosing $e_3$ and $e_7$ as chords:
+	\begin{equation}\label{eq:B_Implemented}
+	B = \kbordermatrix{
+		&e_3&e_7&e_1&e_2&e_4&e_{5}&e_6&e_8&e_9&e_{10}&e_{11}&e_{12}&e_{13}&e_{14}& \\	
+    	B_1&1&0& 0 & 0  & 0	& -1 &  1 & -1 & 1 & 1   & 0	& 1	   & 0	  &  0 \\
+		B_2&0&1& 0 & 0	& 0	& 0	&   0 & -1 & 1 & 1    & 0	& 1	   & 0    &  0 \\    
+	}
+\end{equation}
 
