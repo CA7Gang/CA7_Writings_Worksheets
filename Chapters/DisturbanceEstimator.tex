@@ -286,7 +286,7 @@ An attempt to identify the Algebraic Riccati equation for the Steady-State Estim
 	 	\textbf{P}(\infty) 	& = (\textbf{I} - \textbf{K}(\infty) \textbf{C}) \textbf{P}_p(\infty) \\ %\label{eq:ss_kalman_mse2} 
 		& = \textbf{P}_p(\infty) - \textbf{K}(\infty) \textbf{C}\textbf{P}_p(\infty) \\
 		\text{substituting RHS of \cref{eq:ss_kalman_kalman_gain1}} \\
-		& = \textbf{P}_p(\infty) - [\textbf{P}_p(\infty) \textbf{C}^T (\textbf{C} \textbf{P}_p	(\infty) \textbf{C}^T + \textbf{R})^{-1}]\textbf{C}\textbf{P}_p(\infty) \\
+		& = \textbf{P}_p(\infty) - \textbf{P}_p(\infty) \textbf{C}^T [\textbf{C} \textbf{P}_p	(\infty) \textbf{C}^T + \textbf{R}]^{-1}\textbf{C}\textbf{P}_p(\infty) \\
 		\text{Again applying the Matrix Inversion lemma by letting} \\
 		\textbf{A}^{-1} = \textbf{P}_p(\infty), \textbf{B} = \textbf{C}^T, &\textbf{C}^{-1} = \textbf{R}, \textbf{D} = \textbf{C} \\
 		\text{Yielding} \\
@@ -302,13 +302,23 @@ An attempt to identify the Algebraic Riccati equation for the Steady-State Estim
 Which indeed is the Algebraic Riccati equation for the Estimate Covariance matrix $\textbf{P}(\infty)$\\
 \\
 
+\textbf{First question}\\
 
 CARSTEN - HERE COMES THE QUESTION.. HOW DO WE SHOW THAT RESPECTIVELY \cref{eq:ss_kalman_udledning6} AND \cref{eq:ss_kalman_udledning4} ARE RICCATI EQUATIONS, I.E. SOMETHING LIKE
 \begin{align}
 	&0 = aP^2 + bP + c 
 %	&P = A^TPA - (APC^T)(R+CPC^T)^{-1}(CPA^T)+Q 
 \end{align}
-$  $
+IS IT MARELY TO ACKNOWLEDGE THAT THE DIFFERENCE BETWEEN HIGHEST ORDER AND LOWEST ORDER OF P IS 2?
+
+\textbf{second question}\\
+In many sources (mostly slides and Wikipedia), the Riccati equation for Estimate Covariance is 
+\begin{align}
+	&\textbf{P} = \textbf{APA}^T - (\textbf{APC}^T)(\textbf{R}+\textbf{CPC}^T)^{-1}(\textbf{CPA}^T)+\textbf{Q}  \\
+	\text{But the closest we can get is } \\
+	&\textbf{P} = \textbf{APA}^T - (\textbf{APA}^T+ \textbf{Q})\textbf{C}^T[\textbf{C}(\textbf{APA}^T+\textbf{Q})\textbf{C}^T]^{-1}\textbf{C}(\textbf{APA}^T + \textbf{Q}) + \textbf{ Q}
+\end{align}
+We suggest it doesn't matter what form it comes in? If it does, we need help to arrive at the form above.
 
 \subsubsection{Implementation of Kalman filter}
 For our case, the disturbance model has $ \textbf{u}(k)=0 $ meaning that our implementation can disregard the $ \textbf{B}\textbf{u}(k) $ in \cref{eq:Kalman_pred_state_compact}.
