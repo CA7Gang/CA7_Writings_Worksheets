@@ -237,22 +237,88 @@ Equations \cref{eq:Kalman_upd_kalman_gain_compact}, \cref{eq:Kalman_upd_est_stat
 \begin{align}
 	& \textbf{K}(\infty) = \textbf{P}_p(\infty) \textbf{C}^T (\textbf{C} \textbf{P}_p	(\infty) \textbf{C}^T + \textbf{R})^{-1} \label{eq:ss_kalman_kalman_gain} \\
 	& \textbf{P}(\infty) = (\textbf{I} - \textbf{K}(\infty) \textbf{C}) \textbf{P}_p(\infty) \label{eq:ss_kalman_mse} \\
-	& \textbf{P}_p(\infty) = \textbf{A}\textbf{P}(\infty)A^T + Q \label{eq:ss_kalman_mse_pred}
+	& \textbf{P}_p(\infty) = \textbf{A}\textbf{P}(\infty)\textbf{A}^T + \textbf{Q} \label{eq:ss_kalman_mse_pred}
 \end{align}
 
-We go on the hunt for the damened Riccati equation of $\textbf{P}_p(\infty)$:
+We go on the hunt for the damened Riccati equation of $\textbf{P}_p(\infty)$. We substitute RHS of \cref{eq:ss_kalman_mse} into \cref{eq:ss_kalman_mse_pred}.
 
-\begin{equation} \label{eq:ss_kalman_udledning}
-	\begin{split}
-		\textbf{P}_p(\infty) & = \textbf{A} (I-\textbf{K}(\infty)C) \textbf{P}_p(\infty) \textbf{A}^T + \textbf{Q}\\
+\begin{equation}
+	\begin{split}\label{eq:ss_kalman_udledning1}
+		\textbf{P}_p(\infty) 	& = \textbf{A}\textbf{P}(\infty)A^T + Q \\
+		& = \textbf{A} (\textbf{I}-\textbf{K}(\infty)\textbf{C}) \textbf{P}_p(\infty) \textbf{A}^T + \textbf{Q}\\
 		& = \textbf{A} \textbf{P}_p(\infty) \textbf{A}^T - \textbf{A} \textbf{K}(\infty) \textbf{C} \textbf{P}_p(\infty)  \textbf{A}^T + \textbf{Q}\\
-		& = \textbf{A} \textbf{P}_p(\infty) \textbf{A}^T - \textbf{A} \textbf{P}_p(\infty) \textbf{C}^T (\textbf{C} \textbf{P}_p(\infty) \textbf{C}^T + \textbf{R})^{-1} \textbf{C} \textbf{P}_p(\infty) \textbf{A}^T + \textbf{Q}\\
+		\end{split}
+\end{equation}
+We now substitute RHS of \cref{eq:ss_kalman_kalman_gain} in for $\textbf{K}(\infty)$ in \cref{eq:ss_kalman_udledning1} and factorize respectively $\textbf{A}$ and $ \textbf{A}^T $.
+\begin{equation}
+	\begin{split}\label{eq:ss_kalman_udledning2}
+		\textbf{P}_p(\infty) & = \textbf{A} \textbf{P}_p(\infty) \textbf{A}^T - \textbf{A} \textbf{P}_p(\infty) \textbf{C}^T (\textbf{C} \textbf{P}_p(\infty) \textbf{C}^T + \textbf{R})^{-1} \textbf{C} \textbf{P}_p(\infty) \textbf{A}^T + \textbf{Q}\\
 		& = \textbf{A} (\textbf{P}_p(\infty) - \textbf{P}_p(\infty) \textbf{C}^T (\textbf{C} \textbf{P}_p(\infty) \textbf{C}^T + \textbf{R})^{-1} \textbf{C} \textbf{P}_p(\infty)) \textbf{A}^T + \textbf{Q}\\
-		& = \textbf{A} (\textbf{P}_p(\infty)^{-1} + \textbf{C}^T \textbf{R}^{-1} \textbf{C})^{-1} \textbf{A}^T + \textbf{Q}\\
+	\end{split}
+\end{equation}
+And let The Matrix Inversion \cref{eq:ss_kalman_MatrixInversionLemma} lemma be used to further simplify whats left in the parenthesis of RHS of \cref{eq:ss_kalman_udledning2} by letting
+\begin{equation}
+		\textbf{A}^{-1} = \textbf{P}_p(\infty), \textbf{B} = \textbf{C}^T, \textbf{C}^{-1} = \textbf{R}, \textbf{D} = \textbf{C} \label{eq:ss_kalman_udledning3}
+\end{equation}
+enables 
+\begin{align}
+		(\textbf{A}+\textbf{BCD})^{-1} &= \textbf{A}^{-1} - \textbf{A}^{-1}\textbf{B} (\textbf{D}\textbf{A}^{-1}\textbf{B}+\textbf{C}^{-1})^{-1}\textbf{D}\textbf{A}^{-1} \\ \label{eq:ss_kalman_MatrixInversionLemma}
+		(\textbf{P}_p(\infty)^{-1} + \textbf{C}^T \textbf{R}^{-1} \textbf{C})^{-1} &= (\textbf{P}_p(\infty) - \textbf{P}_p(\infty) \textbf{C}^T (\textbf{C} \textbf{P}_p(\infty) \textbf{C}^T + \textbf{R})^{-1} \textbf{C} \textbf{P}_p(\infty))
+\end{align}
+yielding the desired result: The Algebraic Riccati equation in a compact form, \cref{eq:ss_kalman_udledning4}.
+\begin{equation}
+	\begin{split}\label{eq:ss_kalman_udledning4}
+		&\textbf{P}_p(\infty) = \textbf{A} (\textbf{P}_p(\infty)^{-1} + \textbf{C}^T \textbf{R}^{-1} \textbf{C})^{-1} \textbf{A}^T + \textbf{Q}\\
 	\end{split}
 \end{equation}
 
-The Riccati equation found in \cref{eq:ss_kalman_udledning} can be solved for $\textbf{P}_p(\infty)$ numerically and substitued into \cref{eq:ss_kalman_kalman_gain} yielding  \textit{The Steady State Kalman Gain} which is then substitued into \cref{eq:ss_kalman_mse} to obtain \textit{Steady-State Estimate Covariance}.
+\cref{eq:ss_kalman_udledning4} can be solved for $\textbf{P}_p(\infty)$ numerically and substitued into \cref{eq:ss_kalman_kalman_gain} yielding \textit{The Steady State Kalman Gain} $ \textbf{K}(\infty) $ which is then substituted into \cref{eq:ss_kalman_mse} to obtain \textit{Steady-State Estimate Covariance} $ \textbf{P}(\infty) $.
+\begin{align}
+	& \textbf{K}(\infty) = \textbf{P}_p(\infty) \textbf{C}^T (\textbf{C} \textbf{P}_p	(\infty) \textbf{C}^T + \textbf{R})^{-1} \label{eq:ss_kalman_kalman_gain1} \\
+	& \textbf{P}(\infty) = (\textbf{I} - \textbf{K}(\infty) \textbf{C}) \textbf{P}_p(\infty) \label{eq:ss_kalman_mse1} 
+\end{align}
+
+An attempt to identify the Algebraic Riccati equation for the Steady-State Estimate Covariance matrix was also attempted:
+
+
+\begin{equation}
+	\begin{split}\label{eq:ss_kalman_udledning5}
+	 	\textbf{P}(\infty) 	& = (\textbf{I} - \textbf{K}(\infty) \textbf{C}) \textbf{P}_p(\infty) \\ %\label{eq:ss_kalman_mse2} 
+		& = \textbf{P}_p(\infty) - \textbf{K}(\infty) \textbf{C}\textbf{P}_p(\infty) \\
+		\text{substituting RHS of \cref{eq:ss_kalman_kalman_gain1}} \\
+		& = \textbf{P}_p(\infty) - \textbf{P}_p(\infty) \textbf{C}^T [\textbf{C} \textbf{P}_p	(\infty) \textbf{C}^T + \textbf{R}]^{-1}\textbf{C}\textbf{P}_p(\infty) \\
+		\text{Again applying the Matrix Inversion lemma by letting} \\
+		\textbf{A}^{-1} = \textbf{P}_p(\infty), \textbf{B} = \textbf{C}^T, &\textbf{C}^{-1} = \textbf{R}, \textbf{D} = \textbf{C} \\
+		\text{Yielding} \\
+		\textbf{P}(\infty) 	& = [\textbf{P}_p(\infty) + \textbf{C}^T\textbf{R}^{-1}\textbf{C}]^{-1} \\
+		\text{Substituting RHS of \cref{eq:ss_kalman_mse_pred} yields}  \\
+	\end{split}
+\end{equation}
+\begin{align}
+		\textbf{P}(\infty) & = [(\textbf{A}\textbf{P}(\infty)\textbf{A}^T + \textbf{Q}) + \textbf{C}^T\textbf{R}^{-1}\textbf{C}]^{-1}  \label{eq:ss_kalman_udledning6}
+\end{align}
+
+
+Which indeed is the Algebraic Riccati equation for the Estimate Covariance matrix $\textbf{P}(\infty)$\\
+\\
+
+\textbf{First question}\\
+
+CARSTEN - HERE COMES THE QUESTION.. HOW DO WE SHOW THAT RESPECTIVELY \cref{eq:ss_kalman_udledning6} AND \cref{eq:ss_kalman_udledning4} ARE RICCATI EQUATIONS, I.E. SOMETHING LIKE
+\begin{align}
+	&0 = aP^2 + bP + c 
+%	&P = A^TPA - (APC^T)(R+CPC^T)^{-1}(CPA^T)+Q 
+\end{align}
+IS IT MARELY TO ACKNOWLEDGE THAT THE DIFFERENCE BETWEEN HIGHEST ORDER AND LOWEST ORDER OF P IS 2?
+
+\textbf{second question}\\
+In many sources (mostly slides and Wikipedia), the Riccati equation for Estimate Covariance is 
+\begin{align}
+	&\textbf{P} = \textbf{APA}^T - (\textbf{APC}^T)(\textbf{R}+\textbf{CPC}^T)^{-1}(\textbf{CPA}^T)+\textbf{Q}  \\
+	\text{But the closest we can get is } \\
+	&\textbf{P} = \textbf{APA}^T - (\textbf{APA}^T+ \textbf{Q})\textbf{C}^T[\textbf{C}(\textbf{APA}^T+\textbf{Q})\textbf{C}^T]^{-1}\textbf{C}(\textbf{APA}^T + \textbf{Q}) + \textbf{ Q}
+\end{align}
+We suggest it doesn't matter what form it comes in? If it does, we need help to arrive at the form above.
 
 \subsubsection{Implementation of Kalman filter}
 For our case, the disturbance model has $ \textbf{u}(k)=0 $ meaning that our implementation can disregard the $ \textbf{B}\textbf{u}(k) $ in \cref{eq:Kalman_pred_state_compact}.
@@ -265,3 +331,4 @@ Constant Q and R, there will be an asymptotic solution - Riccati equations.
 Describe covariance matrices Q and R\\
 
 
+c
