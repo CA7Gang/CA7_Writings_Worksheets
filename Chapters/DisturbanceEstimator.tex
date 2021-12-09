@@ -6,22 +6,10 @@ The LQR controller relies on knowledge of the current  consumer demand flows. Th
 \subsection{Estimator model}
 An initial solution for estimating the consumer flow is to utilize the full fast dynamic system matrix. This requires the ability to accurately model the full system which has been done in this case but in practice this is not feasible. Therefore another solution is explored.
 
-If prior knowledge of the behavior of the process is available then this can be taken advantage of. A new state space model describing the behavior of the process can be made. The consumption pattern behaves much like a harmonic series up to fourth order like seen in \cref{eq:consump_pattern_actual}. 
+If prior knowledge of the behavior of the process is available then this can be taken advantage of. A new state space model describing the behavior of the process can be made. The consumption can be approximated with a harmonic series with increasing precision with higher harmonic order. From the consumption pattern data reviewed in \cref{sec:kalman_imp} it becomes apparent that an up to forth order approximation seems appropriate. This approximation is seen in \cref{eq:consump_pattern_actual}.
 
 \begin{equation} \label{eq:consump_pattern_actual}
-	d_{c_estimate} = K + k_1 cos(\omega t) + k_2 cos(\frac{\omega}{2} t) + k_3 cos(\frac{\omega}{4} t) + k_4 cos(\frac{\omega}{8} t)
-\end{equation}
-
-This should probably not be here:
-
-\begin{equation}\label{eq:DisturbanceVectorCase}
-	\begin{gathered}
-		\begin{bmatrix} \beta \\ \dot{x}_1 \\ \dot{x}_2 \end{bmatrix} = \begin{bmatrix} A_{\delta_1} & 0 \\ 0 & \bar{A}_{\delta_2} \end{bmatrix} \begin{bmatrix}\beta \\ x_1 \\ x_2 \end{bmatrix},
-		\quad y = C_\delta \begin{bmatrix}\beta \\ x_1 \\ x_2 \end{bmatrix} \\
-		x_1, x_2 \in \mathbb{R}^{2\times1} \\
-		A_{\delta_1} \in \mathbb{R}^{3\times3}, \quad \forall i \neq 1: \ \bar{A}_{\delta_i} \in \mathbb{R}^{2\times2} \\
-		C_\delta \in \mathbb{R}^{1\times2n+1}
-	\end{gathered}
+	d_{c\_approximation} = K + k_1 cos(\omega t) + k_2 cos(\frac{\omega}{2} t) + k_3 cos(\frac{\omega}{4} t) + k_4 cos(\frac{\omega}{8} t)
 \end{equation}
 
 The development and utilization of the pattern model is sufficiently described for a second order harmonic example. Thus only a model of this order is further examined here. Such a model can be seen in \cref{eq:consump_pattern}. 
@@ -29,6 +17,8 @@ The development and utilization of the pattern model is sufficiently described f
 \begin{equation} \label{eq:consump_pattern}
 	d_{c_estimate} = K + k_1 cos(\omega t) + k_2 cos(\frac{\omega}{2} t)
 \end{equation}
+
+
 
 This process model output should be achievable as a combination of states. As such the following states are chosen:
 
@@ -121,6 +111,27 @@ For $y = Cx$ to be equal to \cref{eq:consump_pattern} the C-matrix becomes:
 	C = \begin{bmatrix} 1 & 1 & 1 & 0 & 0 \end{bmatrix}
 \end{equation}
 
+If one wishes have a signal model of greater harmonic orders, a concatenation of e.g. the first order harmonic signal model, like seen in \cref{eq:first_order_signal_model}, can be performed for an arbitrary amount of harmonics. 
+
+\begin{equation}\label{eq:first_order_signal_model}
+	\begin{gathered}
+		\dot{x} = A_\delta x =  \begin{bmatrix}0 & 0 & 0 \\ 0 & 0 & -\omega \\ 0 & \omega & 0	\end{bmatrix}x \\
+		y = C_\delta x = \begin{bmatrix} 1 & 1 & 0 \end{bmatrix} x
+	\end{gathered}
+\end{equation}
+
+Such a concatenation would for a second order approximation look like such:
+
+\begin{equation}\label{eq:DisturbanceVectorCase}
+	\begin{gathered}
+		\begin{bmatrix} K \\ \dot{x}_1 \\ \dot{x}_2 \end{bmatrix} = \begin{bmatrix} A_{\delta_1} & 0 \\ 0 & \bar{A}_{\delta_2} \end{bmatrix} \begin{bmatrix} K \\ x_1 \\ x_2 \end{bmatrix},
+		\quad y = C_\delta \begin{bmatrix} K \\ x_1 \\ x_2 \end{bmatrix} \\
+		x_1, x_2 \in \mathbb{R}^{2\times1} \\
+		A_{\delta_1} \in \mathbb{R}^{3\times3}, \quad \forall i \neq 1: \ \bar{A}_{\delta_i} \in \mathbb{R}^{2\times2} \\
+		C_\delta \in \mathbb{R}^{1\times2n+1}
+	\end{gathered}
+\end{equation}
+
 \subsection{Estimator type}
 Several estimator options are available, including the classical Luenberg observer. Although the Kalman filter is the desired estimator if it is assumed that:
 
@@ -135,7 +146,6 @@ It is the optimal affine estimator given some assumptions about the precision of
 
 
 
-\clearpage \newpage
 \subsection{The Kalman Filter} \label{sec:the_kalman_filter}
 The Kalman filter is an optimal estimator, where the optimality criterion is to reduce the Mean Squared Error (MSE) of the residuals.
 It estimates unknown processes by a combination of a system model and a measurement that is related to the unknown processes. 
@@ -336,7 +346,10 @@ In many sources (mostly slides and Wikipedia), the Riccati equation for Estimate
 \end{align}
 We suggest it doesn't matter what form it comes in? If it does, we need help to arrive at the form above.
 
-\subsubsection{Implementation of Kalman filter}
+
+
+
+\subsubsection{Implementation of Kalman filter} \label{sec:kalman_imp}
 For our case, the disturbance model has $ \textbf{u}(k)=0 $ meaning that our implementation can disregard the $ \textbf{B}\textbf{u}(k) $ in \cref{eq:Kalman_pred_state_compact}.
 
 
@@ -346,8 +359,12 @@ Constant Q and R, there will be an asymptotic solution - Riccati equations.
 \subsubsection{Assumptions about noise}
 Describe covariance matrices Q and R\\
 
+
+
+
+
 \subsubsection{Kalman simulation}
-In order to do Kalman estimation we wish to derive a model of the consumer pattern. We have attained a historical data set showing typical daily water consumption during a three month period, see \cref{fig:Consumptionpattern}. Note that the unit of consumption is unknown, and we will normalize this data to fit the expected maximum flow in the laboratory.  Using frequency analysis we construct a model containing the four most influential sinusoidal components, assuming these will contain the general tendency of the pattern.
+Real water consumption data should be analyzed in order to justify approximating the consumption pattern as a harmonic series. A historical data set showing typical daily water consumption during a three month period is attained. Two arbitrary days from said data set is seen in \cref{fig:Consumptionpattern}. Note that the unit of consumption is unknown, and we will normalize this data to fit the expected maximum flow in the laboratory.  Using frequency analysis we construct a model containing the four most influential sinusoidal components, assuming these will contain the general tendency of the pattern.
 
 \begin{figure}[h!]
 	\centering
