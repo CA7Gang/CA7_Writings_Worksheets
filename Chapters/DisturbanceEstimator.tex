@@ -1,7 +1,7 @@
 This section concerns the estimator used for estimation of the consumer demand flows.
 
 \subsection{Estimator Objective}
-The LQR controller relies on knowledge of the current  consumer demand flows. The consumption flow is not measured directly but can be calculated from the combined measurements of tank flow $d_\tau$ and pump flows $d_p$. If no leakage is present all nodal demands sum to zero and thus $d_c = d_p + d_\tau$.  Noise will be present on all flow sensor measurements which will affect LQR controller performance. Thus it is favorable to estimate the actual consumer flow.
+The LQR controller relies on knowledge of the current  consumer demand flows. The consumption flow is not measured directly but can be calculated from the combined measurements of tank flow $d_\tau$ and pump flows $d_p$. If no leakage is present all nodal demands sum to zero (mass conservation) and thus $d_c = d_p + d_\tau$. Noise will be present on all flow sensor measurements which will affect LQR controller performance. Thus it is favorable to estimate the actual underlying consumer flow, attenuate measurement noise.
 
 \subsection{Estimator model}
 An initial solution for estimating the consumer flow is to utilize the full fast dynamic system matrix. This requires the ability to accurately model the full system which has been done in this case but in practice this is not feasible. Therefore another solution is explored.
@@ -9,7 +9,7 @@ An initial solution for estimating the consumer flow is to utilize the full fast
 If prior knowledge of the behavior of the process is available then this can be taken advantage of. A new state space model describing the behavior of the process can be made. The consumption can be approximated with a harmonic series with increasing precision with higher harmonic order. From the consumption pattern data reviewed in \cref{sec:kalman_imp} it becomes apparent that an up to forth order approximation seems appropriate. This approximation is seen in \cref{eq:consump_pattern_actual}.
 
 \begin{equation} \label{eq:consump_pattern_actual}
-	d_{c\_approximation} = K + k_1 cos(\omega t) + k_2 cos(\frac{\omega}{2} t) + k_3 cos(\frac{\omega}{4} t) + k_4 cos(\frac{\omega}{8} t)
+	d_{c_{approx}}(t) = k_0 + k_1 cos(\omega t + \phi_1) + k_2 cos(2\omega t \phi_2) + k_3 cos(3\omega t + \phi_3) + k_4 cos(4\omega t + \phi_4)
 \end{equation}
 
 The development and utilization of the pattern model is sufficiently described for a second order harmonic example. Thus only a model of this order is further examined here. Such a model can be seen in \cref{eq:consump_pattern}. 
@@ -133,11 +133,13 @@ Such a concatenation would for a second order approximation look like such:
 \end{equation}
 
 \subsection{Estimator type}
-Several estimator options are available, including the classical Luenberg observer. Although the Kalman filter is the desired estimator if it is assumed that:
+Since the disturbance can be described as a linear system we need a linear estimator. The optimal affine (and hence also linear) estimator is the Kalman filter, if the following conditions are fulfilled
 
 \begin{enumerate}
-	\item the consumer flow disturbance can be modeled as a dynamic system excited by white zero-mean uncorrelated gaussian noise
-	\item the flow measurement noise can be considered white zero-mean uncorrelated gaussian noise
+	\item the consumer flow disturbance can be modeled as a dynamic system excited by white zero-mean gaussian noise
+	\item the flow measurement noise can be considered white zero-mean gaussian noise
+	\item the model uncertainty noise can be modelled as zero-mean white gaussian noise
+	\item the measurement noise and model uncertainty noise are uncorrelated
 \end{enumerate}
 
 It is the optimal affine estimator given some assumptions about the precision of the model of the process and the knowledge of the process and measurement noise, which is further described in \cref{sec:the_kalman_filter}.
@@ -148,7 +150,7 @@ It is the optimal affine estimator given some assumptions about the precision of
 
 \subsection{The Kalman Filter} \label{sec:the_kalman_filter}
 The Kalman filter is an optimal estimator, where the optimality criterion is to reduce the Mean Squared Error (MSE) of the residuals.
-It estimates unknown processes by a combination of a system model and a measurement that is related to the unknown processes. 
+It estimates an unknown process by a combination of a system model and a measurement that is related to the unknown processes. 
 
 The Kalman filter recursively finds the optimal \textit{Kalman Gain} for the given system to minimize the residual MSE. Finding the optimal gain relies on assuming that the model and measurement noise are uncorrelated white noise processes with known covariances. 
 
@@ -165,24 +167,23 @@ where
 \begin{align*}
 	&\text{$\textbf{x}(k)$ is the state vector at time index k,					}	\\[-1em]
 	&\text{$\textbf{u}(k)$ is the input at time index k, 						}	\\[-1em]
-	&\text{$\textbf{w}(k) \sim \mathcal{N}(0, Q)$ is the model noise,			}	\\[-1em]
-	&\text{$\textbf{v}(k) \sim \mathcal{N}(0, R)$ is the measurement noise,		}	\\[-1em]
+	&\text{$\textbf{w}(k) \sim \mathcal{N}(0, Q)$ is the model noiseat time index k,			}	\\[-1em]
+	&\text{$\textbf{v}(k) \sim \mathcal{N}(0, R)$ is the measurement noise at time index k,		}	\\[-1em]
 	&\text{$\textbf{y}(k)$ is the observable output, 							}	\\[-1em]
 	&\text{\textbf{A} is the state transition matrix,							}	\\[-1em]
 	&\text{\textbf{B} is the control-input matrix,								}	\\[-1em]
 	&\text{\textbf{C} is the observation matrix. 								}	\\[-1em]
 \end{align*}
 
-To simplify the presentation for the readers of this report the Kalman equations will be presented in the form of 9 equations, after which they can be combined to yield the traditional and more dense form.
+To simplify the presentation for the readers of this report the Kalman equations will be presented in the form of 8 equations, after which they can be combined to yield the traditional and more dense form of 5 equations.
 The Kalman equations will further be divided into two phases: the prediction stage and the update stage. 
 
 \textbf{Prediction stage}
 \begin{align}
-	&\hat{\textbf{x}}	(k|k-1) = \textbf{A} 	\hat{\textbf{x}}(k-1|k-1)  				\label{eq:Kalman_pred_state} 	\\
+	&\hat{\textbf{x}}	(k|k-1) = \textbf{A} 	\hat{\textbf{x}}(k-1|k-1) + \textbf{B}\textbf{u}(k-1)  				\label{eq:Kalman_pred_state} 	\\
 	&\hat{\textbf{y}}	(k|k-1) = \textbf{C}	\hat{\textbf{x}}(k|k-1)										\label{eq:Kalman_pred_output} 	\\
 	&\textbf{P}			(k|k-1) = \textbf{A}	\textbf{P}(k-1|k-1)\textbf{A}^T+\textbf{Q} 								\label{eq:Kalman_pred_cov} 		
 \end{align}
-
 where 
 \begin{align*}
 	&\text{$\hat{\textbf{x}}	(k|k-1)$ 	is the state prediction 			estimate at time index $k$ 		given all $ k-1 $ samples		}	\\[-1em]
@@ -193,7 +194,8 @@ where
 	&\text{$\textbf{Q}$						is the model/process noise covariance matrix														}	\\[-1em]
 \end{align*}
 
-All three prediction equations predicts the a priori $k$ (next) estimate based on the $k-1$ previous samples and the model knowledge.\\
+All three prediction equations predicts the a priori $k^{th}$ (next) estimate based on the $k-1$ previous samples and the model knowledge.\\
+
 \textbf{Update stage}
 
 \begin{align}
@@ -203,9 +205,7 @@ All three prediction equations predicts the a priori $k$ (next) estimate based o
 	&\hat{\textbf{x}}	(k|k) 		= \hat{\textbf{x}}(k|k-1) + \textbf{K}(k)\textbf{e}(k) 				\label{eq:Kalman_upd_est_state}		\\
 	&\textbf{P}			(k|k) 		= (\textbf{I} - \textbf{K}(k)\textbf{C})\textbf{P}(k|k-1)			\label{eq:Kalman_upd_est_cov}
 \end{align}
-
 where 
-
 \begin{align*}
 	&\text{$\textbf{e}		(k)$ 		is the innovation term for time index 					$ k $													}	\\[-1em]
 	&\text{$\textbf{y}		(k)$ 		is the observed output at time index 					$ k $													}	\\[-1em]
@@ -217,7 +217,7 @@ where
 	&\text{$\textbf{I}$ 				is the identity matrix																				}	\\[-1em]			
 \end{align*}
 
-All the equations in the update stage estimates the posteriori estimate of the $ k $ sample based on all $ k $ samples and the model knowledge. A few more remarks to give some intuitions to what the equations actually represent. The estimate covariance and innovation covariance can respectively be represented as 
+All the equations in the update stage estimates the posteriori estimate of the $ k $ sample based on all $ k^{th} $ samples and the model knowledge. A few expressions to give some intuitions to what the equations actually represent. The estimate covariance, the prediction covariance and innovation covariance can respectively be represented as 
 
 \begin{align}
 	&\textbf{P}(k|k) 	= \text{cov}(\textbf{x}(k)-	\hat{\textbf{x}}(k|k))	\\
@@ -227,14 +227,14 @@ All the equations in the update stage estimates the posteriori estimate of the $
 
 \textbf{Compact form}\\
 Now collecting some of the above equations gives the more compact form of the Kalman equations.
-Eq.'s \ref{eq:Kalman_pred_state} and \ref{eq:Kalman_pred_cov} remains in the same form, but omitting $ \textbf{Bu}(k-1) $ yields \cref{eq:Kalman_pred_state_compact} and \cref{eq:Kalman_pred_cov_compact}. Eq.'s \ref{eq:Kalman_upd_inno_cov}, \ref{eq:Kalman_upd_kalman_gain} are combined yielding \cref{eq:Kalman_upd_kalman_gain_compact}. Eq. \ref{eq:Kalman_pred_output} is combined with \cref{eq:Kalman_upd_inno} and \cref{eq:Kalman_upd_est_state} yielding \cref{eq:Kalman_upd_est_state_compact}, while \cref{eq:Kalman_upd_est_cov} remains the same. All these combined presents the kalman equations as in \cite{Bozic1994}\\
-\textbf{Prediction}
+Eq.'s \ref{eq:Kalman_pred_state} and \ref{eq:Kalman_pred_cov} remains in the same form, but omitting $ \textbf{Bu}(k-1) $ yields \cref{eq:Kalman_pred_state_compact} and \cref{eq:Kalman_pred_cov_compact}. $ \textbf{Bu}(k-1) $ can be omitted as it is not part of the system model in \cref{eq:first_order_signal_model}.\\
+Eq.'s \ref{eq:Kalman_upd_inno_cov}, \ref{eq:Kalman_upd_kalman_gain} are combined yielding \cref{eq:Kalman_upd_kalman_gain_compact}. Eq. \ref{eq:Kalman_pred_output} is combined with \cref{eq:Kalman_upd_inno} and \cref{eq:Kalman_upd_est_state} yielding \cref{eq:Kalman_upd_est_state_compact}, while \cref{eq:Kalman_upd_est_cov} remains the same. All these combined presents the kalman equations as in \cite{Bozic1994}\\
 
+\textbf{Prediction}
 \begin{align}
 	&\hat{\textbf{x}}	(k|k-1) = \textbf{A} \hat{\textbf{x}}	(k-1|k-1) 		\label{eq:Kalman_pred_state_compact} 	\\
 	&\textbf{P}			(k|k-1) = \textbf{A}\textbf{P}			(k-1|k-1)\textbf{A}^T+\textbf{Q} 				\label{eq:Kalman_pred_cov_compact} 		
 \end{align}
-
 \textbf{Update}
 \begin{align}
 	&\textbf{K}			(k) 		= \textbf{P}				(k|k-1)\textbf{C}^T(\textbf{C}\textbf{P}	(k|k-1)	\textbf{C}^T + \textbf{R})^{-1}										\label{eq:Kalman_upd_kalman_gain_compact} \\
@@ -244,30 +244,20 @@ Eq.'s \ref{eq:Kalman_pred_state} and \ref{eq:Kalman_pred_cov} remains in the sam
 
 
 \subsubsection{Steady-state Kalman filter}
-If we assume that our system is time invariant, which we have done so far, the estimate Covariance and Kalman gain can be calculated analytically as they don't depend on measurements and because A and C are constant. As such, the Kalman filter itself becomes a LTI filter. The steady state estimate covariance prediction can be found by solving its Algebraic Riccati equation. We will attempt to derive this.\\
+If we assume that the covariances and system is time invariant, i.e. $ \textbf{A}, \textbf{C}, \textbf{Q}, \textbf{R} $ are constant, the estimate Covariance and Kalman gain can be calculated beforehand as they don't depend on measurements, only on $ \textbf{A}, \textbf{C}, \textbf{Q}, \textbf{R} $. As such, the Kalman filter itself becomes a LTI filter. The steady state prediction covariance can be found by solving its Algebraic Riccati equation (ARE) - it will now be derived in the discrete form.\\
 
-%\begin{align}
-%	&\textbf{P} = \textbf{APA}^T - \textbf{APC}^T(\textbf{CPC}^T+\textbf{R})^{-1} \textbf{CPA}^T+ \textbf{Q} \\
-%	&\textbf{K} = \textbf{APC}^T(\textbf{CPC}^T+\textbf{R})^{-1}
-%\end{align}
 
-In steady-state where $k \rightarrow \infty$ we can assume that $\textbf{P}(k|k) = \textbf{P}(k-1|k-1) $. 
-
-The predicted MSE, the MSE and the Kalman Gain approach a constant value:
-
+In steady-state where $k \rightarrow \infty$ we can assume that $\textbf{P}(k|k) = \textbf{P}(k-1|k-1) $. Furthermore the prediction covariance, the estimation covariance and the Kalman Gain approach a constant value:
 \begin{equation}
 	\textbf{P}(k|k-1) =  \textbf{P}_p(\infty), \hspace{3mm} \textbf{P}(k|k) = \textbf{P}(k-1|k-1) = \textbf{P}(\infty),  \hspace{3mm} \textbf{K}(k) = \textbf{K}(\infty)
 \end{equation}
-
 Equations \cref{eq:Kalman_upd_kalman_gain_compact}, \cref{eq:Kalman_upd_est_state_compact} and \cref{eq:Kalman_upd_est_cov_compact} are rewritten with their steady state counterparts:
 \begin{align}
 	& \textbf{K}(\infty) = \textbf{P}_p(\infty) \textbf{C}^T (\textbf{C} \textbf{P}_p	(\infty) \textbf{C}^T + \textbf{R})^{-1} \label{eq:ss_kalman_kalman_gain} \\
 	& \textbf{P}(\infty) = (\textbf{I} - \textbf{K}(\infty) \textbf{C}) \textbf{P}_p(\infty) \label{eq:ss_kalman_mse} \\
 	& \textbf{P}_p(\infty) = \textbf{A}\textbf{P}(\infty)\textbf{A}^T + \textbf{Q} \label{eq:ss_kalman_mse_pred}
 \end{align}
-
 We go on the hunt for the damened Riccati equation of $\textbf{P}_p(\infty)$. We substitute RHS of \cref{eq:ss_kalman_mse} into \cref{eq:ss_kalman_mse_pred}.
-
 \begin{equation}
 	\begin{split}\label{eq:ss_kalman_udledning1}
 		\textbf{P}_p(\infty) 	& = \textbf{A}\textbf{P}(\infty)A^T + Q \\
@@ -282,7 +272,7 @@ We now substitute RHS of \cref{eq:ss_kalman_kalman_gain} in for $\textbf{K}(\inf
 		& = \textbf{A} (\textbf{P}_p(\infty) - \textbf{P}_p(\infty) \textbf{C}^T (\textbf{C} \textbf{P}_p(\infty) \textbf{C}^T + \textbf{R})^{-1} \textbf{C} \textbf{P}_p(\infty)) \textbf{A}^T + \textbf{Q}\\
 	\end{split}
 \end{equation}
-And let The Matrix Inversion \cref{eq:ss_kalman_MatrixInversionLemma} lemma be used to further simplify whats left in the parenthesis of RHS of \cref{eq:ss_kalman_udledning2} by letting
+And let The Matrix Inversion lemma \cref{eq:ss_kalman_MatrixInversionLemma} be used to further simplify whats left in the parenthesis of RHS of \cref{eq:ss_kalman_udledning2} by letting
 \begin{equation}
 		\textbf{A}^{-1} = \textbf{P}_p(\infty), \textbf{B} = \textbf{C}^T, \textbf{C}^{-1} = \textbf{R}, \textbf{D} = \textbf{C} \label{eq:ss_kalman_udledning3}
 \end{equation}
@@ -313,55 +303,24 @@ An attempt to identify the Algebraic Riccati equation for the Steady-State Estim
 		& = \textbf{P}_p(\infty) - \textbf{K}(\infty) \textbf{C}\textbf{P}_p(\infty) \\
 		\text{substituting RHS of \cref{eq:ss_kalman_kalman_gain1}} \\
 		& = \textbf{P}_p(\infty) - \textbf{P}_p(\infty) \textbf{C}^T [\textbf{C} \textbf{P}_p	(\infty) \textbf{C}^T + \textbf{R}]^{-1}\textbf{C}\textbf{P}_p(\infty) \\
-		\text{Again applying the Matrix Inversion lemma by letting} \\
-		\textbf{A}^{-1} = \textbf{P}_p(\infty), \textbf{B} = \textbf{C}^T, &\textbf{C}^{-1} = \textbf{R}, \textbf{D} = \textbf{C} \\
-		\text{Yielding} \\
-		\textbf{P}(\infty) 	& = [\textbf{P}_p(\infty) + \textbf{C}^T\textbf{R}^{-1}\textbf{C}]^{-1} \\
-		\text{Substituting RHS of \cref{eq:ss_kalman_mse_pred} yields}  \\
 	\end{split}
 \end{equation}
+Again applying the Matrix Inversion lemma by letting
+\begin{equation}
+	\begin{split}\label{eq:ss_kalman_udledning5}
+		&\textbf{A}^{-1} = \textbf{P}_p(\infty), \textbf{B} = \textbf{C}^T, \textbf{C}^{-1} = \textbf{R}, \textbf{D} = \textbf{C} \\
+		\text{yielding} \\
+		&\textbf{P}(\infty) = [\textbf{P}_p(\infty) + \textbf{C}^T\textbf{R}^{-1}\textbf{C}]^{-1} \\ 
+	\end{split}
+\end{equation}     
+
+substituting RHS of \cref{eq:ss_kalman_mse_pred}
 \begin{align}
 		\textbf{P}(\infty) & = [(\textbf{A}\textbf{P}(\infty)\textbf{A}^T + \textbf{Q}) + \textbf{C}^T\textbf{R}^{-1}\textbf{C}]^{-1}  \label{eq:ss_kalman_udledning6}
 \end{align}
 
-
-Which indeed is the Algebraic Riccati equation for the Estimate Covariance matrix $\textbf{P}(\infty)$\\
-\\
-
-\textbf{First question}\\
-
-CARSTEN - HERE COMES THE QUESTION.. HOW DO WE SHOW THAT RESPECTIVELY \cref{eq:ss_kalman_udledning6} AND \cref{eq:ss_kalman_udledning4} ARE RICCATI EQUATIONS, I.E. SOMETHING LIKE
-\begin{align}
-	&0 = aP^2 + bP + c 
-%	&P = A^TPA - (APC^T)(R+CPC^T)^{-1}(CPA^T)+Q 
-\end{align}
-IS IT MARELY TO ACKNOWLEDGE THAT THE DIFFERENCE BETWEEN HIGHEST ORDER AND LOWEST ORDER OF P IS 2?
-
-\textbf{second question}\\
-In many sources (mostly slides and Wikipedia), the Riccati equation for Estimate Covariance is 
-\begin{align}
-	&\textbf{P} = \textbf{APA}^T - (\textbf{APC}^T)(\textbf{R}+\textbf{CPC}^T)^{-1}(\textbf{CPA}^T)+\textbf{Q}  \\
-	\text{But the closest we can get is } \\
-	&\textbf{P} = \textbf{APA}^T - (\textbf{APA}^T+ \textbf{Q})\textbf{C}^T[\textbf{C}(\textbf{APA}^T+\textbf{Q})\textbf{C}^T]^{-1}\textbf{C}(\textbf{APA}^T + \textbf{Q}) + \textbf{ Q}
-\end{align}
-We suggest it doesn't matter what form it comes in? If it does, we need help to arrive at the form above.
-
-
-
-
-\subsubsection{Implementation of Kalman filter} \label{sec:kalman_imp}
-For our case, the disturbance model has $ \textbf{u}(k)=0 $ meaning that our implementation can disregard the $ \textbf{B}\textbf{u}(k) $ in \cref{eq:Kalman_pred_state_compact}.
-
-
-The steady state Covariance matrix P and kalman Gain is ... (asymtotic kalman gain and P)
-Constant Q and R, there will be an asymptotic solution - Riccati equations. 
-
-\subsubsection{Assumptions about noise}
-Describe covariance matrices Q and R\\
-
-
-
-
+Which indeed is the Algebraic Riccati equation for the \textit{Steady State Estimate Covariance} matrix $\textbf{P}(\infty)$\\
+Now the foundation is derived for starting to implement an actual model of the system in the following sections.
 
 \subsubsection{Kalman simulation}
 Real water consumption data should be analyzed in order to justify approximating the consumption pattern as a harmonic series. A historical data set showing typical daily water consumption during a three month period is attained. Two arbitrary days from said data set is seen in \cref{fig:Consumptionpattern}. Note that the unit of consumption is unknown, and we will normalize this data to fit the expected maximum flow in the laboratory.  Using frequency analysis we construct a model containing the four most influential sinusoidal components, assuming these will contain the general tendency of the pattern.
