@@ -6,13 +6,29 @@ The LQR controller relies on knowledge of the current  consumer demand flows. Th
 \subsection{Estimator model}
 An initial solution for estimating the consumer flow is to utilize the full fast dynamic system matrix. This requires the ability to accurately model the full system which has been done in this case but in practice this is not feasible. Therefore another solution is explored.
 
-If prior knowledge of the behavior of the process is available then this can be taken advantage of. A new state space model describing the behavior of the process can be made. The consumption pattern behaves like a harmonic series (up to 4th order???) like seen in \cref{eq:consump_pattern}.
+If prior knowledge of the behavior of the process is available then this can be taken advantage of. A new state space model describing the behavior of the process can be made. The consumption pattern behaves much like a harmonic series up to fourth order like seen in \cref{eq:consump_pattern_actual}. 
+
+\begin{equation} \label{eq:consump_pattern_actual}
+	d_{c_estimate} = K + k_1 cos(\omega t) + k_2 cos(\frac{\omega}{2} t) + k_3 cos(\frac{\omega}{4} t) + k_4 cos(\frac{\omega}{8} t)
+\end{equation}
+
+This should probably not be here:
+
+\begin{equation}\label{eq:DisturbanceVectorCase}
+	\begin{gathered}
+		\begin{bmatrix} \beta \\ \dot{x}_1 \\ \dot{x}_2 \end{bmatrix} = \begin{bmatrix} A_{\delta_1} & 0 \\ 0 & \bar{A}_{\delta_2} \end{bmatrix} \begin{bmatrix}\beta \\ x_1 \\ x_2 \end{bmatrix},
+		\quad y = C_\delta \begin{bmatrix}\beta \\ x_1 \\ x_2 \end{bmatrix} \\
+		x_1, x_2 \in \mathbb{R}^{2\times1} \\
+		A_{\delta_1} \in \mathbb{R}^{3\times3}, \quad \forall i \neq 1: \ \bar{A}_{\delta_i} \in \mathbb{R}^{2\times2} \\
+		C_\delta \in \mathbb{R}^{1\times2n+1}
+	\end{gathered}
+\end{equation}
+
+The development and utilization of the pattern model is sufficiently described for a second order harmonic example. Thus only a model of this order is further examined here. Such a model can be seen in \cref{eq:consump_pattern}. 
 
 \begin{equation} \label{eq:consump_pattern}
 	d_{c_estimate} = K + k_1 cos(\omega t) + k_2 cos(\frac{\omega}{2} t)
 \end{equation}
-
-
 
 This process model output should be achievable as a combination of states. As such the following states are chosen:
 
