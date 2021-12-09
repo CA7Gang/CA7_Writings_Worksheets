@@ -346,5 +346,49 @@ Constant Q and R, there will be an asymptotic solution - Riccati equations.
 \subsubsection{Assumptions about noise}
 Describe covariance matrices Q and R\\
 
+\subsubsection{Kalman simulation}
+In order to do Kalman estimation we wish to derive a model of the consumer pattern. We have attained a historical data set showing typical daily water consumption during a three month period, see \cref{fig:Consumptionpattern}. Note that the unit of consumption is unknown, and we will normalize this data to fit the expected maximum flow in the laboratory.  Using frequency analysis we construct a model containing the four most influential sinusoidal components, assuming these will contain the general tendency of the pattern.
 
-c
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.8\textwidth]{Pictures/ConsumptionPattern.pdf}
+	
+	\caption{Consumption pattern over two days}
+	\label{fig:Consumptionpattern}
+\end{figure}
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.8\textwidth]{Pictures/FFT.pdf}
+	
+	\caption{FFT results on consumption pattern}
+	\label{fig:FFT}
+\end{figure}
+
+FFT analysis yield amplitude and phase plots as seen in \cref{fig:FFT}.The amplitude plot clearly shows a bias and the most influential components. To construct the correct signal we also need to identify the phase shift of each components. These can be extracted from the phase plot, by identifying which indices correspond to the most influential frequencies.
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.8\textwidth]{Pictures/Comparisson.pdf}
+	
+	\caption{Comparison of raw historical data, and model}
+	\label{fig:Comparison}
+\end{figure}
+
+The resulting model is compared to the raw historical data in \cref{fig:Comparison}, showing moderate coincidence. Estimate accuracy in a specific application will benefit from more thorough design of the model, possibly including additional harmonics and consumption data from the local area. Therefore, we are satisfied with the model as a general example of a consumer pattern, without requirements on validity or application. A minor correction is made based on visual inspection of the plot, resulting in a slight timeshift of the entire model to match peaks of the fundamental frequency. We justify this correction based on seeing similar shift if a few extra harmonics are included.
+
+
+The Kalman filters ability to track the model is verified in simulations, and simultaneously allow us to make initial guesses on covariance matrices. We have established that a model may accurately represent consumer patterns and therefore allow the estimator to place greater trust in the model than the measurements. This also benefits our ability to detect a leakage, as the error between estimate and measurement becomes more prominent when the model is the primary contributor in the filter. This leads to somewhat arbitrary initial covariance guesses where the consumer model is trusted ten times more than the measurement.
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.8\textwidth]{Pictures/Comparisson.pdf}
+	
+	\caption{Kalman comparison with noisy model and altered model}
+	\label{fig:Comparison}
+\end{figure}
+
+A large white noise is applied to the signal, we assume this noise to be much greater than any practical occurrence, and therefore assume the filter will perform better than simulation results in any real application. The model from which measurements are drawn is also altered to simulate a discrepancy between Kalman model and real measurements. This error is introduced by increasing amplitude of the first two sinusoidal components by 20\%, and removing the third component. In theory this could correspond to a hot day increasing the general water consumption, where a large factory which create the third harmonic is out of operation.
+These covariance values, allow the Kalman filter to track the model accurately even with error. However, this property is disadvantageous in terms of detecting leakage, as a deviation from the expected behavior given by the model, would be concealed as the filter tracks the deviation too well. This introduces a tradeoff where we wish to be able to accurately estimate the consumer pattern i.e. thrust measurements, such that minor changes in the pattern are tracked, and still rely enough on the model making larger deviations stand out.
+
+Unfinished comment; If leaks are assumed to appear rappidly, say over 10 seconds. Then ...
