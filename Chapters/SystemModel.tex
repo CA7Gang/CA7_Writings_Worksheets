@@ -80,7 +80,7 @@ subsequently allowing \cref{eq:EdgeFlows} to be restated as:
 We can now state the pressure drop across each edge in the network as:
 
 \begin{equation}\label{eq:PressureFunction}
-	\Delta p = \mathcal{J}\dot{q} + \lambda(q) + \mu(q) + \alpha(q) -\Delta h
+	\Delta p = \mathcal{J}\dot{q} + \lambda(q) + \mu(q, OD) + \alpha(q, \omega) -\Delta h
 \end{equation}
 
 where $\mathcal{J}, \lambda, \mu, \alpha$ are as defined in \cref{sec:ComponentModels}\footnote{Note that we have omitted the secondary variables $OD,\omega$ for convenience.} and $q$ is the vector of edge flows. We now invoke KML as per \cref{eq:KirchMeshLaw} on \cref{eq:PressureFunction}, obtaining:
