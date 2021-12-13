@@ -56,7 +56,7 @@ With $c$ and $m$ being the number of chords and edges respectively.
 
 \newpage
 \subsection{Simplified system}
-The graph network shown in \cref{fig:graph} is a simplified graoh network of the WDN implementation lab and has mainly been used to confirm basic graph theoretical concepts. This model does not include pump and valve edges.  
+The graph network shown in \cref{fig:graph} is a simplified graph network of the WDN laboratory implementation and has mainly been used to confirm basic graph theoretical concepts. This model does not include pump and valve edges.  
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=0.4\textwidth]{Pictures/Graph.png}
@@ -64,7 +64,7 @@ The graph network shown in \cref{fig:graph} is a simplified graoh network of the
 	\label{fig:graph}
 \end{figure}
 
-When applying the rules shown above for the simplified graph model of the WDN the incident matrix in \cref{eq:H_simplified}.
+When applying the rules shown above for the simplified graph model of the WDN the incident matrix becomes:
 
 \begin{equation}
 	H = \begin{bmatrix}
@@ -76,17 +76,18 @@ When applying the rules shown above for the simplified graph model of the WDN th
 		0 & 0 & 0 & 0 & 0 & -1 & 1
 	\end{bmatrix}
 	\label{eq:H_simplified}
-\end{equation} %The incident matrix for system
+\end{equation} 
 
 
 The reduced incident matrix by taking an arbitrary vertex as a reference, and removing that vertex-row from \cref{eq:H_simplified}. We chose the $4^{th}$ vertex, which results in the following reduced incident matrix:
 \begin{equation}
 	\bar{H} = \begin{bmatrix}
-		1 & 0 & 1 & 0 & 0 & 0 & 0\\
-		-1 & 1 & 0 & 0 & 0 & 0 & 0\\
-		0 & 0 & -1 & 1 & 1 & 0 & 0\\
-		0 & 0 & 0 & 0 & -1 &  0  & -1\\
-		0 & 0 & 0 & 0 & 0 & -1 & 1
+	1 & 0 & 1 & 0 & 0 & 0 & 0\\
+	-1 & 1 & 0 & 0 & 0 & 0 & 0\\
+	0 & 0 & -1 & 1 & 1 & 0 & 0\\
+	0 & -1 & 0 & -1 & 0 & 1 & 0\\
+	0 & 0 & 0 & 0 & -1 &  0  & -1
+	%0 & 0 & 0 & 0 & 0 & -1 & 1
 	\end{bmatrix}
 \end{equation}
 
@@ -238,10 +239,10 @@ Furthermore we can define the open-node matrix $F$ and tank matrix $G$:
 with their reference-respective equivalents given by:
 
 \begin{equation}\label{eq:FbarGbar}
-	\bar{F} = F \setminus F_{6\star} \wedge \bar{G} = G \setminus G_{6\star}
+	\bar{F} = F \setminus F_{10\star} \wedge \bar{G} = G \setminus G_{10\star}
 \end{equation}
 
-where the notation $X_{6\star}$ denotes the entire 6th row\footnote{Correspondingly, $X_{\star6}$ would denote the entire 6th column} of the matrix $X$ and $\setminus$ is the set relative complement operator. These matrices map demands at their respective nodes into the vector of total demands in the system $d \vee \bar{d}$.
+where the notation $X_{10\star}$ denotes the entire 10th row\footnote{Correspondingly, $X_{\star10}$ would denote the entire 10th column} of the matrix $X$ and $\setminus$ is the set relative complement operator. These matrices map demands at their respective nodes into the vector of total demands in the system $d \vee \bar{d}$.
 
 \newpage
 \subsection{Implementation of Detailed system}
