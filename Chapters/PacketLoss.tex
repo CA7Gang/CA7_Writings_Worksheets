@@ -1,0 +1,75 @@
+In the design of both the inner PI controllers in \cref{sec:ControlStructure} and outer VF-LQR in \cref{sec:LQR}, we have not accounted for potential effects induced by control over some kind of communication network. While this is a reasonable assumption in the inner loop, which is intended as a local controller that is connected to sensors and actuators over high-reliability, low-latency physical connections, this is \textit{not} a reasonable assumption in the outer loop, which is conceived of as a central controller unit that may physically distal to the local controllers that it commands.
+
+To adequately account for the effects of networked control, we make the following set of assumptions:
+
+\begin{itemize}
+	\item Traffic induced by the control structure is low relative to the available bandwidth of the system, and thus traffic-induced delay and loss can be neglected entirely.
+	\item The control structure is located in a dense urban environment, and losses on account of this and physical distance cannot be neglected.
+\end{itemize}
+
+A recent study by Anmon Sheth et al. is instructive with respect to the latter assumption \cite{Sheth2007}. It is clear that losses in an urban environment are significant, and scale exponentially with distance. At distances of $20 \ \si{km}$, packet losses of well over $50\%$ may be expected when communication happens over WiFi. This poses an obvious stability risk, depending on which loss-handling protocol is assumed. In this case, we will assume a so-called Try-Once-Discard (TOD) protocol, as proposed by Hu and Yan \cite{Hu2007}. This protocol is attractive in combination with VF-LQR as the protocol effectively tells the controller that it has settled at the reference whenever data is unavailable, leading to simple maintenance of the existing control action. Additionally, if this protocol is assumed, and the nominal feedback loop $A-BK$ is stable, \cite{Hu2007} allows us to calculate whether the system is stable in the mean-square sense for a given packet loss ratio $\alpha$. Specifically, the condition is:
+
+\begin{equation}\label{eq:HuStabCondition}
+	\mathcal{S}\Big(\alpha A \otimes A + (1-\alpha)(A-BK) \otimes (A-BK) \Big) < 1
+\end{equation}
+
+where $\mathcal{S}$ is the spectral radius operator and $\otimes$ is the Kronecker tensor product. This condition follows from the fact that 
+
+\begin{equation}
+	\Big(\alpha A \otimes A + (1-\alpha)(A-BK) \otimes (A-BK) \Big)
+\end{equation} 
+
+can be shown to describe the propagation matrix of the state covariances of the system, and intuitively this must be dissipative - i.e.: 
+
+\begin{equation}
+	\lim_{k \rightarrow \infty} \text{E}[x(k)^2] = 0
+\end{equation}
+
+for the system to be stable. Furthermore, \cite{Hu2007} gives an upper bound $\Xi$ on $\alpha$ for which the system will remain stable, which can be computed as:
+
+\begin{equation}\label{eq:VMatrix}
+	\begin{gathered}
+		\Xi = \frac{1}{\lVert\sigma_+(V)\rVert_\infty} \\
+		V = \begin{bmatrix} (S\otimes\hat{S}+\hat{S} \otimes S)(I - S\otimes S)^{-1} & \hat{S}\otimes\hat{S} \\ (I - S\otimes S)^{-1} & 0 \end{bmatrix} \\
+		S = \left(A-BK\right) \otimes \left(A-BK\right), \quad \hat{S} = A \otimes A - S
+	\end{gathered}
+\end{equation}
+
+where $\sigma_+$ is the positive spectral set and $\lVert \cdot \rVert_\infty$ is the infinity norm. In the specific case of VF-LQR control of EWRs with dynamics given by \cref{eq:TankDynamicsDiscrete}, \cref{eq:VMatrix} can be used to show that a such control structure is marginally stable for arbitrary packet loss in the zero limit of control. Specifically, consider that for a VF-LQR control structure and the given dynamics, we have:
+
+\begin{equation}\label{eq:VFormMatricesPacketLoss}
+	\begin{gathered}
+	\tilde{A} = \begin{bmatrix}A & 0 \\ AC & I\end{bmatrix} = \begin{bmatrix}1 & 0 \\ 1 & 1\end{bmatrix} \\
+	\tilde{B} = \begin{bmatrix}B \\ CB \end{bmatrix} = \begin{bmatrix} \mathcal{T} & \mathcal{T} \\ \mathcal{T} & \mathcal{T}\end{bmatrix} \\
+	\tilde{K} \in \mathbb{R}^{2\times2} 
+	\end{gathered}
+\end{equation}
+
+The covariance propagation matrix in \cref{eq:HuStabCondition} can then be written as:
+
+\begin{equation}
+		\Big(\alpha \tilde{A} \otimes \tilde{A} + (1-\alpha)(\tilde{A}-\tilde{B}\tilde{K}) \otimes (\tilde{A}-\tilde{B}\tilde{K}) \Big)
+\end{equation}
+
+and it follows that:
+
+\begin{equation}
+	\lim_{\tilde{K}\rightarrow 0} \Big(\alpha \tilde{A} \otimes \tilde{A} + (1-\alpha)(\tilde{A}-\tilde{B}\tilde{K}) \otimes (\tilde{A}-\tilde{B}\tilde{K}) \Big) = \Big(\alpha \tilde{A} \otimes \tilde{A} + (1-\alpha)\tilde{A} \otimes \tilde{A}\Big)
+\end{equation}
+
+Clearly, the right-hand side of this corresponds to $\tilde{A}\otimes\tilde{A}$ for any value of $\alpha$. By \cref{eq:VFormMatricesPacketLoss} we then have:
+
+\begin{equation}
+	\forall \alpha: \quad \Big(\alpha \tilde{A} \otimes \tilde{A} + (1-\alpha)\tilde{A} \otimes \tilde{A}\Big) = \tilde{A}\otimes\tilde{A} 
+	= \begin{bmatrix}  
+		1 & 0 & 0 & 0 \\
+		1 & 1 & 0 & 0 \\
+		1 & 0 & 1 & 0 \\
+		1 & 1 & 1 & 1	
+	\end{bmatrix}
+\end{equation}
+
+The spectrum of which is $\sigma = \{1,1,1,1\}$. Thus \textit{any} EWR is marginally stable for \textit{any} value of packet loss in the zero limit of VF-LQR control, which is a beautifully intuitive result that agrees with the basic physics of a water reservoir.
+
+
+

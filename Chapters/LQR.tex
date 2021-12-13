@@ -182,7 +182,7 @@ Fortunately, casting the Lagrange problem in \cref{eq:LagrangeProblem} as a trac
 	J = \int_{t_0}^{\infty} \big(\hat{x}^TQ\hat{x} + \hat{u}^TR\hat{u}\big)dt
 \end{equation} 
 
-We can by a similar ploy convert \cref{eq:LagrangeProblemSetpoint} into an \textit{output} tracking problem, which is perhaps the most common practical control problem, as $C$ is simply a linear transformation (i.e a coordinate translation) on the states:
+We can by a similar ploy convert \cref{eq:LagrangeProblemSetpoint} into an \textit{output} tracking problem, which is perhaps the most common practical control problem, as $C$ is simply a linear transformation on the states:
 
 \begin{equation}\label{eq:LagrangeProblemOutput}
 	J = \int_{t_0}^{\infty} \big((C\hat{x})^TQ_y(C\hat{x}) + \hat{u}^TR\hat{u}\big)dt = \int_{t_0}^{\infty} \big(\hat{y}^TQ_y\hat{y} + \hat{u}^TR\hat{u}\big)dt
@@ -287,12 +287,12 @@ where $B^\dagger$ is the Moore-Penrose pseudoinverse of $B$ and $\delta(k)$ is t
 
 \subsection{Implementation and Simulation Study}\label{subsec:LQRSimulationStudy}
 
-In this section, we detail the implementation and simulation study of a velocity-form LQR controller for the tank pressure dynamics described by \cref{eq:TankPressureStateSpace}. We choose a discretisation time $t_s = 10 \si{s}$, and the tank constant is $\tau = -0.000096 \frac{\si{bar}}{\si{m^3}}$, such that $T = 0.00096$. This results in the system:
+In this section, we detail the implementation and simulation study of a velocity-form LQR controller for the tank pressure dynamics described by \cref{eq:TankPressureStateSpace}. We choose a discretisation time $t_s = 100 \si{s}$, and the tank constant is $\tau = -0.000096 \frac{\si{bar}}{\si{m^3}}$, such that $T = 0.0096$. This results in the system:
 
 \begin{equation}\label{eq:TankPressureMatrices}
 	\begin{gathered}
 		p_\tau(k+1) = A p_\tau(k) + B_p d_p(k) + B_c d_c(k)  \\
-		A = 1, \ B_p = B_c = [0.00096 \ 0.00096], \ C = 1 ,
+		A = 1, \ B_p = B_c = [0.0096 \ 0.0096], \ C = 1 ,
 	\end{gathered}
 \end{equation}
 
@@ -303,9 +303,30 @@ Using the velocity-form transform from \cref{eq:VelocityMatrices}, the system be
 	 \begin{bmatrix}\Delta	p_\tau(k+1) \\\ p_\tau(k+1)-p_{r}
 	\end{bmatrix} = \tilde{A} \Delta p_\tau(k) + \tilde{B}_p \Delta d_p(k) + \tilde{B}_c \Delta d_c(k)  \\
 	\tilde{A} = \begin{bmatrix} 1 & 0 \\ 1 & 1 \end{bmatrix},
-	 \ \tilde{B}_p = \tilde{B}_c = \begin{bmatrix} 0.00096 & 0.00096 & \\ 0.00096 & 0.00096\end{bmatrix}, \ \tilde{C} = [0 \ 1]	
+	 \ \tilde{B}_p = \tilde{B}_c = \begin{bmatrix} 0.0096 & 0.0096 & \\ 0.0096 & 0.0096\end{bmatrix}, \ \tilde{C} = [0 \ 1]	
 \end{gathered}
 \end{equation}
 
+\clearpage
+
+We now simulate the system under a variety of conditions, including significant model error and an output disturbance. In every case, a significant state disturbance is applied to the system.
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.8\textwidth]{Pictures/LQRTracking.pdf}
+	\caption{Tracking performance of the VF-LQR controller}
+	\label{fig:LQRTracking}
+\end{figure}
+
+It is clear that the proposed controller is capable of compensating for the disturbance and tracking, even under significant model error or output disturbance.
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.8\textwidth]{Pictures/LQRControls.pdf}
+	\caption{Control effort of the VF-LQR controller}
+	\label{fig:LQRControls}
+\end{figure}
+
+We see on \cref{fig:LQRControls} that rejection of the state disturbance is, as expected based on \cref{eq:ELQRControlLaw}, accomplished by reverse-phase injection of the disturbance signal. This also reveals a fundamental limitation of VF-LQR with the proposed disturbance rejection strategy; its tracking ability is asymptotically bounded by the steady-state error in the disturbance estimate.
 
 
