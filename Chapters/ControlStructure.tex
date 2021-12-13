@@ -316,14 +316,7 @@ which can be converted into the following state-space system:
 	\end{gathered}
 \end{equation}
 
-In practice the flows may not all be measurable, in which case they must be estimated with an observer. As \cref{eq:TankPressureStateSpace} is clearly linear, either a simple Luenberger observer or a Kalman filter will do. Additionally, we note the presence of $B_cd_c$, an exogenous input over which we have no control. This will be addressed in \cref{sec:LQR}.
-
-
-\subsection{Choice of state variables}
-
-\subsection{Choice of inputs and output variables}
-
-\subsection{Cascaded control}
+In practice the flows may not all be measurable, in which case they must be estimated with an observer. As \cref{eq:TankPressureStateSpace} is clearly linear, either a simple Luenberger observer or a Kalman filter will do. Additionally, we note the presence of $B_cd_c$, an exogenous input over which we have no control. This will be addressed in \cref{sec:LQR,sec:KalmanFilter}.
 
 \subsection{Influence of pump delay}
 The pumps of the WDN system introduces a delay of approximately 4 seconds. According to \cite{Skogestad2005} (pp. 182-183), 

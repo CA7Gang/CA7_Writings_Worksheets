@@ -399,11 +399,7 @@ Email: \href{mailto:es-21-ca-7-733@student.aau.dk}{es-21-ca-7-733@student.aau.dk
 \maketitle
 
 % As a general rule, do not put math, special symbols or citations
-% in the abstract
-\begin{abstract}
-The abstract goes here.
-\end{abstract}
-
+% in the abstracts
 % no keywords
 
 
@@ -419,8 +415,10 @@ The abstract goes here.
 % creates the second title. It will be ignored for other modes.
 \IEEEpeerreviewmaketitle
 
+\clearpage
 \tableofcontents
 
+\clearpage
 \section{Introduction}
 \input{Chapters/Introduction}
 
@@ -538,14 +536,13 @@ The abstract goes here.
 \section{Control Structure}\label{sec:ControlStructure}
 \input{Chapters/ControlStructure}
 
+\clearpage
+\section{Optimal Control and the Linear-Quadratic Regulator}\label{sec:LQR}
+\input{Chapters/LQR}
 
 \clearpage
 \section{Disturbance Estimator}\label{sec:KalmanFilter}
 \input{Chapters/DisturbanceEstimator}
-
-\clearpage
-\section{Optimal Control and the Linear-Quadratic Regulator}\label{sec:LQR}
-\input{Chapters/LQR}
 
 \clearpage
 \section{Modelling Network Effects}\label{sec:PacketLoss}
