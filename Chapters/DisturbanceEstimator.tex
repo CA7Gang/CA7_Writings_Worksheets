@@ -160,138 +160,138 @@ The performance of the Kalman filter relies heavily on the guessing the covarian
 The Kalman Filter described in this report will based on a discrete time state space representation: 
 
 \begin{align}
-	&\textbf{x}(k+1) = \textbf{A}\textbf{x}(k) + \textbf{B}\textbf{u}(k) + \textbf{w}(k)  \label{eq:KalmanSystemEquations} \\
-	&\textbf{y}(k) = \textbf{C}\textbf{x}(k)+\textbf{v}(k) 
+	&{x}(k+1) = {A}{x}(k) + {B}{u}(k) + {w}(k)  \label{eq:KalmanSystemEquations} \\
+	&{y}(k) = {C}{x}(k)+{v}(k) 
 \end{align}
 where 
 \begin{align*}
-	&\text{$\textbf{x}(k)$ is the state vector at time index k,					}	\\[-1em]
-	&\text{$\textbf{u}(k)$ is the input at time index k, 						}	\\[-1em]
-	&\text{$\textbf{w}(k) \sim \mathcal{N}(0, Q)$ is the model noiseat time index k,			}	\\[-1em]
-	&\text{$\textbf{v}(k) \sim \mathcal{N}(0, R)$ is the measurement noise at time index k,		}	\\[-1em]
-	&\text{$\textbf{y}(k)$ is the observable output, 							}	\\[-1em]
-	&\text{\textbf{A} is the state transition matrix,							}	\\[-1em]
-	&\text{\textbf{B} is the control-input matrix,								}	\\[-1em]
-	&\text{\textbf{C} is the observation matrix. 								}	\\[-1em]
+	&\text{${x}(k)$ is the state vector at time index k,					}	\\[-1em]
+	&\text{${u}(k)$ is the input at time index k, 						}	\\[-1em]
+	&\text{${w}(k) \sim \mathcal{N}(0, Q)$ is the model noiseat time index k,			}	\\[-1em]
+	&\text{${v}(k) \sim \mathcal{N}(0, R)$ is the measurement noise at time index k,		}	\\[-1em]
+	&\text{${y}(k)$ is the observable output, 							}	\\[-1em]
+	&\text{{A} is the state transition matrix,							}	\\[-1em]
+	&\text{{B} is the control-input matrix,								}	\\[-1em]
+	&\text{{C} is the observation matrix. 								}	\\[-1em]
 \end{align*}
 
 To simplify the presentation for the readers of this report the Kalman equations will be presented in the form of 8 equations, after which they can be combined to yield the traditional and more dense form of 5 equations.
 The Kalman equations will further be divided into two phases: the prediction stage and the update stage. 
 
-\textbf{Prediction stage}
+{Prediction stage}
 \begin{align}
-	&\hat{\textbf{x}}	(k|k-1) = \textbf{A} 	\hat{\textbf{x}}(k-1|k-1) + \textbf{B}\textbf{u}(k-1)  				\label{eq:Kalman_pred_state} 	\\
-	&\hat{\textbf{y}}	(k|k-1) = \textbf{C}	\hat{\textbf{x}}(k|k-1)										\label{eq:Kalman_pred_output} 	\\
-	&\textbf{P}			(k|k-1) = \textbf{A}	\textbf{P}(k-1|k-1)\textbf{A}^T+\textbf{Q} 								\label{eq:Kalman_pred_cov} 		
+	&\hat{{x}}	(k|k-1) = {A} 	\hat{{x}}(k-1|k-1) + {B}{u}(k-1)  				\label{eq:Kalman_pred_state} 	\\
+	&\hat{{y}}	(k|k-1) = {C}	\hat{{x}}(k|k-1)										\label{eq:Kalman_pred_output} 	\\
+	&{P}			(k|k-1) = {A}	{P}(k-1|k-1){A}^T+{Q} 								\label{eq:Kalman_pred_cov} 		
 \end{align}
 where 
 \begin{align*}
-	&\text{$\hat{\textbf{x}}	(k|k-1)$ 	is the state prediction 			estimate at time index $k$ 		given all $ k-1 $ samples		}	\\[-1em]
-	&\text{$\hat{\textbf{x}}	(k-1|k-1)$ 	is the state 						estimate at time index $k-1$ 	given all $ k-1 $ samples		}	\\[-1em]
-	&\text{$\hat{\textbf{y}}	(k|k-1)$ 	is the output prediction 			estimate at time index $k$ 		given all $ k-1 $ samples		}	\\[-1em]
-	&\text{$\textbf{P}			(k|k-1)$ 	is the predicted estimate  covariance matrix at time index $k$ 		given all $ k-1 $ samples		}	\\[-1em]
-	&\text{$\textbf{P}			(k-1|k-1)$ 	is the updated estimate    covariance matrix at time index $k-1$ 	given all $ k-1 $ samples		}	\\[-1em]
-	&\text{$\textbf{Q}$						is the model/process noise covariance matrix														}	\\[-1em]
+	&\text{$\hat{{x}}	(k|k-1)$ 	is the state prediction 			estimate at time index $k$ 		given all $ k-1 $ samples		}	\\[-1em]
+	&\text{$\hat{{x}}	(k-1|k-1)$ 	is the state 						estimate at time index $k-1$ 	given all $ k-1 $ samples		}	\\[-1em]
+	&\text{$\hat{{y}}	(k|k-1)$ 	is the output prediction 			estimate at time index $k$ 		given all $ k-1 $ samples		}	\\[-1em]
+	&\text{${P}			(k|k-1)$ 	is the predicted estimate  covariance matrix at time index $k$ 		given all $ k-1 $ samples		}	\\[-1em]
+	&\text{${P}			(k-1|k-1)$ 	is the updated estimate    covariance matrix at time index $k-1$ 	given all $ k-1 $ samples		}	\\[-1em]
+	&\text{${Q}$						is the model/process noise covariance matrix														}	\\[-1em]
 \end{align*}
 
 All three prediction equations predicts the a priori $k^{th}$ (next) estimate based on the $k-1$ previous samples and the model knowledge.\\
 
-\textbf{Update stage}
+{Update stage}
 
 \begin{align}
-	&\textbf{e}			(k) 		= \textbf{y}(k) - \hat{\textbf{y}}(k|k-1)							\label{eq:Kalman_upd_inno}			\\
-	&\textbf{S}			(k) 		= \textbf{C}\textbf{P}(k|k-1)\textbf{C}^T + \textbf{R}				\label{eq:Kalman_upd_inno_cov}		\\
-	&\textbf{K}			(k) 		= \textbf{P}(k|k-1)\textbf{C}^T\textbf{S}^{-1}(k)					\label{eq:Kalman_upd_kalman_gain}	\\
-	&\hat{\textbf{x}}	(k|k) 		= \hat{\textbf{x}}(k|k-1) + \textbf{K}(k)\textbf{e}(k) 				\label{eq:Kalman_upd_est_state}		\\
-	&\textbf{P}			(k|k) 		= (\textbf{I} - \textbf{K}(k)\textbf{C})\textbf{P}(k|k-1)			\label{eq:Kalman_upd_est_cov}
+	&{e}			(k) 		= {y}(k) - \hat{{y}}(k|k-1)							\label{eq:Kalman_upd_inno}			\\
+	&{S}			(k) 		= {C}{P}(k|k-1){C}^T + {R}				\label{eq:Kalman_upd_inno_cov}		\\
+	&{K}			(k) 		= {P}(k|k-1){C}^T{S}^{-1}(k)					\label{eq:Kalman_upd_kalman_gain}	\\
+	&\hat{{x}}	(k|k) 		= \hat{{x}}(k|k-1) + {K}(k){e}(k) 				\label{eq:Kalman_upd_est_state}		\\
+	&{P}			(k|k) 		= ({I} - {K}(k){C}){P}(k|k-1)			\label{eq:Kalman_upd_est_cov}
 \end{align}
 where 
 \begin{align*}
-	&\text{$\textbf{e}		(k)$ 		is the innovation term for time index 					$ k $													}	\\[-1em]
-	&\text{$\textbf{y}		(k)$ 		is the observed output at time index 					$ k $													}	\\[-1em]
-	&\text{$\textbf{S}		(k)$ 		is the innovation covariance for time index 			$ k $											}	\\[-1em]
-	&\text{$\textbf{R}$ 				is the observation noise covariance																}	\\[-1em]
-	&\text{$\textbf{K}		(k)$ 		is the Kalman gain for time index 						$ k $													}	\\[-1em]
-	&\text{$\hat{\textbf{x}}(k|k)$ 	is the estimate of the state vector at time index 			$ k $ given all 	$ k$ samples	}	\\[-1em]
-	&\text{$\textbf{P}		(k|k)$ 	is the updated estimate covariance matrix at time index 	$ k $ given all 	$ k$ samples		}	\\[-1em]
-	&\text{$\textbf{I}$ 				is the identity matrix																				}	\\[-1em]			
+	&\text{${e}		(k)$ 		is the innovation term for time index 					$ k $													}	\\[-1em]
+	&\text{${y}		(k)$ 		is the observed output at time index 					$ k $													}	\\[-1em]
+	&\text{${S}		(k)$ 		is the innovation covariance for time index 			$ k $											}	\\[-1em]
+	&\text{${R}$ 				is the observation noise covariance																}	\\[-1em]
+	&\text{${K}		(k)$ 		is the Kalman gain for time index 						$ k $													}	\\[-1em]
+	&\text{$\hat{{x}}(k|k)$ 	is the estimate of the state vector at time index 			$ k $ given all 	$ k$ samples	}	\\[-1em]
+	&\text{${P}		(k|k)$ 	is the updated estimate covariance matrix at time index 	$ k $ given all 	$ k$ samples		}	\\[-1em]
+	&\text{${I}$ 				is the identity matrix																				}	\\[-1em]			
 \end{align*}
 
 All the equations in the update stage estimates the posteriori estimate of the $ k $ sample based on all $ k^{th} $ samples and the model knowledge. A few expressions to give some intuitions to what the equations actually represent. The estimate covariance, the prediction covariance and innovation covariance can respectively be represented as 
 
 \begin{align}
-	&\textbf{P}(k|k) 	= \text{cov}(\textbf{x}(k)-	\hat{\textbf{x}}(k|k))	\\
-	&\textbf{P}(k|k-1) 	= \text{cov}(\textbf{x}(k)-	\hat{\textbf{x}}(k|k-1)) 		\\
-	&\textbf{S}(k) 		= \text{cov}(\textbf{e}(k)) 
+	&{P}(k|k) 	= \text{cov}({x}(k)-	\hat{{x}}(k|k))	\\
+	&{P}(k|k-1) 	= \text{cov}({x}(k)-	\hat{{x}}(k|k-1)) 		\\
+	&{S}(k) 		= \text{cov}({e}(k)) 
 \end{align}
 
-\textbf{Compact form}\\
+{Compact form}\\
 Now collecting some of the above equations gives the more compact form of the Kalman equations.
-Eq.'s \ref{eq:Kalman_pred_state} and \ref{eq:Kalman_pred_cov} remains in the same form, but omitting $ \textbf{Bu}(k-1) $ yields \cref{eq:Kalman_pred_state_compact} and \cref{eq:Kalman_pred_cov_compact}. $ \textbf{Bu}(k-1) $ can be omitted as it is not part of the system model in \cref{eq:first_order_signal_model}.\\
+Eq.'s \ref{eq:Kalman_pred_state} and \ref{eq:Kalman_pred_cov} remains in the same form, but omitting $ {Bu}(k-1) $ yields \cref{eq:Kalman_pred_state_compact} and \cref{eq:Kalman_pred_cov_compact}. $ {Bu}(k-1) $ can be omitted as it is not part of the system model in \cref{eq:first_order_signal_model}.\\
 Eq.'s \ref{eq:Kalman_upd_inno_cov}, \ref{eq:Kalman_upd_kalman_gain} are combined yielding \cref{eq:Kalman_upd_kalman_gain_compact}. Eq. \ref{eq:Kalman_pred_output} is combined with \cref{eq:Kalman_upd_inno} and \cref{eq:Kalman_upd_est_state} yielding \cref{eq:Kalman_upd_est_state_compact}, while \cref{eq:Kalman_upd_est_cov} remains the same. All these combined presents the kalman equations as in \cite{Bozic1994}\\
 
-\textbf{Prediction}
+{Prediction}
 \begin{align}
-	&\hat{\textbf{x}}	(k|k-1) = \textbf{A} \hat{\textbf{x}}	(k-1|k-1) 		\label{eq:Kalman_pred_state_compact} 	\\
-	&\textbf{P}			(k|k-1) = \textbf{A}\textbf{P}			(k-1|k-1)\textbf{A}^T+\textbf{Q} 				\label{eq:Kalman_pred_cov_compact} 		
+	&\hat{{x}}	(k|k-1) = {A} \hat{{x}}	(k-1|k-1) 		\label{eq:Kalman_pred_state_compact} 	\\
+	&{P}			(k|k-1) = {A}{P}			(k-1|k-1){A}^T+{Q} 				\label{eq:Kalman_pred_cov_compact} 		
 \end{align}
-\textbf{Update}
+{Update}
 \begin{align}
-	&\textbf{K}			(k) 		= \textbf{P}				(k|k-1)\textbf{C}^T(\textbf{C}\textbf{P}	(k|k-1)	\textbf{C}^T + \textbf{R})^{-1}										\label{eq:Kalman_upd_kalman_gain_compact} \\
-	&\hat{\textbf{x}}	(k|k) 	= \hat{\textbf{x}}			(k|k-1) + \textbf{K}						(k)	(\textbf{y}		(k) - \textbf{C}\hat{\textbf{x}}		(k|k-1)) 	\label{eq:Kalman_upd_est_state_compact} \\
-	&\textbf{P}			(k|k) 	= (\textbf{I} - \textbf{K}	(k)\textbf{C})\textbf{P}					(k|k-1)																		\label{eq:Kalman_upd_est_cov_compact}
+	&{K}			(k) 		= {P}				(k|k-1){C}^T({C}{P}	(k|k-1)	{C}^T + {R})^{-1}										\label{eq:Kalman_upd_kalman_gain_compact} \\
+	&\hat{{x}}	(k|k) 	= \hat{{x}}			(k|k-1) + {K}						(k)	({y}		(k) - {C}\hat{{x}}		(k|k-1)) 	\label{eq:Kalman_upd_est_state_compact} \\
+	&{P}			(k|k) 	= ({I} - {K}	(k){C}){P}					(k|k-1)																		\label{eq:Kalman_upd_est_cov_compact}
 \end{align}
 
 
 \subsubsection{Steady-state Kalman filter}
-If we assume that the covariances and system is time invariant, i.e. $ \textbf{A}, \textbf{C}, \textbf{Q}, \textbf{R} $ are constant, the estimate Covariance and Kalman gain can be calculated beforehand as they don't depend on measurements, only on $ \textbf{A}, \textbf{C}, \textbf{Q}, \textbf{R} $. As such, the Kalman filter itself becomes a LTI filter. The steady state prediction covariance can be found by solving its Algebraic Riccati equation (ARE) - it will now be derived in the discrete form.\\
+If we assume that the covariances and system is time invariant, i.e. $ {A}, {C}, {Q}, {R} $ are constant, the estimate Covariance and Kalman gain can be calculated beforehand as they don't depend on measurements, only on $ {A}, {C}, {Q}, {R} $. As such, the Kalman filter itself becomes a LTI filter. The steady state prediction covariance can be found by solving its Algebraic Riccati equation (ARE) - it will now be derived in the discrete form.\\
 
 
-In steady-state where $k \rightarrow \infty$ we can assume that $\textbf{P}(k|k) = \textbf{P}(k-1|k-1) $. Furthermore the prediction covariance, the estimation covariance and the Kalman Gain approach a constant value:
+In steady-state where $k \rightarrow \infty$ we can assume that ${P}(k|k) = {P}(k-1|k-1) $. Furthermore the prediction covariance, the estimation covariance and the Kalman Gain approach a constant value:
 \begin{equation}
-	\textbf{P}(k|k-1) =  \textbf{P}_p(\infty), \hspace{3mm} \textbf{P}(k|k) = \textbf{P}(k-1|k-1) = \textbf{P}(\infty),  \hspace{3mm} \textbf{K}(k) = \textbf{K}(\infty)
+	{P}(k|k-1) =  {P}_p(\infty), \hspace{3mm} {P}(k|k) = {P}(k-1|k-1) = {P}(\infty),  \hspace{3mm} {K}(k) = {K}(\infty)
 \end{equation}
 Equations \cref{eq:Kalman_upd_kalman_gain_compact}, \cref{eq:Kalman_upd_est_state_compact} and \cref{eq:Kalman_upd_est_cov_compact} are rewritten with their steady state counterparts:
 \begin{align}
-	& \textbf{K}(\infty) = \textbf{P}_p(\infty) \textbf{C}^T (\textbf{C} \textbf{P}_p	(\infty) \textbf{C}^T + \textbf{R})^{-1} \label{eq:ss_kalman_kalman_gain} \\
-	& \textbf{P}(\infty) = (\textbf{I} - \textbf{K}(\infty) \textbf{C}) \textbf{P}_p(\infty) \label{eq:ss_kalman_mse} \\
-	& \textbf{P}_p(\infty) = \textbf{A}\textbf{P}(\infty)\textbf{A}^T + \textbf{Q} \label{eq:ss_kalman_mse_pred}
+	& {K}(\infty) = {P}_p(\infty) {C}^T ({C} {P}_p	(\infty) {C}^T + {R})^{-1} \label{eq:ss_kalman_kalman_gain} \\
+	& {P}(\infty) = ({I} - {K}(\infty) {C}) {P}_p(\infty) \label{eq:ss_kalman_mse} \\
+	& {P}_p(\infty) = {A}{P}(\infty){A}^T + {Q} \label{eq:ss_kalman_mse_pred}
 \end{align}
-We go on the hunt for the damened Riccati equation of $\textbf{P}_p(\infty)$. We substitute RHS of \cref{eq:ss_kalman_mse} into \cref{eq:ss_kalman_mse_pred}.
+We go on the hunt for the damened Riccati equation of ${P}_p(\infty)$. We substitute RHS of \cref{eq:ss_kalman_mse} into \cref{eq:ss_kalman_mse_pred}.
 \begin{equation}
 	\begin{split}\label{eq:ss_kalman_udledning1}
-		\textbf{P}_p(\infty) 	& = \textbf{A}\textbf{P}(\infty)A^T + Q \\
-		& = \textbf{A} (\textbf{I}-\textbf{K}(\infty)\textbf{C}) \textbf{P}_p(\infty) \textbf{A}^T + \textbf{Q}\\
-		& = \textbf{A} \textbf{P}_p(\infty) \textbf{A}^T - \textbf{A} \textbf{K}(\infty) \textbf{C} \textbf{P}_p(\infty)  \textbf{A}^T + \textbf{Q}\\
+		{P}_p(\infty) 	& = {A}{P}(\infty)A^T + Q \\
+		& = {A} ({I}-{K}(\infty){C}) {P}_p(\infty) {A}^T + {Q}\\
+		& = {A} {P}_p(\infty) {A}^T - {A} {K}(\infty) {C} {P}_p(\infty)  {A}^T + {Q}\\
 		\end{split}
 \end{equation}
-We now substitute RHS of \cref{eq:ss_kalman_kalman_gain} in for $\textbf{K}(\infty)$ in \cref{eq:ss_kalman_udledning1} and factorize respectively $\textbf{A}$ and $ \textbf{A}^T $.
+We now substitute RHS of \cref{eq:ss_kalman_kalman_gain} in for ${K}(\infty)$ in \cref{eq:ss_kalman_udledning1} and factorize respectively ${A}$ and $ {A}^T $.
 \begin{equation}
 	\begin{split}\label{eq:ss_kalman_udledning2}
-		\textbf{P}_p(\infty) & = \textbf{A} \textbf{P}_p(\infty) \textbf{A}^T - \textbf{A} \textbf{P}_p(\infty) \textbf{C}^T (\textbf{C} \textbf{P}_p(\infty) \textbf{C}^T + \textbf{R})^{-1} \textbf{C} \textbf{P}_p(\infty) \textbf{A}^T + \textbf{Q}\\
-		& = \textbf{A} (\textbf{P}_p(\infty) - \textbf{P}_p(\infty) \textbf{C}^T (\textbf{C} \textbf{P}_p(\infty) \textbf{C}^T + \textbf{R})^{-1} \textbf{C} \textbf{P}_p(\infty)) \textbf{A}^T + \textbf{Q}\\
+		{P}_p(\infty) & = {A} {P}_p(\infty) {A}^T - {A} {P}_p(\infty) {C}^T ({C} {P}_p(\infty) {C}^T + {R})^{-1} {C} {P}_p(\infty) {A}^T + {Q}\\
+		& = {A} ({P}_p(\infty) - {P}_p(\infty) {C}^T ({C} {P}_p(\infty) {C}^T + {R})^{-1} {C} {P}_p(\infty)) {A}^T + {Q}\\
 	\end{split}
 \end{equation}
 And let The Matrix Inversion lemma \cref{eq:ss_kalman_MatrixInversionLemma} be used to further simplify whats left in the parenthesis of RHS of \cref{eq:ss_kalman_udledning2} by letting
 \begin{equation}
-		\textbf{A}^{-1} = \textbf{P}_p(\infty), \textbf{B} = \textbf{C}^T, \textbf{C}^{-1} = \textbf{R}, \textbf{D} = \textbf{C} \label{eq:ss_kalman_udledning3}
+		{A}^{-1} = {P}_p(\infty), {B} = {C}^T, {C}^{-1} = {R}, {D} = {C} \label{eq:ss_kalman_udledning3}
 \end{equation}
 enables 
 \begin{align}
-		(\textbf{A}+\textbf{BCD})^{-1} &= \textbf{A}^{-1} - \textbf{A}^{-1}\textbf{B} (\textbf{D}\textbf{A}^{-1}\textbf{B}+\textbf{C}^{-1})^{-1}\textbf{D}\textbf{A}^{-1} \\ \label{eq:ss_kalman_MatrixInversionLemma}
-		(\textbf{P}_p(\infty)^{-1} + \textbf{C}^T \textbf{R}^{-1} \textbf{C})^{-1} &= (\textbf{P}_p(\infty) - \textbf{P}_p(\infty) \textbf{C}^T (\textbf{C} \textbf{P}_p(\infty) \textbf{C}^T + \textbf{R})^{-1} \textbf{C} \textbf{P}_p(\infty))
+		({A}+{BCD})^{-1} &= {A}^{-1} - {A}^{-1}{B} ({D}{A}^{-1}{B}+{C}^{-1})^{-1}{D}{A}^{-1} \\ \label{eq:ss_kalman_MatrixInversionLemma}
+		({P}_p(\infty)^{-1} + {C}^T {R}^{-1} {C})^{-1} &= ({P}_p(\infty) - {P}_p(\infty) {C}^T ({C} {P}_p(\infty) {C}^T + {R})^{-1} {C} {P}_p(\infty))
 \end{align}
 yielding the desired result: The Algebraic Riccati equation in a compact form, \cref{eq:ss_kalman_udledning4}.
 \begin{equation}
 	\begin{split}\label{eq:ss_kalman_udledning4}
-		&\textbf{P}_p(\infty) = \textbf{A} (\textbf{P}_p(\infty)^{-1} + \textbf{C}^T \textbf{R}^{-1} \textbf{C})^{-1} \textbf{A}^T + \textbf{Q}\\
+		&{P}_p(\infty) = {A} ({P}_p(\infty)^{-1} + {C}^T {R}^{-1} {C})^{-1} {A}^T + {Q}\\
 	\end{split}
 \end{equation}
 
-\cref{eq:ss_kalman_udledning4} can be solved for $\textbf{P}_p(\infty)$ numerically and substitued into \cref{eq:ss_kalman_kalman_gain} yielding \textit{The Steady State Kalman Gain} $ \textbf{K}(\infty) $ which is then substituted into \cref{eq:ss_kalman_mse} to obtain \textit{Steady-State Estimate Covariance} $ \textbf{P}(\infty) $.
+\cref{eq:ss_kalman_udledning4} can be solved for ${P}_p(\infty)$ numerically and substitued into \cref{eq:ss_kalman_kalman_gain} yielding \textit{The Steady State Kalman Gain} $ {K}(\infty) $ which is then substituted into \cref{eq:ss_kalman_mse} to obtain \textit{Steady-State Estimate Covariance} $ {P}(\infty) $.
 \begin{align}
-	& \textbf{K}(\infty) = \textbf{P}_p(\infty) \textbf{C}^T (\textbf{C} \textbf{P}_p	(\infty) \textbf{C}^T + \textbf{R})^{-1} \label{eq:ss_kalman_kalman_gain1} \\
-	& \textbf{P}(\infty) = (\textbf{I} - \textbf{K}(\infty) \textbf{C}) \textbf{P}_p(\infty) \label{eq:ss_kalman_mse1} 
+	& {K}(\infty) = {P}_p(\infty) {C}^T ({C} {P}_p	(\infty) {C}^T + {R})^{-1} \label{eq:ss_kalman_kalman_gain1} \\
+	& {P}(\infty) = ({I} - {K}(\infty) {C}) {P}_p(\infty) \label{eq:ss_kalman_mse1} 
 \end{align}
 
 An attempt to identify the Algebraic Riccati equation for the Steady-State Estimate Covariance matrix was also attempted:
@@ -299,27 +299,27 @@ An attempt to identify the Algebraic Riccati equation for the Steady-State Estim
 
 \begin{equation}
 	\begin{split}\label{eq:ss_kalman_udledning5}
-	 	\textbf{P}(\infty) 	& = (\textbf{I} - \textbf{K}(\infty) \textbf{C}) \textbf{P}_p(\infty) \\ %\label{eq:ss_kalman_mse2} 
-		& = \textbf{P}_p(\infty) - \textbf{K}(\infty) \textbf{C}\textbf{P}_p(\infty) \\
+	 	{P}(\infty) 	& = ({I} - {K}(\infty) {C}) {P}_p(\infty) \\ %\label{eq:ss_kalman_mse2} 
+		& = {P}_p(\infty) - {K}(\infty) {C}{P}_p(\infty) \\
 		\text{substituting RHS of \cref{eq:ss_kalman_kalman_gain1}} \\
-		& = \textbf{P}_p(\infty) - \textbf{P}_p(\infty) \textbf{C}^T [\textbf{C} \textbf{P}_p	(\infty) \textbf{C}^T + \textbf{R}]^{-1}\textbf{C}\textbf{P}_p(\infty) \\
+		& = {P}_p(\infty) - {P}_p(\infty) {C}^T [{C} {P}_p	(\infty) {C}^T + {R}]^{-1}{C}{P}_p(\infty) \\
 	\end{split}
 \end{equation}
 Again applying the Matrix Inversion lemma by letting
 \begin{equation}
 	\begin{split}\label{eq:ss_kalman_udledning5}
-		&\textbf{A}^{-1} = \textbf{P}_p(\infty), \textbf{B} = \textbf{C}^T, \textbf{C}^{-1} = \textbf{R}, \textbf{D} = \textbf{C} \\
+		&{A}^{-1} = {P}_p(\infty), {B} = {C}^T, {C}^{-1} = {R}, {D} = {C} \\
 		\text{yielding} \\
-		&\textbf{P}(\infty) = [\textbf{P}_p(\infty) + \textbf{C}^T\textbf{R}^{-1}\textbf{C}]^{-1} \\ 
+		&{P}(\infty) = [{P}_p(\infty) + {C}^T{R}^{-1}{C}]^{-1} \\ 
 	\end{split}
 \end{equation}     
 
 substituting RHS of \cref{eq:ss_kalman_mse_pred}
 \begin{align}
-		\textbf{P}(\infty) & = [(\textbf{A}\textbf{P}(\infty)\textbf{A}^T + \textbf{Q}) + \textbf{C}^T\textbf{R}^{-1}\textbf{C}]^{-1}  \label{eq:ss_kalman_udledning6}
+		{P}(\infty) & = [({A}{P}(\infty){A}^T + {Q}) + {C}^T{R}^{-1}{C}]^{-1}  \label{eq:ss_kalman_udledning6}
 \end{align}
 
-Which indeed is the Algebraic Riccati equation for the \textit{Steady State Estimate Covariance} matrix $\textbf{P}(\infty)$\\
+Which indeed is the Algebraic Riccati equation for the \textit{Steady State Estimate Covariance} matrix ${P}(\infty)$\\
 Now the foundation is derived for starting to implement an actual model of the system in the following sections.
 
 \subsubsection{Kalman simulation}
