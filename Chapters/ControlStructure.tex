@@ -328,6 +328,49 @@ a time delay $\theta$ limits the possible bandwidth of a system to be
 
 This naturally sets a limitation as to how fast the inner loop of the control structure can be. As the inner loop sets a limitation of how fast the outer loop can be, i.e. 5-10 timer slower than the inner loop. This is a nessesary limitation, since the inner loop needs to be sufficiently fast for it to be used to linearize the outer loop. 
 
+
+
+\subsection{The root locus method}
+
+For design of the pump controllers the root locus method will be used. The primary reason for choosing root locus rather than alternatives like bodeplot design, is the groups desire to experiment with new techniques for design of simple controllers.
+
+The root locus is a powerful visual tool, that investigates the location of the closed loop poles of a system, when introducing feedback with a gain K. The root locus can be drawn by hand by calculating the location of the closed loop poles of a system for a large number of feedback gains. In practice however, this is done using a software package like Matlab.
+
+While there exists many rules for sketching root locus by hand, only a few of them are truly important to understand how the root locus is used for controller design:
+
+\begin{enumerate}
+	\item The closed loop poles of the system move from the open loop poles at K=0 to the open loop zeros as K approaches $\infty$ - unless the number of poles and zeros is different, in which case the closed loop poles will go to or come in from infinity
+	\item The number of lines going to or from $\infty$ is equal to the difference between the number of open loop poles and zeros
+	\item The angle and place of gravity of the lines going to or from infinity is dependent of the difference between the number of open loop poles and zeros and their location in the complex plane
+\end{enumerate}
+
+The first part of rule 1 tells us that the closed loop poles are equal to the open loop poles when K=0. This is intuitively understood as K=0 means there is no feedback, thus the closed and open loop systems are identical. The second part tells us that when K approaches $\infty$ the closed loop poles will be located at the open loop zeros. This is understood by analyzing the closed loop transfer function when the open loop transfer function is given as
+\begin{equation}
+	G_{ol}(s) = \frac{Z(s)}{P(s)}
+\end{equation}
+
+where Z(s) and P(s) are the polynomials describing the zeros and poles respectively.
+The closed loop transfer function is thus
+\begin{equation}
+	G_{cl}(s) = \frac{G_{ol}(s)}{1 + K G_{ol}(s)}
+\end{equation}
+
+where the roots are the values of s that make the denominator equal to 0
+
+\begin{equation}
+	0 = 1 + K \cdot G_{ol}(s) = 1 + K \frac{Z(s)}{P(s)}
+\end{equation}
+
+Restructuring this yiels
+\begin{equation}
+	0 = 1 + K \frac{Z(s)}{P(s)} = 1P(s) + K \frac{Z(s) P(s)}{P(s)} = P(s) + K Z(s)
+\end{equation}
+
+This confirms that setting K=0 makes the closed loop poles equal to P(s) which is exactly the open loop poles. When K is approaches $\infty$ the K*Z(s) term is dominating, which is why the closed loop poles will then equal the open loop zeros Z(s)
+
+Rules 2 and 3 simply tells us that the possible locations of the closed loop poles - specified by the loci - changes with the position of the open loop poles and zeros. This enables the designer to place additional poles and zeros to change the behavior of the closed loop system. 
+
+
 \subsection{Design of pump controllers}
 This section will cover design of pump controllers, which corresponds to control of the fast dynamics of the system. It is also considered the inner loop. 
 \subsubsection{Decentralised control}
