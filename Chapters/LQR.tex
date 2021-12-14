@@ -269,8 +269,8 @@ and that the actual control applied to the system at any time $k$ is:
 
 \begin{equation}\label{eq:ActualControlApplied}
 	\begin{gathered}
-		u(k) = -K(k)x(k) \\
-		K(k) = \sum_{i=1}^{k} \Delta K(i)
+		\Delta u^*(k) = -\Delta K(k)x(k) \\
+		u^*(k) = \sum_{i=1}^{k} \Delta u^*(i)
 	\end{gathered}
 \end{equation}
 
@@ -280,7 +280,7 @@ We now address a final LQR-related wrinkle. As shown in \cref{eq:TankPressureSta
 
 
 \begin{equation}\label{eq:ELQRControlLaw}
-	u^*(k) = -Kx(k) - B^\dagger B \delta(k)
+	u(k) = u^*(k) - B^\dagger B \delta(k)
 \end{equation}
 
 where $B^\dagger$ is the Moore-Penrose pseudoinverse of $B$ and $\delta(k)$ is the exogenous input at time $k$.
