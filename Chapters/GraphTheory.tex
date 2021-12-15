@@ -1,16 +1,16 @@
-This section describes the interconnected component in a water distributed network (WDN) using Graph Theory. We investigate three different graph networks; a simplified graph model not including pump- and valve-edges, one which includes pump- and valve-edges and one which shows the implemented laboratory network. Furthermore three component classes will be examined, ie. pipes, pumps and valves.
+This section describes the interconnected components in a water distributed network (WDN) using Graph Theory. We investigate three different graph networks; a simplified graph model not including pump and valve edges, one which includes pump and valve edges, and one which shows the implemented laboratory network. Furthermore, three component classes will be examined, i.e. pipes, pumps and valves.
 
 
 \subsection{Basic Graph Theory}
 
 A \textbf{directed graph} is a set of nodes $ \{v_1,..,v_n\} $ and a set of edges $ \{e_1,..,e_m\} $, with each edge associated with a node pair $ \{v_i,v_j\} $ and an arrow pointing from $ v_i $ to $ v_j $. \\
 
-The \textbf{Incident Matrix} $H$ of a directed graph is defined as:
+The \textbf{Incidence Matrix} $H$ of a directed graph is defined as:
 \begin{equation*}
 	H_{i,j} = \begin{cases}
-		1 & \text{If the $j^{th}$ edge s leaving the $i^{th}$ node}\\
-		-1 & \text{If the $j^{th}$ edge enters the $i^{th}$ node} \\
-		0 & \text{If the $j^{th}$ edge is unconnected to the $i^{th}$ node} 
+		1 & \text{If the $j$th edge s leaving the $i$th node}\\
+		-1 & \text{If the $j$th edge enters the $i$th node} \\
+		0 & \text{If the $j$th edge is unconnected to the $i$th node} 
 		
 	\end{cases}\\
 \end{equation*} 
@@ -19,26 +19,27 @@ The \textbf{Incident Matrix} $H$ of a directed graph is defined as:
 \end{equation*}
 With $n$ and $m$ being the number of nodes and edges respectively.
 
-The \textbf{Reduced Incidence Matrix $\bar{H}$} is obtained by choosing one of the nodes as reference and removing the corresponding node-row from $ H $.
+The \textbf{Reduced Incidence Matrix $\bar{H}$} is obtained by choosing one of the nodes as reference and removing the corresponding row from $ H $.
+
 \begin{equation*}
 	\bar{H}\in \mathbb{R}^{n-1\times m}
 \end{equation*}
-With $n$ and $m$ being the number of nodes and edges respectively.
 
-The \textbf{spanning tree} is the connected graph but with no loops, i.e you can not find a route around the graph where you start and end in the same node without entering a node more than one time. 
+The \textbf{spanning tree} is the connected graph but with no loops, i.e you cannot find a route around the graph where you start and end in the same node without entering a node more than once. 
 
-A \textbf{Chord} is an edge which creates exactly one loop by being added to the spanning tree. 
+A \textbf{chord} is an edge which creates exactly one loop if added to the spanning tree. 
 
-A \textbf{loop} is a unique route along the edges of the graph, where all nodes are unique except the end node.  In a loop the end node must also be the start node. 
+A \textbf{loop} is a unique route along the edges of the graph, where all nodes are unique except the end node. In a loop the end node must also be the start node. 
 
-The \textbf{Loop matrix} is defined as:
+The \textbf{loop matrix} $B$ is defined as:
 \begin{equation*}
 	B_{i,j} = \begin{cases}
-		1 & \text{If the direction of the $ i^{th} $ loop and the} \text{$j^{th}$ edge agrees}\\
-		-1 & \text{If the direction of the $ i^{th} $ loop and the} \text{$j^{th}$ edge does not agrees}\\
-		0 & \text{If the $ i^{th} $ loop does not include the $ j^{th} $ edge}\\
+		1 & \text{If the direction of the $ i $th loop and the} \text{ $j$th edge agrees}\\
+		-1 & \text{If the direction of the $ i $th loop and the} \text{ $j$th edge does not agrees}\\
+		0 & \text{If the $ i $th loop does not include the $ j $th edge}\\
 	\end{cases}
 \end{equation*}
+
 But can also be calculated as shown below:
 
 \begin{equation}\label{eq:LoopMatrix}
@@ -47,16 +48,18 @@ But can also be calculated as shown below:
 	\end{bmatrix}
 \end{equation}
 
-With $\bar{H}_{C}$ being the matrix containing only chord columns of the reduced incident matrix. The same goes for  $\bar{H}_{T}$, containing only the non-chord columns. 
+With $\bar{H}_{C}$ being the matrix containing only chord columns of the reduced incidence matrix. Similarly, $\bar{H}_{T}$ contains only the non-chord columns. 
 
 \begin{equation*}
 	B\in \mathbb{R}^{c\times m}
 \end{equation*}
+
 With $c$ and $m$ being the number of chords and edges respectively.
 
 \newpage
-\subsection{Simplified system}
+\subsection{Simplified System}
 The graph network shown in \cref{fig:graph} is a simplified graph network of the WDN laboratory implementation and has mainly been used to confirm basic graph theoretical concepts. This model does not include pump and valve edges.  
+
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=0.4\textwidth]{Pictures/Graph.png}
@@ -64,7 +67,7 @@ The graph network shown in \cref{fig:graph} is a simplified graph network of the
 	\label{fig:graph}
 \end{figure}
 
-When applying the rules shown above for the simplified graph model of the WDN the incident matrix becomes:
+When applying the rules shown above for the simplified graph model of the WDN the incidence matrix becomes:
 
 \begin{equation}
 	H = \begin{bmatrix}
@@ -79,7 +82,8 @@ When applying the rules shown above for the simplified graph model of the WDN th
 \end{equation} 
 
 
-The reduced incident matrix by taking an arbitrary vertex as a reference, and removing that vertex-row from \cref{eq:H_simplified}. We chose the $4^{th}$ vertex, which results in the following reduced incident matrix:
+The reduced incidence matrix by taking an arbitrary node as a reference, and removing the corresponding row from \cref{eq:H_simplified}. We chose the $4$th node, which results in the following reduced incidence matrix:
+
 \begin{equation}
 	\bar{H} = \begin{bmatrix}
 	1 & 0 & 1 & 0 & 0 & 0 & 0\\
@@ -92,6 +96,7 @@ The reduced incident matrix by taking an arbitrary vertex as a reference, and re
 \end{equation}
 
 Chords and edges of the spanning tree are:
+
 \begin{equation} 
 	\begin{split}
 		E_{C} &= \{e_{1},e_{4}\}   \\ E_{T} &= \{e_2,e_3,e_5,e_6,e_7\}
@@ -105,9 +110,8 @@ Chords and edges of the spanning tree are:
 		0 & 1 & 0 & 0 & -1 & 1 & 1\\
 	\end{bmatrix}
 \end{equation}
-\newpage
 
-\subsection{Detailed system}
+\subsection{Detailed System}
 The graph network shown in \cref{fig:WDNDetailed} is a more detailed graphical representation of the WDN. This includes edges for pumps $(e_{1},e_{11})$ and valve $(e_{3},e_{9})$. 
 
 \begin{figure}[h!]
@@ -155,14 +159,14 @@ The graph network shown in \cref{fig:WDNDetailed} is a more detailed graphical r
 		\draw[->,dashed,] (15) -- node[above] {$d_{10}$} (14); %Create d10
 		
 	\end{tikzpicture} 
-	\caption{Graph network of water distributed network}
+	\caption{Graph network of water distribution network}
 	\label{fig:WDNDetailed}
 \end{figure}
-$ d_1 $ and $ d_{10} $ represent the waterflow into the system from the pumps.
-$ d_4 $ and $ d_7 $ represent the waterflow out of the system from the valves.
-$ d_\tau $ represent the waterflow in and out of the tank.
+$ d_1 $ and $ d_{10} $ represent the flow into the system from the pumps.
+$ d_4 $ and $ d_7 $ represent the flow out of the system via the valves.
+$ d_\tau $ represent the flow in and out of the tank.
 
-The incident matrix for the graph on \cref{fig:WDNDetailed} is shown blow in \cref{eq:H_detailed}.
+The incidence matrix for the graph on \cref{fig:WDNDetailed} is shown below in \cref{eq:H_detailed}.
 	
 	\begin{equation}\label{eq:H_detailed}
 		H = \kbordermatrix{
@@ -180,7 +184,7 @@ The incident matrix for the graph on \cref{fig:WDNDetailed} is shown blow in \cr
 	}
 	\end{equation}	
 	
-The chords and the spanning tree is chosen from \cref{fig:WDNDetailed} \footnote{Note that you can obtain several spanning trees in this network, just by choosing different edged as chords}
+The chords and the spanning tree are chosen from \cref{fig:WDNDetailed} \footnote{Note that you can obtain several spanning trees in this network by choosing different edges as chords}
 	
 \begin{equation*} 
 	\begin{split}
@@ -188,7 +192,7 @@ The chords and the spanning tree is chosen from \cref{fig:WDNDetailed} \footnote
 	\end{split}
 \end{equation*}	
 	
-	By choosing the $10^{\text{th}}$ node as a reference, and removing it from the incident matrix we obtain:
+	By choosing the $10$th node as a reference, and removing it from the incidence matrix we obtain:
 	\begin{equation}
 		\bar{H} = \kbordermatrix{
 		& e_1 & e_2 & e_3   & e_4  & e_5 & e_6  & e_7  & e_8  & e_9  & e_{10}  & e_{11}  \\	
@@ -245,8 +249,8 @@ with their reference-respective equivalents given by:
 where the notation $X_{10\star}$ denotes the entire 10th row\footnote{Correspondingly, $X_{\star10}$ would denote the entire 10th column} of the matrix $X$ and $\setminus$ is the set relative complement operator. These matrices map demands at their respective nodes into the vector of total demands in the system $d \vee \bar{d}$.
 
 \newpage
-\subsection{Implementation of Detailed system}
-It is not possible to implement the WDN model shown in \cref{fig:WDNDetailed} in the laboratory, due to the fact that we don't have access a 4-way-splitter as shown at node $v_6$ in the before mentioned figure. Therefore the Graph model is altered to fit a model that can be implemented. The graph is shown in \cref{fig:ImplementedWDN}.
+\subsection{Implementation of Detailed System}
+It is not possible to implement the WDN model shown in \cref{fig:WDNDetailed} in the laboratory, due to the fact that we don't have access a 4-way splitter. Therefore the graph model is altered to fit a model that can be implemented. The graph is shown in \cref{fig:ImplementedWDN}.
   
 \begin{figure}[h!]	
 	\begin{tikzpicture}[minimum size=0.8cm,node distance=30mm, thick, main/.style = {draw,circle}] 
@@ -297,11 +301,11 @@ It is not possible to implement the WDN model shown in \cref{fig:WDNDetailed} in
 		\draw[->,dashed,] (18) -- node[above] {$d_{13}$} (17); %Create d13
 		\draw[<->,dashed,] (10) -- node[above] {$d_\tau$} (11); %Create d_tau
 	\end{tikzpicture} 
-	\caption{Graph network of implemented water distributed network}
+	\caption{Graph network of implemented water distribution network.}
 	\label{fig:ImplementedWDN}
 \end{figure}
 
-The Incident matrix becomes:
+The incidence matrix becomes:
 
 	\begin{equation}\label{eq:H_detailed_lab}
 	H = \kbordermatrix{
@@ -323,7 +327,7 @@ v_{13}&	0	& 0	& 0	& 0	& 0 & 0	& 0 & 0 & 0 & 0 & 0 & 0 & 0	& 1
 \end{equation}	
 
 
-The reduced incident matrix $ \bar{H} $ for the system given by \cref{eq:H_detailed_lab} is obtained by choosing the node 13 as reference:
+The reduced incidence matrix $ \bar{H} $ for the system given by \cref{eq:H_detailed_lab} is obtained by choosing the node 13 as reference:
 
 	\begin{equation}\label{eq:Hbar_detailed_imp}
 	\bar{H} = \kbordermatrix{
@@ -344,7 +348,7 @@ The reduced incident matrix $ \bar{H} $ for the system given by \cref{eq:H_detai
 	}
 \end{equation}	
 
-The B matrix is obtained by choosing $e_3$ and $e_7$ as chords\footnote{Again it is noted that it is possible to obtain more than one unique spanning tree by choosing different chords.}:
+The B matrix is obtained by choosing $e_3$ and $e_7$ as chords\footnote{Again we note that it is possible to obtain more than one unique spanning tree by choosing different chords.}:
 	\begin{equation}\label{eq:B_Implemented}
 	B = \kbordermatrix{
 		&e_3&e_7&e_1&e_2&e_4&e_{5}&e_6&e_8&e_9&e_{10}&e_{11}&e_{12}&e_{13}&e_{14}& \\	

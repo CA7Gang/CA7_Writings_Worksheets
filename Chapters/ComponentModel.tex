@@ -6,7 +6,7 @@ All components (eg. pipes, valves and pumps) can be described by two variables, 
 
 The following section will examine these two variables for pipes, valves and pumps. We source the equations from \cite{MathiasBjarni2015}.
 
-\subsection{Pipe model}\label{subsec:PipeModel}
+\subsection{Pipe Model}\label{subsec:PipeModel}
 The differential pressure across a pipe can be modelled as follows:
 \begin{equation}
     \mathrm{\Delta{p_{k}}} = J_{k}\cdot\dot{q_{k}}+\mathrm{\lambda_{k}}(q_{k})-\mathrm{\Delta{z_{k}}}
@@ -17,10 +17,10 @@ The differential pressure across a pipe can be modelled as follows:
 	\begin{center}
 		\begin{tabular}{l p{10cm} l}
 			
-			$\Delta{p_{k}}$ & The differential pressure across the $k^{th}$ component & [\si{Pa}]\\ 
-		  	${J_{k}}$ & Is the mass inertia of the water in the $k^{th}$ pipe & [\si{kg}/\si{m^{4}}] \\
-		  	$q_{k}$ & is the flow of water trough the $k_{th}$ pipe & [{\si{\meter\cubed}/\si{s}}] \\
-		  	$\mathrm{\lambda_{k}}(q_{k})$ & is the drop in pressure due to friction in the $k^{th}$ pipe & [\si{Pa}] \\
+			$\Delta{p_{k}}$ & The differential pressure across the $k$th component & [\si{Pa}]\\ 
+		  	${J_{k}}$ & The mass inertia of the water in the $k$th pipe & [\si{kg}/\si{m^{4}}] \\
+		  	$q_{k}$ & is the flow of water trough the $k$th pipe & [{\si{\meter\cubed}/\si{s}}] \\
+		  	$\mathrm{\lambda_{k}}(q_{k})$ & is the drop in pressure due to friction in the $k$th pipe & [\si{Pa}] \\
 		  	$\mathrm{\Delta{z_{k}}}$ & is the drop in pressure due to geodesic level & [\si{Pa}]\\
 			\end{tabular}
 	\end{center}
@@ -39,7 +39,7 @@ The mass inertia of water can be describes as follows:
 	\end{center}
 The cross-sectional area of the pipe is assumed to be constant along the pipe.
 
-The causes of flow friction $\mathrm{\lambda_{k}}(q_{k})$ are surface resistance $h_{f}$ and form resistance $h_{m}$. The surface resistance can be describes with the Darcy-Weisbach equation:
+The causes of flow friction $\mathrm{\lambda_{k}}(q_{k})$ are surface resistance $h_{f}$ and form resistance $h_{m}$. The surface resistance can be described with the Darcy-Weisbach equation:
 
 \begin{equation}
 	h_{f} = f \cdot \frac{8\cdot L\cdot q^{2}}{\pi^{2}\cdot g \cdot D^{5}}
@@ -53,19 +53,19 @@ The causes of flow friction $\mathrm{\lambda_{k}}(q_{k})$ are surface resistance
 		$g$ & is the gravitational constant & [\si{m}/\si{s\squared}]\\
 	\end{tabular}
 \end{center}
-Under the assumption of turbulent flow $f$ can be is given by:
+Under the assumption of turbulent flow $f$ is given by:
 \begin{equation}
 	f=1.325\cdot \Bigg(ln\Big(\frac{\epsilon}{3.7 \cdot D}+\frac{5.74}{R^{0.9}}\Big)\Bigg)^{-2}
 \end{equation}
 
 \begin{center}
 	\begin{tabular}{l p{8cm} l}
-		$\epsilon$ & average height of roughness projection in the pipe & [\si{m}]\\
+		$\epsilon$ & average roughness height in the pipe & [\si{m}]\\
 		$R$ &  is Reynolds number - for turbulent ﬂow $R \geq 4000$ & [$\cdot$]\\
 	\end{tabular}
 \end{center}
 
-The form resistance can be given by the following:
+The form resistance is given by the following:
 \begin{equation}
 	h_{m}=k_{f}\cdot \frac{8\cdot q^{2}}{\pi^{2}\cdot g \cdot D^{4}}
 \end{equation}
@@ -84,7 +84,7 @@ The drop in pressure due to geodesic level difference:
 
 \begin{center}
 	\begin{tabular}{l p{8cm} l}
-		$\Delta{h_{k}}$ &  is the level difference across the terminals of the $k^{th}$ pipe & [\si{m}]\\
+		$\Delta{h_{k}}$ &  is the level difference across the terminals of the $k$th pipe & [\si{m}]\\
 	\end{tabular}
 \end{center}
 
@@ -109,7 +109,7 @@ Inserting and reducing into \cref{eq:Delta_p_pipe}
 The absolute value of one of the flow component in $q^{2}$ is taken to preserve the flow direction.
 
 
-\subsection{Valve model}\label{subsec:ValveModel}
+\subsection{Valve Model}\label{subsec:ValveModel}
 
 While the head loss of a valve \textit{can} be explained in terms of its form resistance, as we have done previously in \cref{subsec:PipeModel}, it is generally impractical to determine the form loss coefficient $k_f$ for valves. Instead, an expression for the head loss can be derived - typically by the manufacturer - via a conductivity function $K_{valve}(OD)$.
 
@@ -124,7 +124,7 @@ Recalling that the pressure drop across a valve is proportional to its squared f
 	q_1 = q_2\cdot\sqrt{\frac{\Delta p_1}{\Delta p_2}}
 \end{equation}
 
-We then express the conductivity function $K_{valve}(OD)$ as, by convention, as corresponding to the flow $q_n$ at a given opening degree that produces exactly a pressure differential of 1 bar, i.e.:
+We then express the conductivity function $K_{valve}(OD)$, by convention, as corresponding to the flow $q_n$ at a given opening degree that produces exactly a pressure differential of 1 bar, i.e.:
 
 \begin{equation}\label{eq:Kvalve}
 	q = q_n(OD)\cdot\sqrt{\frac{\Delta p_1}{1}} = K_{valve}(OD)\cdot\sqrt{\Delta p_1}
@@ -144,7 +144,7 @@ where $q^2 \equiv |q|\cdot q$ is introduced to preserve the directionality of fl
 
 $K_{valve}(OD)$ may take a variety of forms, but is typically either linear, equal-percentage, or quick-opening.
 
-\subsection{Pump model}\label{subsec:PumpModel}
+\subsection{Pump Model}\label{subsec:PumpModel}
 
 The pressure differential across a centrifugal pump, such as the pumps used in this project, is a multivariable function that can generally be approximated by a polynomial expression of the form:
 
@@ -154,7 +154,7 @@ The pressure differential across a centrifugal pump, such as the pumps used in t
 
 where $[a_0,a_1,a_2]$ is a tuple of coefficients that describe the pump's characteristic curve, $q$ is the flow rate through the pump, and $\omega$ is the rotational velocity of the pump.
 
-\subsection{Elevated water reservoir model}
+\subsection{Elevated Water Reservoir Model}
 
 In this section we will develop a hydraulic model of an elevated fluid reservoir, also known as a tank.
 Under assumption that the cross-sectional area of the tank is constant along its height axis, the pressure at the bottom of the tank is proportional to the fluid level in the tank:
