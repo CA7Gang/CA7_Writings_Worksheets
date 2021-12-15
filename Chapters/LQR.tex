@@ -174,9 +174,7 @@ then choosing $Q = C^TC$ such that the cost functional becomes:
 
 \subsection{Tracking LQR and Integral Action}\label{subsec:TrackingAndIntegralAction}
 
-The aware reader will have noted that the preceding sections in \cref{sec:LQR} strictly address \textit{regulator} problems - i.e., the regulation of a system to the origin. In practice, this is rarely a sufficient problem definition for practical purposes, as most systems have some setpoint or other. 
-
-Fortunately, casting the Lagrange problem in \cref{eq:LagrangeProblem} as a tracking problem is largely trivial, as we may simply choose a new coordinate system with the target as the origin. We may perform a similar coordinate shift on the control to specify a desired operating point. For convenience of notation, we let $\hat{x} = x-x_r$ and $\hat{u} = u-u_r$ and take the time index $t$ to be implicit. Then we can represent the Lagrange problem in the shifted coordinate system as:
+The aware reader will have noted that the preceding sections in \cref{sec:LQR} strictly address \textit{regulator} problems - i.e., the regulation of a system to the origin. In practice, this is rarely a sufficient problem definition for practical purposes, as most systems have some setpoint or other. Fortunately, casting the Lagrange problem in \cref{eq:LagrangeProblem} as a tracking problem is largely trivial, as we may simply choose a new coordinate system with the target as the origin. We may perform a similar coordinate shift on the control to specify a desired operating point. For convenience of notation, we let $\hat{x} = x-x_r$ and $\hat{u} = u-u_r$ and take the time index $t$ to be implicit. Then we can represent the Lagrange problem in the shifted coordinate system as:
 
 \begin{equation}\label{eq:LagrangeProblemSetpoint}
 	J = \int_{t_0}^{\infty} \big(\hat{x}^TQ\hat{x} + \hat{u}^TR\hat{u}\big)dt
@@ -211,7 +209,7 @@ We will now present the velocity-form LQR algorithm, as detailed in \cite{Pannoc
 where $k$ is the sample index. We then define the extended vectors and matrices:
 
 \begin{equation}\label{eq:VelocityMatrices}
-	\tilde{x}_k = \begin{bmatrix} \Delta x_k \\ \Delta y_k	\end{bmatrix}, \ \tilde{u}_k = \Delta u_k, \
+	\tilde{\zeta}_k = \begin{bmatrix} \Delta x_k \\ \Delta y_k	\end{bmatrix}, \ \tilde{u}_k = \Delta u_k, \
 	\tilde{A} = \begin{bmatrix} A & 0 \\ CA & I	\end{bmatrix}, \ 
 	\tilde{B} = \begin{bmatrix} B \\ CB	\end{bmatrix}, \ \tilde{C} = \begin{bmatrix} 0 & I	\end{bmatrix}
 \end{equation}
@@ -257,9 +255,7 @@ which lends itself to the interpretation that:
 
 \clearpage
 
-This is a quite attractive quality when contextualised by the Hartman-Grobman theorem, as we expect linearised model dynamics to closely\footnote{Exactly, in fact, in some indeterminately sized region} approximate the real system dynamics in some region around the equilibrium point $\{x_e,u_{op}\}$, and the velocity LQR algorithm will penalize deviations from the point $\{x_e,u_{op},r\}$, thus regulating the system to $r$ while deviating minimally from the vicinity of the equilibrium $\{x_e,u_{op}\}$.
-
-We note additionally - and importantly - that the control law resulting from \cref{eq:LagrangeProblemDeviation} is a control \textit{increment} law, i.e. that:
+This is a quite attractive quality when contextualised by the Hartman-Grobman theorem, as we expect linearised model dynamics to closely\footnote{Exactly, in fact, in some indeterminately sized region} approximate the real system dynamics in some region around the equilibrium point $\{x_e,u_{op}\}$, and the velocity LQR algorithm will penalize deviations from the point $\{x_e,u_{op},r\}$, thus regulating the system to $r$ while deviating minimally from the vicinity of the equilibrium $\{x_e,u_{op}\}$. We note additionally - and importantly - that the control law resulting from \cref{eq:LagrangeProblemDeviation} is a control \textit{increment} law, i.e. that:
 
 \begin{equation}\label{eq:ControlIncrementLaw}
 	\Delta u^*(k) = -\Delta K(k) \Delta x(k) 
@@ -283,7 +279,7 @@ We now address a final LQR-related wrinkle. As shown in \cref{eq:TankPressureSta
 	u(k) = u^*(k) - B^\dagger B \delta(k)
 \end{equation}
 
-where $B^\dagger$ is the Moore-Penrose pseudoinverse of $B$ and $\delta(k)$ is the exogenous input at time $k$.
+where $B^\dagger$ is the Moore-Penrose pseudoinverse of $B$ and $\delta(k)$ is the exogenous input at time $k$. We note that this new control law remains optimal with respect to the disturbance-free system, but is \textit{not} optimal with respect to the disturbed dynamics.
 
 \subsection{Implementation and Simulation Study}\label{subsec:LQRSimulationStudy}
 

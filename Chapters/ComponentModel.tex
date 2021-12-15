@@ -19,7 +19,7 @@ The differential pressure across a pipe can be modelled as follows:
 			
 			$\Delta{p_{k}}$ & The differential pressure across the $k$th component & [\si{Pa}]\\ 
 		  	${J_{k}}$ & The mass inertia of the water in the $k$th pipe & [\si{kg}/\si{m^{4}}] \\
-		  	$q_{k}$ & is the flow of water trough the $k$th pipe & [{\si{\meter\cubed}/\si{s}}] \\
+		  	$q_{k}$ & is the flow of water through the $k$th pipe & [{\si{\meter\cubed}/\si{s}}] \\
 		  	$\mathrm{\lambda_{k}}(q_{k})$ & is the drop in pressure due to friction in the $k$th pipe & [\si{Pa}] \\
 		  	$\mathrm{\Delta{z_{k}}}$ & is the drop in pressure due to geodesic level & [\si{Pa}]\\
 			\end{tabular}
@@ -77,7 +77,10 @@ The form resistance is given by the following:
 	\end{tabular}
 \end{center}
 
-The drop in pressure due to geodesic level difference:
+\clearpage
+
+The drop in pressure due to geodesic level difference is given by:
+
 \begin{equation}
 	\Delta{z_{k}} = \rho \cdot g \cdot \Delta{h_{k}}
 \end{equation}
@@ -106,7 +109,7 @@ Inserting and reducing into \cref{eq:Delta_p_pipe}
 	- \rho \cdot g \cdot \Delta{h_{k}} = \mathcal{J}\dot{q} + \lambda(q) + \Delta z
 \end{equation}
 
-The absolute value of one of the flow component in $q^{2}$ is taken to preserve the flow direction.
+The absolute value of one of the flow components in $q^{2}$ is taken to preserve the flow direction.
 
 
 \subsection{Valve Model}\label{subsec:ValveModel}
@@ -175,7 +178,7 @@ Logically, the rate of fluid level change is proportional to the volumetric rate
 	\dot{\zeta} \propto \dot{V} \Leftrightarrow \dot{\zeta} \propto d_\tau
 \end{equation} 
 
-From above it can be concluded that the rate of change of pressure is proportional to flow in and out of the tank:
+From the above it can be concluded that the rate of change of pressure is proportional to flow in and out of the tank:
 
 \begin{equation} \label{eq:dotp prop dt}
 	\dot{p}_{\tau} \propto d_\tau 

@@ -1,4 +1,4 @@
-This section describes the interconnected components in a water distributed network (WDN) using Graph Theory. We investigate three different graph networks; a simplified graph model not including pump and valve edges, one which includes pump and valve edges, and one which shows the implemented laboratory network. Furthermore, three component classes will be examined, i.e. pipes, pumps and valves.
+This section describes the interconnected components in a water distributed network (WDN) using Graph Theory. We investigate three different graph networks; a simplified graph model not including pump and valve edges, one which includes pump and valve edges, and one which describes the implemented laboratory network.
 
 
 \subsection{Basic Graph Theory}
@@ -34,8 +34,8 @@ A \textbf{loop} is a unique route along the edges of the graph, where all nodes 
 The \textbf{loop matrix} $B$ is defined as:
 \begin{equation*}
 	B_{i,j} = \begin{cases}
-		1 & \text{If the direction of the $ i $th loop and the} \text{ $j$th edge agrees}\\
-		-1 & \text{If the direction of the $ i $th loop and the} \text{ $j$th edge does not agrees}\\
+		1 & \text{If the direction of the $ i $th loop and the} \text{ $j$th edge agree}\\
+		-1 & \text{If the direction of the $ i $th loop and the} \text{ $j$th edge do not agree}\\
 		0 & \text{If the $ i $th loop does not include the $ j $th edge}\\
 	\end{cases}
 \end{equation*}
@@ -82,7 +82,7 @@ When applying the rules shown above for the simplified graph model of the WDN th
 \end{equation} 
 
 
-The reduced incidence matrix by taking an arbitrary node as a reference, and removing the corresponding row from \cref{eq:H_simplified}. We chose the $4$th node, which results in the following reduced incidence matrix:
+The reduced incidence matrix is formed by taking an arbitrary node as a reference, and removing the corresponding row from \cref{eq:H_simplified}. We chose the $4$th node, which results in the following reduced incidence matrix:
 
 \begin{equation}
 	\bar{H} = \begin{bmatrix}
@@ -111,6 +111,7 @@ Chords and edges of the spanning tree are:
 	\end{bmatrix}
 \end{equation}
 
+\clearpage
 \subsection{Detailed System}
 The graph network shown in \cref{fig:WDNDetailed} is a more detailed graphical representation of the WDN. This includes edges for pumps $(e_{1},e_{11})$ and valve $(e_{3},e_{9})$. 
 
@@ -164,7 +165,7 @@ The graph network shown in \cref{fig:WDNDetailed} is a more detailed graphical r
 \end{figure}
 $ d_1 $ and $ d_{10} $ represent the flow into the system from the pumps.
 $ d_4 $ and $ d_7 $ represent the flow out of the system via the valves.
-$ d_\tau $ represent the flow in and out of the tank.
+$ d_\tau $ represents the flow in and out of the tank.
 
 The incidence matrix for the graph on \cref{fig:WDNDetailed} is shown below in \cref{eq:H_detailed}.
 	
@@ -192,7 +193,8 @@ The chords and the spanning tree are chosen from \cref{fig:WDNDetailed} \footnot
 	\end{split}
 \end{equation*}	
 	
-	By choosing the $10$th node as a reference, and removing it from the incidence matrix we obtain:
+	By choosing the $10$th node as a reference, and removing it from the incidence matrix, we obtain:
+	
 	\begin{equation}
 		\bar{H} = \kbordermatrix{
 		& e_1 & e_2 & e_3   & e_4  & e_5 & e_6  & e_7  & e_8  & e_9  & e_{10}  & e_{11}  \\	
@@ -207,6 +209,8 @@ The chords and the spanning tree are chosen from \cref{fig:WDNDetailed} \footnot
 		%v_{10}& 0 & 0  & 0  & 0  & 0  & 0  & 0  & 0  & 0  & 0  & 1 \\
 		}
 	\end{equation}
+	
+	\clearpage
 	
 Furthermore we can define the open-node matrix $F$ and tank matrix $G$:
 	
@@ -250,7 +254,7 @@ where the notation $X_{10\star}$ denotes the entire 10th row\footnote{Correspond
 
 \newpage
 \subsection{Implementation of Detailed System}
-It is not possible to implement the WDN model shown in \cref{fig:WDNDetailed} in the laboratory, due to the fact that we don't have access a 4-way splitter. Therefore the graph model is altered to fit a model that can be implemented. The graph is shown in \cref{fig:ImplementedWDN}.
+It is not possible to implement the WDN model shown in \cref{fig:WDNDetailed} in the laboratory due to the fact that we don't have access a $ 4 $-way splitter. Therefore, the graph model is altered to fit a model that can be implemented. The graph is shown in \cref{fig:ImplementedWDN}.
   
 \begin{figure}[h!]	
 	\begin{tikzpicture}[minimum size=0.8cm,node distance=30mm, thick, main/.style = {draw,circle}] 

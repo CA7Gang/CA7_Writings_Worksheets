@@ -51,7 +51,7 @@
 
 
 
-\documentclass[onecolumn,draftcls,a4paper,compsoc]{IEEEtran}
+\documentclass[onecolumn,a4paper,compsoc]{IEEEtran}
 % Some Computer Society conferences also require the compsoc mode option,
 % but others use the standard conference format.
 %
@@ -426,13 +426,9 @@ Email: \href{mailto:es-21-ca-7-733@student.aau.dk}{es-21-ca-7-733@student.aau.dk
 \section{Graph Theoretical Analysis}\label{sec:GraphTheory}
 \input{Chapters/GraphTheory}
 
-\clearpage
-
 \section{WDN Component Models}\label{sec:ComponentModels}
 
 \input{Chapters/ComponentModel}
-
-\clearpage
 
 \section{WDN System Model}\label{sec:SystemModel}
 
@@ -549,14 +545,15 @@ Email: \href{mailto:es-21-ca-7-733@student.aau.dk}{es-21-ca-7-733@student.aau.dk
 \input{Chapters/PacketLoss}
 
 \clearpage
-\section{Experimental Setup and Results}
+\section{Experimental Setup and Results}\label{sec:Results}
 \input{Chapters/Results}
 
 
 
 \clearpage
 \section{Conclusion}
-The conclusion goes here.
+\input{Chapters/Conclusion}
+
 
 \bibliographystyle{ieeetran}
 \bibliography{../../RefLib/CA7Projekt.bib}

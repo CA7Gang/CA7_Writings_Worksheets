@@ -104,7 +104,7 @@ where $T$ is the eigenspace of $A$. Then there exists a homeomorphism $H$ of som
 \end{equation*}
 \end{theorem}
 
-At first glance, this theorem looks opaquely mathematical and not immediately applicable. However, in practice, \cref{theorem:HartmanGrobman} simply tells us that in the immediate vicinity of some hyperbolic equilibrium point of our nonlinear system, there exists a \textit{linear} system that behaves in a generally identical manner when evolved in time. We note that it is not \textit{necessary} to linearise at a hyperbolic equilibrium, but doing so is favourable when possible as it precludes the presence of a center manifold, whose dynamics may not be captured by linearisation.
+At first glance, this theorem looks opaquely mathematical and not immediately applicable. However, in practice, \cref{theorem:HartmanGrobman} simply tells us that in the immediate vicinity of some hyperbolic equilibrium point of our non-linear system, there exists a \textit{linear} system whose eigenfunctions describe its evolutions exactly. We note that it is not \textit{necessary} to linearise at a hyperbolic equilibrium, but doing so is favourable when possible as it precludes the presence of a center manifold, whose dynamics cannot be captured by linearisation.
 
 Recalling that the first-order Taylor series of a function at a point can be thought of as a  generalisation of its tangent line, it is then possible to identify the linearisation of our system via:
 
@@ -112,7 +112,7 @@ Recalling that the first-order Taylor series of a function at a point can be tho
 \dot{x} \approx f(x_0) + \nabla f\bigg\rvert_{x_0} (x-x_0)
 \end{equation}
 
-We now revert our attention to the nonlinear model of the WDN. We will make the simplifying assumption that $\Phi \mathcal{J} \Phi^T$ is invertible, which is not generally true, but tends to hold for the type of WDN in question. We also introduce the notation $\mathcal{P}: (\Phi \mathcal{J} \Phi^T)^{-1}$, allowing allows us to rewrite \cref{eq:NonLinearModelWithTank} as:
+We now revert our attention to the non-linear model of the WDN. We will make the simplifying assumption that $\Phi \mathcal{J} \Phi^T$ is invertible, which is not generally true, but tends to hold for the type of WDN in question. We also introduce the notation $\mathcal{P}: (\Phi \mathcal{J} \Phi^T)^{-1}$, allowing allows us to rewrite \cref{eq:NonLinearModelWithTank} as:
 
 \begin{equation}\label{eq:NonLinearModelSimplified}
 	\begin{split}
@@ -122,7 +122,7 @@ We now revert our attention to the nonlinear model of the WDN. We will make the 
 	\end{split}	
 \end{equation}
 
-We now make the additional observation that $\Psi(\bar{h}-\mathbf{1}h_0)$ is constant for all time,   $\mathcal{I}(p_{\tau}-\mathbf{1}p_0)$ do not depend on $\{q_n,OD,\omega,p_\tau\}$. This suggests that, when computing the Taylor expansion, this term disappears under the action of the $\nabla$ operator, i.e. that:
+We now make the additional observation that $\Psi(\bar{h}-\mathbf{1}h_0)$ does not depend on $\{q_n,OD,\omega,p_\tau\}$. This suggests that, when computing the Taylor expansion, this term disappears under the action of the $\nabla$ operator, i.e. that:
 
 \begin{equation}\label{eq:PressureHeightDisappear}
 	\begin{split}
@@ -202,7 +202,7 @@ which, under the assumption that $q_n$ changes much faster than $OD$, is a const
 	\mathcal{P}\mathcal{I}\tilde{p}_\tau
 \end{equation}
 
-which is likewise a constant term that may be removed by integral action. Thus, we can restate a greatly simplified form of \cref{eq:SymbolicLinearisationExpanded} as
+which is likewise a constant term that may be removed by integral action. Thus, we can restate a greatly simplified form of \cref{eq:SymbolicLinearisationExpanded} as:
 
 \begin{equation}\label{eq:SymbolicLinearisationSimplified}
 	\dot{q}_n \approx -\mathcal{P}\Phi\Bigg(a_1\omega_0 + \Big(|q_0|+\text{sign}(q_0)q_0\Big)\Bigg(K_\lambda + a_2 + \frac{1}{(K_v OD_0)^2}\Bigg) \tilde{q}_n \Bigg) -  \mathcal{P}\Phi\Bigg(\Big(a_1 q_0 + 2a_0\omega_0\Big) \tilde{\omega}\Bigg)
@@ -212,7 +212,7 @@ which is likewise a constant term that may be removed by integral action. Thus, 
 In the following section state space models are presented both for the fast and the slow system, i.e. the pump flow and the tank pressure dynamics respectively. 
 
 \subsubsection{State Space Model - Pump Dynamics}
-Before linearising the system model, presented in \cref{eq:NonLinearModelWithTank}, we need to identify the equilibrium points. This is done by evaluating the model at fixed $ \omega $ and $ OD $, with its dynamics set to $0$. We choose pump speeds as an average of those used in \cref{ap:PumpCoef}, which is $ 66\% $ for each pump. We set OD to $ 0.5 $ for each valve. This yields the following equilibrium point:
+Before linearising the system model, presented in \cref{eq:NonLinearModelWithTank}, we need to identify the equilibrium points. This is done by evaluating the model at fixed $ \omega $ and $ OD $, with its dynamics set to $0$. We choose pump speeds as an average of those used in \cref{ap:PumpCoef}, which is $ 66\% $ for each pump. We set $ OD $ to $ 0.5 $ for each valve. This yields the following equilibrium point:
 
 	\begin{equation}
 	q_c^* = \kbordermatrix{
@@ -285,7 +285,7 @@ This yields a system with pump speeds $ \{\omega_1 , \omega_2 \} $ as inputs and
 	\end{split}
 \end{equation}
 
-\subsubsection{State space model - tank pressure dynamics}
+\subsubsection{State Space Model - Tank Pressure Dynamics}
 The tank pressure dynamics are significantly simpler than the fast dynamics of the system - in fact, the slow tank pressure dynamics of the system are a linear first-order system that, per \cref{eq:TankDynamics}, evolve according to:
 
 \begin{equation}\label{eq:SlowTankDynamics}
@@ -295,7 +295,7 @@ The tank pressure dynamics are significantly simpler than the fast dynamics of t
 	\end{split}
 \end{equation}
 
-We can discretize this with Euler's method, resulting in:
+We can discretise this with Euler's method, resulting in:
 
 \begin{equation}\label{eq:TankDynamicsDiscrete}
 	\begin{gathered}
@@ -318,7 +318,7 @@ which can be converted into the following state-space system:
 We note the presence of $B_cd_c$, an exogenous input over which we have no control. This will be addressed in \cref{sec:LQR,sec:KalmanFilter}.
 
 \subsection{Influence of Pump Delay}
-The pumps of the WDN system introduces a delay of approximately 4 seconds. According to \cite[pp. 182-183]{Skogestad2005} , 
+The pumps of the WDN system introduces a delay of approximately 4 seconds. According to \cite[pp. 182-183]{Skogestad2005}, 
 a time delay $\theta$ limits the feasible closed-loop bandwidth of a system to:
 
 \begin{equation}\label{eq:BWdelay}
@@ -328,20 +328,21 @@ a time delay $\theta$ limits the feasible closed-loop bandwidth of a system to:
 This limitation on the inner loop inherently limits the outer loop as well, so long as standard cascade control practices are observed. Typically, the inner loop is required to be at least $5$ times faster than the outer loop.
 
 
+\clearpage
 
-\subsection{The root locus method}
+\subsection{The Root Locus Method}
 
 For design of the pump controllers the root locus method will be used. The root locus is a powerful visual tool that investigates the location of the closed-loop poles of a system, when introducing feedback with a gain $K$. The root locus can be drawn by hand by calculating the location of the closed-loop poles of a system for a large number of feedback gains. In practice however, this is done using a software package like Matlab.
 
 While there exist many rules for sketching root locus by hand, only a few of them are truly important to understand how the root locus is used for controller design:
 
 \begin{enumerate}
-	\item The closed-loop poles of the system move from the open-loop poles at $ K=0 $ to the open-loop zeros as $K \to \infty$ - unless the number of poles and zeros is different, in which case the closed-loop poles will go to or come in from infinity.
+	\item The closed-loop poles of the system move from the open-loop poles at $ K=0 $ to the open-loop zeros as $K \to \infty$, unless the number of poles and zeros is different, in which case the closed-loop poles will go to or come in from infinity.
 	\item The number of lines going to or from $\infty$ is equal to the difference between the number of open-loop poles and zeros.
-	\item The angle and place of gravity of the lines going to or from infinity is dependent of the difference between the number of open-loop poles and zeros and their location in the complex plane.
+	\item The angle and place of gravity of the lines going to or from $ \infty $ is dependent of the difference between the number of open-loop poles and zeros and their location in the complex plane.
 \end{enumerate}
 
-The first part of rule $1$ tells us that the closed-loop poles are equal to the open-loop poles when K=0. This is intuitively understood as $ K=0 $ means there is no feedback, thus the closed and open-loop systems are identical. The second part tells us that when $K \to \infty$ the closed-loop poles will be located at the open-loop zeros. This is understood by analysing the closed-loop transfer function when the open-loop transfer function is given as
+The first part of rule $1$ tells us that the closed-loop poles are equal to the open-loop poles when $ K=0 $. This is intuitively understood as $ K=0 $ means there is no feedback, thus the closed and open-loop systems are identical. The second part tells us that when $K \to \infty$ the closed-loop poles will be located at the open-loop zeros. This is understood by analysing the closed-loop transfer function when the open-loop transfer function is given as
 \begin{equation}
 	G_{ol}(s) = \frac{Z(s)}{P(s)}
 \end{equation}
@@ -364,7 +365,7 @@ Restructuring this yields
 	0 = 1 + K \frac{Z(s)}{P(s)} = 1P(s) + K \frac{Z(s) P(s)}{P(s)} = P(s) + K Z(s)
 \end{equation}
 
-This confirms that setting $ K=0 $ makes the closed-loop poles equal to P(s) which is exactly the open-loop poles. When $K \to \infty$ the $ K*Z(s) $ term is dominating, which is why the closed-loop poles will then equal the open-loop zeros $ Z(s) $.
+This confirms that setting $ K=0 $ makes the closed-loop poles equal to P(s) which is exactly the open-loop poles. When $K \to \infty$ the $ KZ(s) $ term is dominating, which is why the closed-loop poles will then equal the open-loop zeros $ Z(s) $.
 
 Rules $2$ and $3$ simply tells us that the possible locations of the closed-loop poles - specified by the loci - changes with the position of the open-loop poles and zeros. This enables the designer to place additional poles and zeros to change the behaviour of the closed-loop system. 
 
@@ -384,9 +385,9 @@ In order to validate whether decentralised control can be obtained, the interact
 	\label{fig:PumpMagPlot}
 \end{figure}
 
-As seen in \cref{fig:PumpMagPlot}, the gain from $\omega_1$ to $d_{13}$ is for all frequencies less than $ -50 \si{dB} $, compared to -10 dB from $\omega_1$ to $d_1$. \\
-Likewise, the gain from $\omega_2$ to $d_1$ is less than $ -50 \si{dB} $ for all frequencies, compared to $ -15 \si{dB} $ from $\omega_2$ to $d_{13}$.\\
-In both cases, the coupling is at least $ -35 \si{dB} $ corresponding to less than a factor of 1/50, and the system can reasonably be assumed to have no meaningful cross-coupling, which allows for independent SISO design of the respective controllers solely from the diagonal transfer functions in the transfer matrix.
+As seen in \cref{fig:PumpMagPlot}, the gain from $\omega_1$ to $d_{13}$ is for all frequencies less than $ -50 \ \si{dB} $, compared to $ -10 \ \si{dB} $ from $\omega_1$ to $d_1$. \\
+Likewise, the gain from $\omega_2$ to $d_1$ is less than $ -50 \ \si{dB} $ for all frequencies, compared to $ -15 \ \si{dB} $ from $\omega_2$ to $d_{13}$.\\
+In both cases, the coupling is at least $ -35 \ \si{dB} $ corresponding to less than a factor of $ \frac{1}{50} $, and the system can reasonably be assumed to have no meaningful cross-coupling, which allows for independent SISO design of the respective controllers solely from the diagonal transfer functions in the transfer matrix.
 
 \subsubsection{Model Order Reduction}
 On closer comparison, the diagonal transfer functions can be seen to have approximately identical poles and zeroes in  \cref{eq:PumpDiagonalPolesZeros}: 
@@ -399,7 +400,7 @@ On closer comparison, the diagonal transfer functions can be seen to have approx
 	\end{gathered}
 \end{equation}
 
-Realising that many of the poles more or less cancels out with the zeros can simplify the model very much for the root locus design, yielding poles and zeros \cref{eq:SimplifiedPolesZeros}:
+Realising that many of the poles more or less cancel out with the zeros can simplify the model significantly for the root locus design, yielding poles and zeros \cref{eq:SimplifiedPolesZeros}:
 
  \begin{equation}\label{eq:SimplifiedPolesZeros}
  	\begin{gathered}
@@ -409,10 +410,12 @@ Realising that many of the poles more or less cancels out with the zeros can sim
  \end{equation}
 
 
-This reduced-order approximation the design of only one controller for both the subsystems.
+This reduced-order approximation allows the design of only one controller for both the subsystems.
+
+\clearpage
 
 \subsubsection{Modelling of Time Delay}
-The fast dynamics are known to have a significant delay. However, delays are represented by $e^{-T_ds}$ in the Laplace domain and thus are not rational functions. The delay at the pumps can instead modelled with by Padé approximation, which is a rational-function approximation of a delay. The order of the approximation is not unimportant. The higher the order, the closer to a true time delay the result will be, but this comes at the cost of complexity, as a $n$th-order approximation places $n$ LHP poles and $n$ RHP zeroes to simulate the delay. This is shown in \cref{fig:PadeApprox}.
+The fast dynamics are known to have a significant delay. However, delays are represented by $e^{-T_ds}$ in the Laplace domain and thus are not rational functions, which means that they cannot be represented as transfer functions. The delay at the pumps can instead modelled with by Padé approximation, which is a rational-function approximation of a delay. The order of the approximation is not unimportant. The higher the order, the closer to a true time delay the result will be, but this comes at the cost of complexity, as a $n$th-order approximation places $n$ LHP poles and $n$ RHP zeroes to simulate the delay. This is shown in \cref{fig:PadeApprox}.
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=0.8\textwidth]{Pictures/PadeApprox.png}
@@ -436,6 +439,7 @@ An investigation has been performed to show the error in closed-loop pole locati
 \end{figure}
 When considering both convenience of use and modelling error the optimal approximation order was chosen to be 2.
 
+\clearpage
 
 \subsubsection{Requirements for Control Performance}
 Before starting the actual root locus design of the controller, the desired performance of the controlled system needs to be defined. \\
@@ -447,16 +451,16 @@ Since the transfer function of the desired subsystem can be simplified as having
 
 The requirements for the controller can be condensed to the following: 
 \begin{itemize}
-	\item No poles must be in the right half plane.
+	\item No poles may be in the right half-plane.
 	\item An open-loop pole must be placed in the origin.
-	\item The closed-loop system must have a bandwidth of approximately $0.1 \si{frac{rad}{s}}$.
+	\item The closed-loop system must have a bandwidth of approximately $0.1 \si{\frac{rad}{s}}$.
 	\item The closed-loop system must have a time constant of approximately $\frac{1}{BW} = \frac{1}{0.1} = 10 \si{s}$.
 \end{itemize}
 
 
 
 \subsubsection{Choice of Controller Type}
-A PI controller is considered to be a sufficient solution for the requirements put forth. The integral action will take care of the steady state error, and the gain and zero location can be chosen based on the design criteria.
+A PI controller is considered to be a sufficient solution for the requirements put forth. The internal model principle ensures that integral action will take care of the steady state error, and the gain and zero location can be chosen based on the design criteria.
 
 \subsubsection{Root Locus Design}
 Since the controller is to be used locally for one pump, the root locus is drawn for the transfer function that takes the rotational speed of pump $1$ as input and the resulting flow of pump $1$ as output. The transfer function is in reduced form, where close pole-zero pairs have been cancelled out. The $2$nd order Padé approximation of a $4$-second time delay is included.
@@ -470,11 +474,7 @@ The controller design is then performed in four steps:
 	\item Evaluate the step response and readjust the zero location and gain value if needed.
 \end{enumerate}
 
-While step $1$ requires no intuition, step $2$ has to be done rather carefully. Placing the zero too close to the origin will slow down the integration drastically. Placing it too far to the left, however, creates a locus where the possible closed-loop poles are all undesirable.
-
-For step $3$, the gain was increased until the bandwidth of $0.1 \si{frac{rad}{s}}$ was achieved with no oscillations. 
-
-As step $4$ implies, the PI controller was designed after some iterations, resulting in the following controller:
+While step $1$ requires no intuition, step $2$ has to be done rather carefully. Placing the zero too close to the origin will slow down the integration drastically. Placing it too far to the left, however, creates a locus where the possible closed-loop poles are all undesirable. For step $3$, the gain was increased until the bandwidth of $0.1 \si{\frac{rad}{s}}$ was achieved with no oscillations. As step $4$ implies, the PI controller was designed after some iterations, resulting in the following controller:
 
  \begin{equation}\label{eq:PITransferFunction}
 	G_{PI} = 1.8 \frac{s+0.125}{s}

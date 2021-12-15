@@ -112,7 +112,7 @@ For $y = Cx$ to be equal to \cref{eq:consump_pattern} the C-matrix becomes:
 	C = \begin{bmatrix} 1 & 1 & 0 & 1 & 0 \end{bmatrix}
 \end{equation}
 
-If one wishes have a signal model of greater harmonic orders, a concatenation of e.g. the first order harmonic signal model, like seen in \cref{eq:first_order_signal_model}, can be performed for an arbitrary amount of harmonics. 
+If one wishes to have a signal model of greater harmonic orders, this can be accomplished by block-diagonal concatenation of harmonic signal models, like seen in \cref{eq:first_order_signal_model}. This can be performed for an arbitrary amount of harmonics. 
 
 \begin{equation}\label{eq:first_order_signal_model}
 	\begin{gathered}
@@ -155,11 +155,7 @@ It is the optimal affine estimator given some assumptions about the precision of
 
 \subsection{The Kalman Filter} \label{sec:the_kalman_filter}
 The Kalman filter is an optimal estimator, where the optimality criterion with respect to the Mean Squared Error (MSE) of the residual $x-\hat{x}$.
-It estimates an unknown process by a combination of a system model and a measurement that is related to the unknown processes. 
-
-The Kalman filter recursively finds the optimal \textit{Kalman gain} for the given system to minimize the residual MSE. Finding the optimal gain relies on assuming that the model and measurement noise are uncorrelated white noise processes with known covariances. 
-
-The performance of the Kalman filter relies heavily on the guess of the covariance of measurement and model noise. This means in practice that an online tuning of covariances is desirable to avoid bad guesses of the covariances \cite[p. 232]{Doraiswami2014}.
+It estimates an unknown process by a combination of a system model and a measurement that is related to the unknown processes. The Kalman filter recursively finds the optimal \textit{Kalman gain} for the given system to minimize the residual MSE. Finding the optimal gain relies on assuming that the model and measurement noise are uncorrelated white noise processes with known covariances. The performance of the Kalman filter relies heavily on the guess of the covariance of measurement and model noise. This means in practice that an online tuning of covariances is desirable to avoid bad guesses of the covariances \cite[p. 232]{Doraiswami2014}.
 
 \subsubsection{Mathematical Formulation of the Kalman Filter in State Space}
 The Kalman Filter described in this report will based on a discrete time state space representation: 
@@ -168,36 +164,43 @@ The Kalman Filter described in this report will based on a discrete time state s
 	&{x}(k+1) = {A}{x}(k) + {B}{u}(k) + {w}(k)  \label{eq:KalmanSystemEquations} \\
 	&{y}(k) = {C}{x}(k)+{v}(k) 
 \end{align}
-where 
-\begin{align*}
-	&\text{${x}(k)$ is the state vector at time index k,					}	\\[-1em]
-	&\text{${u}(k)$ is the input at time index k, 						}	\\[-1em]
-	&\text{${w}(k) \sim \mathcal{N}(0, Q)$ is the model noiseat time index k,			}	\\[-1em]
-	&\text{${v}(k) \sim \mathcal{N}(0, R)$ is the measurement noise at time index k,		}	\\[-1em]
-	&\text{${y}(k)$ is the observable output, 							}	\\[-1em]
-	&\text{{A} is the state transition matrix,							}	\\[-1em]
-	&\text{{B} is the control-input matrix,								}	\\[-1em]
-	&\text{{C} is the observation matrix. 								}	\\[-1em]
-\end{align*}
+where
 
-To simplify the presentation for the readers of this report the Kalman equations will be presented in the form of 8 equations, after which they can be combined to yield the traditional and more dense form of 5 equations.
+\begin{center}
+	\begin{tabular}{l}
+		$x(k)$ is the state vector at time index $k$	\\
+		$u(k)$ is the input at time index k	\\
+		$w(k)  \sim \mathcal{N}(0, Q)$  is the model noise at time index $ k $	\\
+		$v(k) \sim \mathcal{N}(0, R) $  is the measurement noise at time index $ k $	\\
+		$ y(k) $ is the observable output								\\
+		$ A $ is the state transition matrix \\
+		$ B $ is the control-input matrix				\\
+		$ C $ is the observation matrix, 					\\
+	\end{tabular}
+\end{center}
+
+
+To simplify the presentation for the readers of this report the Kalman equations will be presented in the form of $ 8  $ equations, after which they can be combined to yield the traditional and more dense form of $ 5 $ equations.
 The Kalman equations will further be divided into two phases: the prediction stage and the update stage. 
 
-{Prediction stage}
+\textbf{Prediction stage}
 \begin{align}
 	&\hat{{x}}	(k|k-1) = {A} 	\hat{{x}}(k-1|k-1) + {B}{u}(k-1)  				\label{eq:Kalman_pred_state} 	\\
 	&\hat{{y}}	(k|k-1) = {C}	\hat{{x}}(k|k-1)										\label{eq:Kalman_pred_output} 	\\
-	&{P}			(k|k-1) = {A}	{P}(k-1|k-1){A}^T+{Q} 								\label{eq:Kalman_pred_cov} 		
+	&{P}			(k|k-1) = {A}	{P}(k-1|k-1){A}^T+{Q} 							\label{eq:Kalman_pred_cov} 		
 \end{align}
 where 
-\begin{align*}
-	&\text{$\hat{{x}}	(k|k-1)$ 	is the state prediction 			estimate at time index $k$ 		given all $ k-1 $ samples		}	\\[-1em]
-	&\text{$\hat{{x}}	(k-1|k-1)$ 	is the state 						estimate at time index $k-1$ 	given all $ k-1 $ samples		}	\\[-1em]
-	&\text{$\hat{{y}}	(k|k-1)$ 	is the output prediction 			estimate at time index $k$ 		given all $ k-1 $ samples		}	\\[-1em]
-	&\text{${P}			(k|k-1)$ 	is the predicted estimate  covariance matrix at time index $k$ 		given all $ k-1 $ samples		}	\\[-1em]
-	&\text{${P}			(k-1|k-1)$ 	is the updated estimate    covariance matrix at time index $k-1$ 	given all $ k-1 $ samples		}	\\[-1em]
-	&\text{${Q}$						is the model/process noise covariance matrix														}	\\[-1em]
-\end{align*}
+
+\begin{center}
+	\begin{tabular}{l}
+		$ \hat{x}(k|k-1) $ is the state estimate at time index $ k $ given all $ k-1 $ samples	\\
+		$ \hat{x}(k-1|k-1) $ is the state estimate at time index $ k-1  $ given all $ k-1 $ samples	\\
+		$ \hat{y}(k|k-1) $ is the output estimate at time index $ k $ given all $ k-1 $ samples	\\
+		$ P(k|k-1) $ is the estimate covariance matrix at time index $ k $	given all $ k-1 $ samples	\\
+		$ P(k-1|k-1) $ is the updated estimate covariance matrix at time index $ k-1 $ given all $ k-1 $ samples	\\
+		$Q$ is the process noise covariance matrix		
+	\end{tabular}
+\end{center}
 
 All three prediction equations predicts the a priori $k$th (next) estimate based on the $k-1$ previous samples and the model knowledge.\\
 
@@ -211,18 +214,21 @@ All three prediction equations predicts the a priori $k$th (next) estimate based
 	&{P}			(k|k) 		= ({I} - {K}(k){C}){P}(k|k-1)			\label{eq:Kalman_upd_est_cov}
 \end{align}
 where 
-\begin{align*}
-	&\text{${e}		(k)$ 		is the innovation term for time index 					$ k $													}	\\[-1em]
-	&\text{${y}		(k)$ 		is the observed output at time index 					$ k $													}	\\[-1em]
-	&\text{${S}		(k)$ 		is the innovation covariance for time index 			$ k $											}	\\[-1em]
-	&\text{${R}$ 				is the observation noise covariance																}	\\[-1em]
-	&\text{${K}		(k)$ 		is the Kalman gain for time index 						$ k $													}	\\[-1em]
-	&\text{$\hat{{x}}(k|k)$ 	is the estimate of the state vector at time index 			$ k $ given all 	$ k$ samples	}	\\[-1em]
-	&\text{${P}		(k|k)$ 	is the updated estimate covariance matrix at time index 	$ k $ given all 	$ k$ samples		}	\\[-1em]
-	&\text{${I}$ 				is the identity matrix																				}	\\[-1em]			
-\end{align*}
 
-All the equations in the update stage estimates the posteriori estimate of the $ k $ sample based on all $ k^{th} $ samples and the model knowledge. A few expressions to give some intuitions to what the equations actually represent. The estimate covariance, the prediction covariance and innovation covariance can respectively be represented as 
+\begin{center}
+	\begin{tabular}{l}
+		$ e(k) $ is the innovation term for time index $ k  $	\\
+		$ 	y(k) $ \ is the observed output at time index $ k $	\\
+		$ S(k) $ is the innovation covariance for time index  $ k $	\\
+		$ R $ is the observation noise covariance	\\
+		$ K(k) $ is the Kalman gain for time index 	$ k $	\\
+		$ \hat{x}(k|k) $ is the estimate of the state vector at time index $ k $  given all $ k $ samples	\\
+		$ P(k|k)$  is the updated estimate covariance matrix at time index $ k $ given all $ k $ samples	\\
+		$ I  $ is the identity matrix
+	\end{tabular}
+\end{center}
+
+All the equations in the update stage estimates the posteriori estimate of the $ k $ sample based on all $ k $th samples and the model knowledge. A few expressions to give some intuitions to what the equations actually represent. The estimate covariance, the prediction covariance and innovation covariance can respectively be represented as 
 
 \begin{align}
 	&{P}(k|k) 	= \text{cov}({x}(k)-	\hat{{x}}(k|k))	\\
@@ -240,6 +246,7 @@ Now collecting some of the above equations gives the more compact form of the Ka
 	&\hat{{x}}	(k|k-1) = {A} \hat{{x}}	(k-1|k-1) 		\label{eq:Kalman_pred_state_compact} 	\\
 	&{P}			(k|k-1) = {A}{P}			(k-1|k-1){A}^T+{Q} 				\label{eq:Kalman_pred_cov_compact} 		
 \end{align}
+
 \textbf{Update}
 \begin{align}
 	&{K}			(k) 		= {P}				(k|k-1){C}^T({C}{P}	(k|k-1)	{C}^T + {R})^{-1}										\label{eq:Kalman_upd_kalman_gain_compact} \\
@@ -274,7 +281,7 @@ We go on the hunt for the damened Riccati equation of $\Pi$. We substitute RHS o
 		& = {A} \Pi {A}^T - {A} K {C} \Pi  {A}^T + {Q}\\
 		\end{split}
 \end{equation}
-We now substitute RHS of \cref{eq:ss_kalman_kalman_gain} in for $K$ in \cref{eq:ss_kalman_udledning1} and factorize respectively ${A}$ and $ {A}^T $.
+We now substitute RHS of \cref{eq:ss_kalman_kalman_gain} in for $K$ in \cref{eq:ss_kalman_udledning1} and factorise respectively ${A}$ and $ {A}^T $.
 \begin{equation}
 	\begin{split}\label{eq:ss_kalman_udledning2}
 		\Pi & = {A} \Pi {A}^T - {A} \Pi {C}^T ({C} \Pi {C}^T + {R})^{-1} {C} \Pi {A}^T + {Q}\\
@@ -309,30 +316,35 @@ An attempt to identify the Algebraic Riccati equation for the Steady-State Estim
 \begin{equation}
 	\begin{split}\label{eq:ss_kalman_udledning5}
 	 	P 	& = ({I} - K {C}) \Pi \\ %\label{eq:ss_kalman_mse2} 
-		& = \Pi - K {C}\Pi \\
-		\text{substituting RHS of \cref{eq:ss_kalman_kalman_gain1}} \\
-		& = \Pi - \Pi {C}^T [{C} \Pi {C}^T + {R}]^{-1}{C}\Pi \\
+		& = \Pi - K {C}\Pi \\	
 	\end{split}
 \end{equation}
-Again applying the Matrix Inversion lemma by letting
-\begin{equation}
-	\begin{split}\label{eq:ss_kalman_udledning5}
-		&{A}^{-1} = \Pi, {B} = {C}^T, {C}^{-1} = {R}, {D} = {C} \\
-		\text{yielding} \\
-		&P = [\Pi + {C}^T{R}^{-1}{C}]^{-1} \\ 
-	\end{split}
+
+Substituting RHS of \cref{eq:ss_kalman_kalman_gain1}:
+\begin{equation}\label{eq:ss_kalman_udledning5_v2}
+		P = \Pi - \Pi {C}^T [{C} \Pi {C}^T + {R}]^{-1}{C}\Pi \\
+\end{equation}
+
+Again applying the Matrix Inversion lemma by letting:
+\begin{equation}\label{eq:ss_kalman_udledning5_v3}
+		{A}^{-1} = \Pi, {B} = {C}^T, {C}^{-1} = {R}, {D} = {C} \\
+\end{equation}
+
+yielding:
+\begin{equation}\label{eq:ss_kalman_udledning5_v4}
+		P = [\Pi + {C}^T{R}^{-1}{C}]^{-1} \\ 
 \end{equation}     
 
-substituting RHS of \cref{eq:ss_kalman_mse_pred}
-\begin{align}
-		P & = [({A}P{A}^T + {Q}) + {C}^T{R}^{-1}{C}]^{-1}  \label{eq:ss_kalman_udledning6}
-\end{align}
+substituting RHS of \cref{eq:ss_kalman_mse_pred}:
+\begin{equation}
+		P = [({A}P{A}^T + {Q}) + {C}^T{R}^{-1}{C}]^{-1}  \label{eq:ss_kalman_udledning6}
+\end{equation}
 
 Which indeed is the Algebraic Riccati equation for the \textit{Steady State Estimate Covariance} matrix $P$.\\
 Now the foundation is derived for starting to implement an actual model of the system in the following sections.
 
 \subsubsection{Kalman Simulation}\label{sec:kalman_imp}
-Real water consumption data is analysed in order to justify approximating the consumption pattern as a harmonic series. A historical dataset showing typical daily water consumption during a three month period has been obtained from Grundfos A/S. Two arbitrary days from said data set is seen in \cref{fig:Consumptionpattern}. Note that the unit of consumption is unknown, and we will normalize this data to fit the expected maximum flow in the laboratory.  Using frequency analysis we construct a model containing the four most influential frequency components; this represents the best least-squares fit of the data in a sparse Fourier basis.
+Real water consumption data is analysed in order to justify approximating the consumption pattern as a harmonic series. A historical dataset showing typical daily water consumption during a three month period has been obtained from Grundfos A/S. Two arbitrary days from said data set is seen in \cref{fig:Consumptionpattern}. Note that the unit of consumption is unknown, and we will normalise this data to fit the expected maximum flow in the laboratory.  Using frequency analysis we construct a model containing the four most influential frequency components; this represents the best least-squares fit of the data in a sparse Fourier basis.
 
 \begin{figure}[h!]
 	\centering
@@ -377,7 +389,7 @@ Simulations of the Kalman filter allows us to verify its ability to track the mo
 
 A large white noise is applied to the signal; we assume this noise to be much greater than any practical occurrence, and therefore assume the filter will perform better than simulation results in any real application. The model from which measurements are drawn is also altered to simulate a discrepancy between Kalman model and real measurements. This alteration is introduced by increasing amplitude of the first two sinusoidal components by $20\%$, and reducing the third by $50\%$.
 
-First plot in \cref{fig:Kalman_residual_Q01R1} shows the altered and unaltered model, the Kalman estimate and a leak introduced at $t = 95000$. Using covariance values $(R = 0.1, Q = 1)$, the Kalman filter tracks the altered model accurately, but it preserves a lot of noise. As such we wish to decrease our trust in measurement; this is also advantageous in terms of detecting the leak, as deviation from the expected behaviour given by the model is concealed because the filter tracks the deviation too well. This phenomenon introduces a tradeoff where we wish to accurately estimate the consumer pattern, i.e. trust measurements, such that minor changes in the pattern are tracked, and still rely enough on the model to make larger deviations stand out. The residual is shown in the second plot of \cref{fig:Kalman_residual_Q01R1}, which depicts this relationship between model accuracy and ability to detect a leak. We want to find a $Q$ value such that the plot shows a clear residual increase during the leak while retaining good tracking during periods without a leak. 
+First plot in \cref{fig:Kalman_residual_Q01R1} shows the altered and unaltered model, the Kalman estimate and a leak introduced at $t = 95000\si{s}$. Using covariance values $(R = 0.1, Q = 1)$, the Kalman filter tracks the altered model accurately, but it preserves a lot of noise. As such we wish to decrease our trust in measurement; this is also advantageous in terms of detecting the leak, as deviation from the expected behaviour given by the model is concealed because the filter tracks the deviation too well. This phenomenon introduces a tradeoff where we wish to accurately estimate the consumer pattern, i.e. trust measurements, such that minor changes in the pattern are tracked, and still rely enough on the model to make larger deviations stand out. The residual is shown in the second plot of \cref{fig:Kalman_residual_Q01R1}, which depicts this relationship between model accuracy and ability to detect a leak. We want to find a $Q$ value such that the plot shows a clear residual increase during the leak while retaining good tracking during periods without a leak. 
 
 \begin{figure}[h!]
 	\centering
