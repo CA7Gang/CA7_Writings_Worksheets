@@ -208,23 +208,21 @@ which is likewise a constant term that may be removed by integral action. Thus, 
 	\dot{q}_n \approx -\mathcal{P}\Phi\Bigg(a_1\omega_0 + \Big(|q_0|+\text{sign}(q_0)q_0\Big)\Bigg(K_\lambda + a_2 + \frac{1}{(K_v OD_0)^2}\Bigg) \tilde{q}_n \Bigg) -  \mathcal{P}\Phi\Bigg(\Big(a_1 q_0 + 2a_0\omega_0\Big) \tilde{\omega}\Bigg)
 \end{equation}
 
-\clearpage
+\subsection{Linearised Model} \label{sec:LinearisedModel}
+In the following section state space models are presented both for the fast and the slow system, i.e. the pump flow and the tank pressure dynamics respectively. 
 
-\subsection{Linearised model} \label{sec:LinearisedModel}
-In the following section state space models are presented both for the fast and the slow system, that is the pump flow and the tank pressure dynamics respectively. 
-
-\subsubsection{State space model - pump dynamics}
-Before linearizing the system model, presented in \cref{eq:NonLinearModelWithTank}, we need to identify the equilibrium points. This is done by evaluating the before mentioned model, at fixed $ \omega $ and $ OD $, with dynamic states set to zero. We choose pump speeds as an average of those used in \cref{ap:PumpCoef}, which is $ 66\% $ for each pump. We set OD to $ 0.5 $ for each valve. This yields the following equilibrium point:
+\subsubsection{State Space Model - Pump Dynamics}
+Before linearising the system model, presented in \cref{eq:NonLinearModelWithTank}, we need to identify the equilibrium points. This is done by evaluating the model at fixed $ \omega $ and $ OD $, with its dynamics set to $0$. We choose pump speeds as an average of those used in \cref{ap:PumpCoef}, which is $ 66\% $ for each pump. We set OD to $ 0.5 $ for each valve. This yields the following equilibrium point:
 
 	\begin{equation}
-	q_C^* = \kbordermatrix{
+	q_c^* = \kbordermatrix{
 		\\
 		q_3 & 0.1992 \\ 
 		q_7 & 0.0231\\
 	}
 \end{equation}
 	\begin{equation}
-	\bar{q}_f^* = \kbordermatrix{
+	\bar{d}_f^* = \kbordermatrix{
 		\\
 		d_1 & 0.3752 \\ 
 		d_5 & -0.2913\\
@@ -233,11 +231,12 @@ Before linearizing the system model, presented in \cref{eq:NonLinearModelWithTan
 	\end{equation}
 
 \begin{equation}
-	d_t^* = 0
+	d_\tau^* = 0
 \end{equation}
 
 
-The linearised model of the system can be expressed on the standard state space form given in \cref{eq:StateSpace} by applying the equilibrium to \cref{eq:SymbolicLinearisationSimplified}
+The linearised model of the system can then be expressed on the standard state space form given in \cref{eq:StateSpace} by evaluating \cref{eq:SymbolicLinearisationSimplified} at the equilibrium point: 
+
 \begin{equation}\label{eq:StateSpace}
 	\begin{split}
 	\dot{x} = Ax + Bu \\
@@ -267,7 +266,7 @@ The linearised model of the system can be expressed on the standard state space 
 	\end{bmatrix}
 \end{equation}
 
-The output matrix $ C $ can be constructed by the fact that the two outputs are; the flow pump at the non reference pump and the flow to/from the tank. 
+The output matrix $ C $ is then constructed to extract the pump flows from the states of the system:
 
 \begin{equation}
 C =	\begin{bmatrix}
@@ -276,8 +275,8 @@ C =	\begin{bmatrix}
 \end{bmatrix} 
 \end{equation}
 
-The inputs to our system will be the pump speeds. 
-The outputs will be the measured pressure at the tank node and the flows of the pumps. This yields
+This yields a system with pump speeds $ \{\omega_1 , \omega_2 \} $ as inputs and pump flows $ \{d_1, d_{13}\} $ as outputs:
+
 \begin{equation}\label{eq:StateSpaceInputsOutputsFast}
 	\begin{split}
 		u = \begin{bmatrix} \omega_1 \\ \omega_2	\end{bmatrix} \\
@@ -300,8 +299,8 @@ We can discretize this with Euler's method, resulting in:
 
 \begin{equation}\label{eq:TankDynamicsDiscrete}
 	\begin{gathered}
-			p_\tau(k+1) = p_\tau(k) + \tau \left(d_1(k) + d_{13}(k) + d_5(k) + d_9(k)\right)t_s = T\left(d_1(k) + d_{13}(k) + d_5(k) + d_9(k)\right) \\ 
-			T = \tau\cdot t_s 
+			p_\tau(k+1) = p_\tau(k) + \tau \left(d_1(k) + d_{13}(k) + d_5(k) + d_9(k)\right)t_s = \mathcal{T}\left(d_1(k) + d_{13}(k) + d_5(k) + d_9(k)\right) \\ 
+			\mathcal{T} = \tau\cdot t_s 
 	\end{gathered}
 \end{equation}
 
@@ -312,45 +311,43 @@ which can be converted into the following state-space system:
 				p_\tau(k+1) = A p_\tau(k) + B_pd_p(k) + B_cd_c(k)
 				= A p_\tau(k) + \left(B_p \begin{bmatrix}d_1(k) \\ d_{13}(k)\end{bmatrix} 
 				+ B_c\begin{bmatrix}d_5(k) \\ d_9(k)\end{bmatrix}\right) \\      
-				A = 1, \ B_p = \begin{bmatrix}T & T \end{bmatrix}, \ B_c = \begin{bmatrix}T & T\end{bmatrix}
+				A = 1, \ B_p = \begin{bmatrix} \mathcal{T} & \mathcal{T} \end{bmatrix}, \ B_c = \begin{bmatrix} \mathcal{T} & \mathcal{T} \end{bmatrix}
 	\end{gathered}
 \end{equation}
 
-In practice the flows may not all be measurable, in which case they must be estimated with an observer. As \cref{eq:TankPressureStateSpace} is clearly linear, either a simple Luenberger observer or a Kalman filter will do. Additionally, we note the presence of $B_cd_c$, an exogenous input over which we have no control. This will be addressed in \cref{sec:LQR,sec:KalmanFilter}.
+We note the presence of $B_cd_c$, an exogenous input over which we have no control. This will be addressed in \cref{sec:LQR,sec:KalmanFilter}.
 
-\subsection{Influence of pump delay}
-The pumps of the WDN system introduces a delay of approximately 4 seconds. According to \cite{Skogestad2005} (pp. 182-183), 
-a time delay $\theta$ limits the possible bandwidth of a system to be 
+\subsection{Influence of Pump Delay}
+The pumps of the WDN system introduces a delay of approximately 4 seconds. According to \cite[pp. 182-183]{Skogestad2005} , 
+a time delay $\theta$ limits the feasible closed-loop bandwidth of a system to:
 
 \begin{equation}\label{eq:BWdelay}
 	\omega_c < \frac{1}{\theta}
 \end{equation}
 
-This naturally sets a limitation as to how fast the inner loop of the control structure can be. As the inner loop sets a limitation of how fast the outer loop can be, i.e. 5-10 timer slower than the inner loop. This is a nessesary limitation, since the inner loop needs to be sufficiently fast for it to be used to linearize the outer loop. 
+This limitation on the inner loop inherently limits the outer loop as well, so long as standard cascade control practices are observed. Typically, the inner loop is required to be at least $5$ times faster than the outer loop.
 
 
 
 \subsection{The root locus method}
 
-For design of the pump controllers the root locus method will be used. The primary reason for choosing root locus rather than alternatives like bodeplot design, is the groups desire to experiment with new techniques for design of simple controllers.
+For design of the pump controllers the root locus method will be used. The root locus is a powerful visual tool that investigates the location of the closed-loop poles of a system, when introducing feedback with a gain $K$. The root locus can be drawn by hand by calculating the location of the closed-loop poles of a system for a large number of feedback gains. In practice however, this is done using a software package like Matlab.
 
-The root locus is a powerful visual tool, that investigates the location of the closed loop poles of a system, when introducing feedback with a gain K. The root locus can be drawn by hand by calculating the location of the closed loop poles of a system for a large number of feedback gains. In practice however, this is done using a software package like Matlab.
-
-While there exists many rules for sketching root locus by hand, only a few of them are truly important to understand how the root locus is used for controller design:
+While there exist many rules for sketching root locus by hand, only a few of them are truly important to understand how the root locus is used for controller design:
 
 \begin{enumerate}
-	\item The closed loop poles of the system move from the open loop poles at K=0 to the open loop zeros as K approaches $\infty$ - unless the number of poles and zeros is different, in which case the closed loop poles will go to or come in from infinity
-	\item The number of lines going to or from $\infty$ is equal to the difference between the number of open loop poles and zeros
-	\item The angle and place of gravity of the lines going to or from infinity is dependent of the difference between the number of open loop poles and zeros and their location in the complex plane
+	\item The closed-loop poles of the system move from the open-loop poles at $ K=0 $ to the open-loop zeros as $K \to \infty$ - unless the number of poles and zeros is different, in which case the closed-loop poles will go to or come in from infinity.
+	\item The number of lines going to or from $\infty$ is equal to the difference between the number of open-loop poles and zeros.
+	\item The angle and place of gravity of the lines going to or from infinity is dependent of the difference between the number of open-loop poles and zeros and their location in the complex plane.
 \end{enumerate}
 
-The first part of rule 1 tells us that the closed loop poles are equal to the open loop poles when K=0. This is intuitively understood as K=0 means there is no feedback, thus the closed and open loop systems are identical. The second part tells us that when K approaches $\infty$ the closed loop poles will be located at the open loop zeros. This is understood by analyzing the closed loop transfer function when the open loop transfer function is given as
+The first part of rule $1$ tells us that the closed-loop poles are equal to the open-loop poles when K=0. This is intuitively understood as $ K=0 $ means there is no feedback, thus the closed and open-loop systems are identical. The second part tells us that when $K \to \infty$ the closed-loop poles will be located at the open-loop zeros. This is understood by analysing the closed-loop transfer function when the open-loop transfer function is given as
 \begin{equation}
 	G_{ol}(s) = \frac{Z(s)}{P(s)}
 \end{equation}
 
 where Z(s) and P(s) are the polynomials describing the zeros and poles respectively.
-The closed loop transfer function is thus
+The closed-loop transfer function is thus
 \begin{equation}
 	G_{cl}(s) = \frac{G_{ol}(s)}{1 + K G_{ol}(s)}
 \end{equation}
@@ -361,21 +358,23 @@ where the roots are the values of s that make the denominator equal to 0
 	0 = 1 + K \cdot G_{ol}(s) = 1 + K \frac{Z(s)}{P(s)}
 \end{equation}
 
-Restructuring this yiels
+Restructuring this yields
+
 \begin{equation}
 	0 = 1 + K \frac{Z(s)}{P(s)} = 1P(s) + K \frac{Z(s) P(s)}{P(s)} = P(s) + K Z(s)
 \end{equation}
 
-This confirms that setting K=0 makes the closed loop poles equal to P(s) which is exactly the open loop poles. When K is approaches $\infty$ the K*Z(s) term is dominating, which is why the closed loop poles will then equal the open loop zeros Z(s)
+This confirms that setting $ K=0 $ makes the closed-loop poles equal to P(s) which is exactly the open-loop poles. When $K \to \infty$ the $ K*Z(s) $ term is dominating, which is why the closed-loop poles will then equal the open-loop zeros $ Z(s) $.
 
-Rules 2 and 3 simply tells us that the possible locations of the closed loop poles - specified by the loci - changes with the position of the open loop poles and zeros. This enables the designer to place additional poles and zeros to change the behavior of the closed loop system. 
+Rules $2$ and $3$ simply tells us that the possible locations of the closed-loop poles - specified by the loci - changes with the position of the open-loop poles and zeros. This enables the designer to place additional poles and zeros to change the behaviour of the closed-loop system. 
 
 
-\subsection{Design of pump controllers}
-This section will cover design of pump controllers, which corresponds to control of the fast dynamics of the system. It is also considered the inner loop. 
-\subsubsection{Decentralised control}
-Based on the obtained linearised model, controllers for the pumps are being introduced. Its desired to obtain decentralised control as this mitigates network faults and decrease delays in the system. Decentralised control can be obtained in a MIMO system if the plant is close to diagonal, meaning that the system can be considered a collection of independent sub-systems \cite{Skogestad2005} p. 91. 
-In order to validate whether decentralised control can be obtained, the interactions in the off diagonals of the systems are investigated with magnitude plots. For this analysis the tank is assumed to have a constant pressure. This is part of the seperation of the inner and outer loop, where the outer loop is assumed to be sufficienly slow, so it can be ignored in analysis of the inner loop. The magnitude plots can be seen in \cref{fig:PumpMagPlot}. They show the gain from a input frequency $\omega$ on each of the pumps to the output flows of the pumps.
+\subsection{Design of Pump Controllers}
+This section will cover design of the inner-loop pump controllers, which corresponds to control of the fast dynamics of the system.
+
+\subsubsection{Decentralised Control}
+Based on the obtained linearised model, controllers for the pumps are being introduced. Its desired to obtain decentralised control as this mitigates network faults and decrease delays in the system. Decentralised control can be obtained in a MIMO system if the plant is close to diagonal, meaning that the system can be considered a collection of independent sub-systems \cite[p. 91]{Skogestad2005}. 
+In order to validate whether decentralised control can be obtained, the interactions in the off-diagonals of the system are investigated with magnitude plots. For this analysis the tank is assumed to have a constant pressure. This is part of the separation of the inner and outer loop, where the outer loop is assumed to be slow enough to be ignored in analysis of the inner loop. The magnitude plots can be seen in \cref{fig:PumpMagPlot}. They show the gain from a input frequency $\omega$ on each of the pumps to the output flows of the pumps.
 
 \begin{figure}[h!]
 	\centering
@@ -385,12 +384,12 @@ In order to validate whether decentralised control can be obtained, the interact
 	\label{fig:PumpMagPlot}
 \end{figure}
 
-As seen in \cref{fig:PumpMagPlot}, the gain from $\omega_1$ to $d_{13}$ is for all frequencies less than -50 dB, compared to -10 dB from $\omega_1$ to $d_1$. \\
-Likewise is the gain from $\omega_2$ to $d_1$ for all frequencies less than -50 dB, compared to -15 dB from $\omega_2$ to $d_{13}$.\\
-In both cases, the coupling is at least -35 dB corresponding to less than a factor of 1/50. Thus the system will be assumed to have no interaction/coupling, which allows for design of controllers independently of the interactions, and solely from the diagonal transfer functions in the transfer matrix.
+As seen in \cref{fig:PumpMagPlot}, the gain from $\omega_1$ to $d_{13}$ is for all frequencies less than $ -50 \si{dB} $, compared to -10 dB from $\omega_1$ to $d_1$. \\
+Likewise, the gain from $\omega_2$ to $d_1$ is less than $ -50 \si{dB} $ for all frequencies, compared to $ -15 \si{dB} $ from $\omega_2$ to $d_{13}$.\\
+In both cases, the coupling is at least $ -35 \si{dB} $ corresponding to less than a factor of 1/50, and the system can reasonably be assumed to have no meaningful cross-coupling, which allows for independent SISO design of the respective controllers solely from the diagonal transfer functions in the transfer matrix.
 
-\subsubsection{Similarities within the diagonal systems and simplification}
-The diagonal transfer functions are considered to be identical, based on the poles and zeros of the two diagonal transfer functions seen in \cref{eq:PumpDiagonalPolesZeros}: 
+\subsubsection{Model Order Reduction}
+On closer comparison, the diagonal transfer functions can be seen to have approximately identical poles and zeroes in  \cref{eq:PumpDiagonalPolesZeros}: 
 
 \begin{equation}\label{eq:PumpDiagonalPolesZeros}
 	\begin{gathered}
@@ -400,7 +399,6 @@ The diagonal transfer functions are considered to be identical, based on the pol
 	\end{gathered}
 \end{equation}
 
-Considering the two systems identical enables the design of only one controller for both the subsystems.\\
 Realising that many of the poles more or less cancels out with the zeros can simplify the model very much for the root locus design, yielding poles and zeros \cref{eq:SimplifiedPolesZeros}:
 
  \begin{equation}\label{eq:SimplifiedPolesZeros}
@@ -410,76 +408,79 @@ Realising that many of the poles more or less cancels out with the zeros can sim
  	\end{gathered}
  \end{equation}
 
-\subsubsection{Modelling of time delay}
-The timedelay of the pumps can be modelled with a pade approximation, using Matlab. The order of the approximation is not unimportant. The higher the order, the closer to a true time delay the result will be. It comes however at the cost of clarity, as a nth-order approximation places \textit{n} LHP poles and \textit{n} RHP zeroes, to simulate the delay. This is shown in \cref{fig:PadeApprox}.
+
+This reduced-order approximation the design of only one controller for both the subsystems.
+
+\subsubsection{Modelling of Time Delay}
+The fast dynamics are known to have a significant delay. However, delays are represented by $e^{-T_ds}$ in the Laplace domain and thus are not rational functions. The delay at the pumps can instead modelled with by Padé approximation, which is a rational-function approximation of a delay. The order of the approximation is not unimportant. The higher the order, the closer to a true time delay the result will be, but this comes at the cost of complexity, as a $n$th-order approximation places $n$ LHP poles and $n$ RHP zeroes to simulate the delay. This is shown in \cref{fig:PadeApprox}.
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=0.8\textwidth]{Pictures/PadeApprox.png}
-	\caption{Pole-zero map of various order pade approximations of a 4 second delay}
+	\caption{Pole-zero map of various order Padé approximations of a 4 second delay}
 	\label{fig:PadeApprox}
 \end{figure}
 
-An investigation has been performed to show the error in closed loop pole locations introduced by using a low order approximation. \cref{fig:CLPoles} and \cref{fig:CLPolesZoom} shows the closed loop pole locations when using a 1st, 2nd and 10th order pade approximation. The plots show a noticable difference from 1st to 2nd order, but no significance above that.
+An investigation has been performed to show the error in closed-loop pole locations introduced by using a low order approximation. \cref{fig:CLPoles} and \cref{fig:CLPolesZoom} show the closed-loop pole locations when using a $1$st, $2$nd, and $10$th order Padé approximation. The plots show a noticeable difference from $1$st to $2$nd order, but no significant change beyond that.
 
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=0.8\textwidth]{Pictures/PZmap_CL.png}
-	\caption{Pole-zero map of closed loop pole locations with various order pade approximations of a 4 second delay}
+	\caption{Pole-zero map of closed-loop pole locations with various order Padé approximations of a 4 second delay}
 	\label{fig:CLPoles}
 \end{figure}
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=0.8\textwidth]{Pictures/PZmap_CL_zoom.png}
-	\caption{Pole-zero map of closed loop pole locations with various order pade approximations of a 4 second delay. Zoomed in on the dominant complex conjugate pole pair.}
+	\caption{Pole-zero map of closed-loop pole locations with various order Padé approximations of a 4 second delay. Zoomed in on the dominant complex conjugate pole pair.}
 	\label{fig:CLPolesZoom}
 \end{figure}
 When considering both convenience of use and modelling error the optimal approximation order was chosen to be 2.
 
 
-\subsubsection{Requirements for control performance}
+\subsubsection{Requirements for Control Performance}
 Before starting the actual root locus design of the controller, the desired performance of the controlled system needs to be defined. \\
-The first priority of the controlled system is for it to be stable. This is achived by ensuring that the closed loop poles of the system are placed in the left half plane on the s-plane. Simultaniously the inner loop of the system should be at least 5 times faster than the slow outer system [we have to come up with a reasonable estimate of this]. The desired BW of the inner loop is chosen to be 0.1 rad/s. This in turn is another restriction on the closed loop pole locations.
+The first priority of the controlled system is for it to be stable. This is achieved by ensuring that the closed-loop poles of the system are placed in the left half plane on the s-plane, in accordance with the Routh-Hurwitz criterion. Simultaneously, the inner loop of the system should be at least 5 times faster than the slow outer system. The desired BW of the inner loop is chosen to be $0.1 \si{\frac{rad}{s}}$. This in turn is another restriction on the closed-loop pole locations.
 
 Next, the controlled system should have no steady state error for step inputs. This ensures that the outer controller freely can set and achieve the desired pump flow reference. Lastly the system should have no overshoot and low amount of oscilations in its stepresponse, to indicate a sound phase margin to accommodate model uncertainty.
 
-Since the transfer function of the desired subsystem can be simplified as having two real poles and one zero, and the pade approximation adds two complex poles and zeros, the system can not be described as a second order system. Therefore traditional requirements like damping ratio do not apply in the normal sense. The requirements will thus be simpler, allowing more freedom for the designer to tune the controller based on the actual stepresponse.
+Since the transfer function of the desired subsystem can be simplified as having two real poles and one zero, and the Padé approximation adds two complex poles and zeros, the system can not be described as a second order system. Therefore traditional requirements like damping ratio do not apply in the normal sense. The requirements will thus be simpler, allowing more freedom for the designer to tune the controller based on the actual stepresponse.
 
 The requirements for the controller can be condensed to the following: 
 \begin{itemize}
 	\item No poles must be in the right half plane.
-	\item An open loop pole must be placed in the origin.
-	\item The closed loop system must have a bandwidth of approximately 0.1 rad/s.
-	\item The closed loop system must have a time constant of approximately $\frac{1}{bw} = \frac{1}{0.1} = 10s$.
+	\item An open-loop pole must be placed in the origin.
+	\item The closed-loop system must have a bandwidth of approximately $0.1 \si{frac{rad}{s}}$.
+	\item The closed-loop system must have a time constant of approximately $\frac{1}{BW} = \frac{1}{0.1} = 10 \si{s}$.
 \end{itemize}
 
 
 
-\subsubsection{Choice of controller type}
+\subsubsection{Choice of Controller Type}
 A PI controller is considered to be a sufficient solution for the requirements put forth. The integral action will take care of the steady state error, and the gain and zero location can be chosen based on the design criteria.
 
-\subsubsection{Root locus design}
-Since the controller is to be used locally for one pump, the root locus is drawn for the transfer function that takes the rotational speed of pump 1 as input and the resulting flow of pump 1 as output. The transfer function is in reduced form, where close pole-zero pairs have been cancelled out. The 2nd order pade approximation of a 4 second time delay is included.
+\subsubsection{Root Locus Design}
+Since the controller is to be used locally for one pump, the root locus is drawn for the transfer function that takes the rotational speed of pump $1$ as input and the resulting flow of pump $1$ as output. The transfer function is in reduced form, where close pole-zero pairs have been cancelled out. The $2$nd order Padé approximation of a $4$-second time delay is included.
 
 
 The controller design is then performed in four steps:
 \begin{enumerate}
 	\item Place one pole at the origin.
 	\item Place one real zero in the left half plane.
-	\item Select a gain K that yields optimal closed loop poles.
+	\item Select a gain K that yields optimal closed-loop poles.
 	\item Evaluate the step response and readjust the zero location and gain value if needed.
 \end{enumerate}
 
-While step 1 requires no intuition, step 2 has to be done rather carefully. Placing the zero too close to the origin will slow down the integration drastically. Placing it too far to the left however, creates a loci where the possible closed loop poles are all undesireable.
+While step $1$ requires no intuition, step $2$ has to be done rather carefully. Placing the zero too close to the origin will slow down the integration drastically. Placing it too far to the left, however, creates a locus where the possible closed-loop poles are all undesirable.
 
-For step 3, the gain was increased until the bandwidth of 0.1 rad/s was achieved with no oscilations. 
+For step $3$, the gain was increased until the bandwidth of $0.1 \si{frac{rad}{s}}$ was achieved with no oscillations. 
 
-As step 4 implies, the PI controller was designed after some iterations, resulting in the following controller:
+As step $4$ implies, the PI controller was designed after some iterations, resulting in the following controller:
 
  \begin{equation}\label{eq:PITransferFunction}
 	G_{PI} = 1.8 \frac{s+0.125}{s}
 \end{equation}
 
-With this controller the root locus can be seen on \cref{fig:RootLocus_PadeTwo}. The plot show zeroes as o's, poles as x's and closed loop poles as red dots.
+With this controller the root locus can be seen on \cref{fig:RootLocus_PadeTwo}. The plot shows zeroes as o's, poles as x's and closed-loop poles as red dots.
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=0.8\textwidth]{Pictures/RootLocus_Pade2.png}
@@ -488,13 +489,13 @@ With this controller the root locus can be seen on \cref{fig:RootLocus_PadeTwo}.
 	\label{fig:RootLocus_PadeTwo}
 \end{figure}
 
-The resulting closed loop step response is seen on \cref{fig:StepResponse_Pade2}. The step response shows an initial undershoot. This is not a result of the physical system, but rather the pade approximation, which places zeroes in the right half plane. These zeroes cause the step response to undershoot in an attempt to delay the signal. Increasing the order of approximation can reduce this, as shown in \cref{fig:StepResponse_Pade10}. \cref{fig:StepResponse_Pade10} also shows that no significant error in the step response is caused by using a 2nd order approximation rather that 10th order.
+The resulting closed-loop step response is seen on \cref{fig:StepResponse_Pade2}. The step response shows an initial undershoot. This is not a result of the physical system, but rather the Padé approximation, which places zeroes in the right half plane. These zeroes cause the step response to undershoot in an attempt to delay the signal. Increasing the order of approximation can reduce this, as shown in \cref{fig:StepResponse_Pade10}. \cref{fig:StepResponse_Pade10} also shows that no significant error in the step response is caused by using a $2$nd order approximation rather that $10$th order.
 
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=0.8\textwidth]{Pictures/StepResponse_Pade2.png}
 	
-	\caption{Step response of the closed loop system with a 2nd order pade approximation}
+	\caption{Step response of the closed-loop system with a $2$nd order Padé approximation}
 	\label{fig:StepResponse_Pade2}
 \end{figure}
 
@@ -503,7 +504,7 @@ The resulting closed loop step response is seen on \cref{fig:StepResponse_Pade2}
 	\centering
 	\includegraphics[width=0.8\textwidth]{Pictures/StepResponse_Pade10.png}
 	
-	\caption{Step response of the closed loop system with a 10th order pade approximation}
+	\caption{Step response of the closed-loop system with a $10$th order Padé approximation}
 	\label{fig:StepResponse_Pade10}
 \end{figure}
 
