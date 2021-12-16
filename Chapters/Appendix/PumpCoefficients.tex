@@ -1,6 +1,6 @@
 This section is concerned with the appendices of the WorkSheets
 
-\subsection{PumpCoefficients} \label{ap:PumpCoef}
+\subsection{Pump Coefficients} \label{ap:PumpCoef}
 
 A model of the pump is based on the following relationship between the pressure drop over the pump and the pump speed, flow through the pump and the pump coefficients.
 
@@ -11,7 +11,7 @@ The full pump model:
 
 The pump coefficients are estimated from the pump performance curves from the data-sheets. These describe the exact relationship described in \cref{eq:pumpmodel}.
 
-The preassure drops were read at the following flows:
+The pressure drops were read at the following flows:
 
 \begin{equation}
 	q = \begin{bmatrix}
@@ -38,7 +38,7 @@ At these flows the pressure drop across the pump were read from the y-axis at th
 
 Only 5 pressure readings were made from the 48\% pump speed.
 
-The coefficients are found by finding the leas square solution to following equation:
+The coefficients are found by finding the least-square solution to the following equation:
 
 \begin{equation}
 	Ax = b \leftrightarrow x = (A^TA)^{-1}A^Tb
@@ -50,13 +50,9 @@ where A is a matrix defined as follows:
 			\end{bmatrix}
 \end{equation}
 
-With number of rows corresponding to the amount of data points in $ p $, i.e. the for 8 rows corresponds to measurements made for $ \omega = 80$, the next 8 rows corresponds to measurements made for $ \omega = 69 $ etc.  
+With the number of rows corresponding to the amount of data points in $ p $, i.e. the for 8 rows corresponds to measurements made for $ \omega = 80$, the next 8 rows corresponds to measurements made for $ \omega = 69 $ etc., and $ b = \begin{bmatrix}
+	p_{80} \hspace{0.3cm} p_{69} \hspace{0.3cm} p_{48} \end{bmatrix} $$ ^T $ from \cref{eq:pump_p}. The solution yields the following coefficients:
 
-and $ b = \begin{bmatrix}
-	p_{80} \hspace{0.3cm} p_{69} \hspace{0.3cm} p_{48}
-\end{bmatrix} $$ ^T $ from \cref{eq:pump_p}.
-
-The solution yields the following coefficients:
 \begin{equation}
 	\begin{split}
 		a_0 = 0.0001 \\

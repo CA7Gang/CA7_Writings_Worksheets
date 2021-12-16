@@ -26,7 +26,7 @@ We will also define a set of graph-theoretical lemmas for convenience, referring
 	Let $H_T$ be the incidence matrix partition corresponding to the spanning tree of the graph described by $H$, and let $\bar{H}_T$ be its equivalent with respect to the reduced incidence matrix $\bar{H}$. $\bar{H}_T$ is invertible since a tree is a connected graph with $n-1$ edges \cite{Deo}, and the following holds
 	
 	\begin{equation}\label{eq:TreePartitionLemma}
-		H_T\bar{H}_T^{-1} = \begin{bmatrix} I_{n-1} \\ \mathbf{1}^T	\end{bmatrix}
+		H_T\bar{H}_T^{-1} = \begin{bmatrix} I_{n-1} \\ -\mathbf{1}^T	\end{bmatrix}
 	\end{equation}
 
 where $\mathbf{1}$ is a vector of ones and $I_{n-1} \in \mathbb{R}^{n-1 \times n-1}$ is an identity matrix.
@@ -36,7 +36,7 @@ where $\mathbf{1}$ is a vector of ones and $I_{n-1} \in \mathbb{R}^{n-1 \times n
 	Let $q \in \mathbb{R}^m$ be the edge flows of a graph with reduced incidence matrix $\bar{H}$ and $n$ nodes. Denote its spanning tree by $T$, let $q_c \in \mathbb{R}^c, \ c = m-n+1$ be the graph's chordal flows, and denote the tree partition of the reduced incidence matrix $\bar{H}_T$. Finally, let $B$ be the graph's fundamental loop matrix, and define $\bar{d} \in \mathbb{R}^{n-1}$ as the vector of non-reference nodal flows. Then the following is true:
 	
 	\begin{equation}\label{eq:EdgeFlowDecomposition}
-		q = B^T q_c +
+		q = B^T q_C +
 		\begin{bmatrix}
 			0_{C \times n-1} \\ \bar{H}_T^{-1} 
 		\end{bmatrix}
@@ -121,7 +121,7 @@ This simplifies to:
 	= -B(\lambda(q) + \mu(q) + \alpha(q))
 \end{equation}
 
-We now recall that we have chosen a reference node that is open to atmosphere at $p_{ref} = p_0$, and that $\Delta p$ can be rewritten as: 
+We now recall that we have chosen a reference node that is open to atmosphere at $p_{ref} = p_0$. Furthermore, $\Delta p$ can be rewritten as: 
 
 \begin{equation}\label{eq:DeltaPPartition}
 	\Delta p =
@@ -141,7 +141,7 @@ It is then, given that an arbitrary node can be reached by pathing solely throug
 We now exploit that:
 
 \begin{equation}\label{eq:TreeLemmaRewrite}
-	H_T\bar{H}_T^{-1} = \bar{H}_T^{-T}H_T^T 
+	(H_T\bar{H}_T^{-1})^T = \bar{H}_T^{-T}H_T^T 
 \end{equation}
 
 which allows us to rewrite \cref{eq:RelativePressureKML} by left-multiplying every term with $\bar{H}_T^{-T}$ and exploiting \cref{lem:TreePartitionLemma}:
@@ -152,7 +152,7 @@ which allows us to rewrite \cref{eq:RelativePressureKML} by left-multiplying eve
 	(\bar{h} - \mathbf{1}h_0)
 \end{equation}
 
-Recalling that $\bar{F}$ maps the open node demands into the total demand, we can then express the following:
+Recalling that $\bar{F}$ maps the open node demands into the total demand, we can use its transpose to pick out only the free non-tank flows:
 
 \begin{equation}\label{eq:RelativePressureLemmaAtmospheric}
 	0 = \bar{F}^T(\bar{p} - \mathbf{1}p_0) =
@@ -190,7 +190,7 @@ and applying \cref{eq:EdgeFlowDecomposition} we can rewrite \cref{eq:RelativePre
 	\end{split}
 \end{equation}
 
-By a completely analogous procedure we can extract the tank-connected non-reference nodes as in \cref{eq:RelativePressureLemmaDiffEqForm} via $\bar{G}$, except the left-hand side is now $p_{\tau}-\mathbf{1}p_0$:
+By a completely analogous procedure we can extract the tank-connected non-reference nodes as in \cref{eq:RelativePressureLemmaDiffEqForm} via $\bar{G}$, except the left-hand side is now initially $p_{\tau}-\mathbf{1}p_0$ rather than 0 as in \cref{eq:RelativePressureLemmaAtmospheric}:
 
 \begin{equation}\label{eq:RelativePressureLemmaDiffEqFormG}
 	\bar{G}^T\bar{H}_T^{-T}\mathcal{J}_T\dot{q}_T = - 	\bar{G}^T\bar{H}_T^{-T}(\lambda_T(q_T)+\mu_T(q_T) + \alpha_T(q_T)) +

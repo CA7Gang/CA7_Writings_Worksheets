@@ -150,7 +150,7 @@ such that:
 	u^*(t) = -R^{-1}B^TPx^*(t)
 \end{equation}
 
-with $P$ now time-invariant and fulfilling the \textit{algebraic Riccati equation}:
+with $P$ now time-invariant and fulfilling the \textit{algebraic Riccati equation} (ARE):
 
 \begin{equation}\label{eq:ARE}
 	 PA + A^TP + Q - PBR^{-1}B^TP = 0
@@ -279,7 +279,7 @@ We now address a final LQR-related wrinkle. As shown in \cref{eq:TankPressureSta
 	u(k) = u^*(k) - B^\dagger B \delta(k)
 \end{equation}
 
-where $B^\dagger$ is the Moore-Penrose pseudoinverse of $B$ and $\delta(k)$ is the exogenous input at time $k$. We note that this new control law remains optimal with respect to the disturbance-free system, but is \textit{not} optimal with respect to the disturbed dynamics.
+where $B^\dagger$ is the Moore-Penrose pseudoinverse of $B$ and $\delta(k)$ is the exogenous input at time $k$, making the second term is a feedforward of a disturbance estimate at time $ k $. We note that this new control law remains optimal with respect to the disturbance-free system, but is \textit{not} optimal with respect to the disturbed dynamics.
 
 \subsection{Implementation and Simulation Study}\label{subsec:LQRSimulationStudy}
 
